@@ -1,6 +1,6 @@
 /*******************************************************************************
 *                                                                              *
-*  General item implementation.                                                *
+*  Loader item implementation.                                                 *
 *                                                                              *
 *  Copyright (C) 2011 Kirill Chuvilin.                                         *
 *  All rights reserved.                                                        *
@@ -26,9 +26,9 @@
 
 import QtQuick 1.0
 
-Item {
+Loader {
     id: item
-    objectName: "QKitItem"
+    objectName: "QKitLoader"
     // controllers
     property Item controllerSource: parent // source of controller items
     property Item logController: controllerSource.logController // logging settings
