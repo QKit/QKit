@@ -29,19 +29,24 @@ import QtQuick 1.0
 QKitRectangle {
     id: toolbar
 
+    // UI properties
+    property int   animationDuration: uiController.toolbarAnimationDuration
+    property int   borderWidth: uiController.toolbarBorderWidth
+    property color borderColor: uiController.toolbarBorderColor
+    // key properties
+    property int leftButtonPressKey: keyController.toolbarLeftButtonPressKey
+    property int rightButtonPressKey: keyController.toolbarRightButtonPressKey
+    // other properties
     property Item  leftButton
     property Item  rightButton
-    property int   borderWidth: uiControl.toolbarBorderWidth
-    property color borderColor: uiControl.toolbarBorderColor
-    property int   animationDuration: uiControl.toolbarAnimationDuration
 
     function keyPressedEvent(event) { // key event handler
         switch (event.key) {
-        case Qt.Key_Context1:
+        case leftButtonPressKey:
             if (leftButton)
                 leftButton.pressByKey(event)
             break
-        case Qt.Key_Context2:
+        case rightButtonPressKey:
             if (rightButton)
                 rightButton.pressByKey(event)
             break
@@ -60,7 +65,7 @@ QKitRectangle {
     anchors.left: parent.left
     height: Math.max(0.1 * parent.height, 0.06 * parent.width)
     z: 1 // to view ower other
-    color: uiControl.toolbarBackgroundColor
+    color: uiController.toolbarBackgroundColor
 
     Item { // local variables
         id: local

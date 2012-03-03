@@ -33,8 +33,10 @@ Item {
     property color pageBackgroundColor: "#FFFFFF"
     property color pageTextColor: "#000000"
 
-    property color dialogBackgroundColor: "#BF000000"
     property int   dialogAnimationDuration: 250
+    property int   dialogButtonBorderWidth: 1
+    property bool  dialogButtonSmooth: buttonSmooth // use smooth for buttons or not
+    property color dialogBackgroundColor: "#BF000000"
     property color dialogButtonBackgroundColor: "#5F000000"
     property color dialogButtonBackgroundColorDimmed: "#0FFFFFFF"
     property color dialogButtonBackgroundColorSelected: dialogButtonBackgroundColor
@@ -44,13 +46,13 @@ Item {
     property color dialogButtonTextColor: dialogButtonBorderColor
     property color dialogButtonTextColorDimmed: dialogButtonBorderColorDimmed
     property color dialogButtonTextColorSelected: dialogButtonBorderColorSelected
-    property int   dialogButtonBorderWidth: 1
-    property bool  dialogButtonSmooth: buttonSmooth // use smooth for buttons or not
 
+    property int   toolbarAnimationDuration: 250
+    property int   toolbarBorderWidth: 1
+    property int   toolbarButtonBorderWidth: 1
+    property bool  toolbarButtonSmooth: buttonSmooth // use smooth for buttons or not
     property color toolbarBackgroundColor: "#7FDFDFDF"
     property color toolbarBorderColor: "#DF7F7F7F"
-    property int   toolbarBorderWidth: 1
-    property int   toolbarAnimationDuration: 250
     property color toolbarButtonBackgroundColor: "#00000000"
     property color toolbarButtonBackgroundColorDimmed: "#3F000000"
     property color toolbarButtonBackgroundColorSelected: toolbarButtonBackgroundColor
@@ -60,14 +62,12 @@ Item {
     property color toolbarButtonTextColor: toolbarButtonBorderColor
     property color toolbarButtonTextColorDimmed: toolbarButtonBorderColorDimmed
     property color toolbarButtonTextColorSelected: toolbarButtonBorderColorSelected
-    property int   toolbarButtonBorderWidth: 1
-    property bool  toolbarButtonSmooth: buttonSmooth // use smooth for buttons or not
 
     property bool  thumbnailSmooth: false // use smooth for thumbnails or not
     property bool  thumbnailAsynchronous: true // load in separate thread or not
+    property int   thumbnailBorderWidth: 2
     property color thumbnailBackgroundColor: "#DFDFDF"
     property color thumbnailBackgroundColorSelected: thumbnailBackgroundColor
-    property int   thumbnailBorderWidth: 2
     property color thumbnailBorderColor: "#DF7F7F7F"
     property color thumbnailBorderColorSelected: "#0000DF"
 

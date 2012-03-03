@@ -29,6 +29,8 @@ import QtQuick 1.0
 QKitItem {
     id: application
 
-    uiControl: QKitUiControl{}
     focus: true
+    uiController: QKitUiController{} // item with UI settings
+    keyController: QKitKeyController{} // item with key settings
+    navController: QKitNavController{} // key navigation controllerler
 }

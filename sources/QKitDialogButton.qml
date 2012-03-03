@@ -28,16 +28,19 @@ import QtQuick 1.0
 
 QKitButton {
     radius: 0.4 * height
-    border.width: uiControl.dialogButtonBorderWidth
-    smooth: uiControl.dialogButtonSmooth
-    backgroundColor: uiControl.dialogButtonBackgroundColor // background color
-    backgroundColorDimmed: uiControl.dialogButtonBackgroundColorDimmed // background color when button is pressed
-    backgroundColorSelected: uiControl.dialogButtonBackgroundColorSelected // background color when button is selected
-    borderColor: uiControl.dialogButtonBorderColor // border color
-    borderColorDimmed: uiControl.dialogButtonBorderColorDimmed // border color when button is pressed
-    borderColorSelected: uiControl.dialogButtonBorderColorSelected // border color when button is selected
-    textColor: uiControl.dialogButtonTextColor // text color
-    textColorDimmed: uiControl.dialogButtonTextColorDimmed // text color when button is pressed
-    textColorSelected: uiControl.dialogButtonTextColorSelected // text color when button is selected
-    mouseHoverEnabled: uiControl.mouseHoverEnabled // handle mouse hover or not
+    // UI properties
+    borderWidth: uiController.dialogButtonBorderWidth
+    smooth: uiController.dialogButtonSmooth
+    backgroundColor: uiController.dialogButtonBackgroundColor // background color
+    backgroundColorDimmed: uiController.dialogButtonBackgroundColorDimmed // background color when button is pressed
+    backgroundColorSelected: uiController.dialogButtonBackgroundColorSelected // background color when button is selected
+    borderColor: uiController.dialogButtonBorderColor // border color
+    borderColorDimmed: uiController.dialogButtonBorderColorDimmed // border color when button is pressed
+    borderColorSelected: uiController.dialogButtonBorderColorSelected // border color when button is selected
+    textColor: uiController.dialogButtonTextColor // text color
+    textColorDimmed: uiController.dialogButtonTextColorDimmed // text color when button is pressed
+    textColorSelected: uiController.dialogButtonTextColorSelected // text color when button is selected
+    mouseHoverEnabled: uiController.mouseHoverEnabled // handle mouse hover or not
+    // key properties
+    pressKey: keyController.dialogButtonPressKey // key for press
 }

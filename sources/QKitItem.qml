@@ -27,9 +27,11 @@
 import QtQuick 1.0
 
 Item {
-    // QKitItem properties
-    property Item uiControl: parent.uiControl // item with UI settings
-    property bool active: true // active or not
-    property bool selected: false // selected or not
-    onActiveFocusChanged: selected = activeFocus
+    id: qKitItem
+    property alias active: meta.active // active or not
+    property alias selected: meta.selected // selected or not
+    property alias uiController: meta.uiController // item with UI settings
+    property alias keyController: meta.keyController // item with key settings
+    property alias navController: meta.navController // key navigation controllerler
+    resources: [QKitMeta { id: meta; item: qKitItem}]
 }

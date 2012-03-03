@@ -27,19 +27,11 @@
 import QtQuick 1.0
 
 QKitDialogButton {
-    property Item menuItem: parent
+    property Item menuItem: parent.menuItem // menu item
 
-    parent: menuItem.contentItem
     anchors.horizontalCenter: parent.horizontalCenter
     width: 0.9 * Math.min(menuItem.width, menuItem.height)
     height: 0.1 * Math.min(menuItem.width, menuItem.height)
 
-    onClicked: menuItem.active = false
-
-    onMenuItemChanged: {
-        if (menuItem == parent) {
-            menuItem = parent
-            parent = menuItem.contentItem
-        }
-    }
+    onClicked: menuItem.active = false // to close menu after click on item
 }

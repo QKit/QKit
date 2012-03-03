@@ -30,13 +30,13 @@ QKitItem {
     id: thumbnail
 
     property url source // image source
-    property int borderWidth: uiControl.thumbnailBorderWidth
-    property color borderColor: uiControl.thumbnailBorderColor
-    property color borderColorSelected: uiControl.thumbnailBorderColorSelected
-    property color backgroundColor: uiControl.thumbnailBackgroundColor
-    property color backgroundColorSelected: uiControl.thumbnailBackgroundColorSelected
-    property bool smooth: uiControl.thumbnailSmooth
-    property bool asynchronous: uiControl.thumbnailAsynchronous // loading in separate thread
+    property int borderWidth: uiController.thumbnailBorderWidth
+    property color borderColor: uiController.thumbnailBorderColor
+    property color borderColorSelected: uiController.thumbnailBorderColorSelected
+    property color backgroundColor: uiController.thumbnailBackgroundColor
+    property color backgroundColorSelected: uiController.thumbnailBackgroundColorSelected
+    property bool smooth: uiController.thumbnailSmooth
+    property bool asynchronous: uiController.thumbnailAsynchronous // loading in separate thread
 
     QKitRectangle { // background
         id: thumbnailBackground

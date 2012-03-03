@@ -26,88 +26,75 @@
 
 import QtQuick 1.0
 
-QKitRectangle {
+QKitItem {
     id: dialog
 
-    property Item contentItem // item with content
-    property int animationDuration: uiControl.dialogAnimationDuration
+    // UI properties
+    property int animationDuration: uiController.dialogAnimationDuration
+    property color backgroundColor: uiController.dialogBackgroundColor
+    // key properties
+    property int closeKey: keyController.dialogCloseKey
+    // other properties
+    property Item contentItem: dialog // item with content
 
     signal opened() // emits on dialog open
     signal closed() // emits on dialog close
 
     active: false // initially closed
+    visible: active // visible only if active
     anchors.fill: parent // fill parent when opened
     z: 1 // to view ower other
-    color: dialog.uiControl.dialogBackgroundColor
 
-    Item { // local variables
-        id: local
+    Rectangle { // background
+        id: dialogBackground
 
-        state: (dialog.active ? "opened" : "closed")
+        anchors.fill: parent // fill parent when opened
+        color: dialog.backgroundColor
+
+        state: (dialog.visible ? "shown" : "hidden")
         states: [
             State {
-                name: "opened"
-                PropertyChanges {
-                    target: dialog
-                    visible: true
-                }
-                PropertyChanges {
-                    target: dialog.contentItem
-                    focus: true
-                }
+                name: "shown"
             },
             State {
-                name: "closed"
+                name: "hidden"
                 PropertyChanges {
-                    target: dialog
-                    visible: false
+                    target: dialogBackground
                     color: "#00000000"
-                }
-                PropertyChanges {
-                    target: dialog.parent
-                    focus: true
                 }
             }
         ]
 
         transitions: [
             Transition {
-                to: "opened"
+                to: "shown"
                 SequentialAnimation {
                     ColorAnimation {
-                        target:  dialog
+                        target:  dialogBackground
                         duration: animationDuration
                     }
                 }
             }
         ]
-
-        onStateChanged: {
-            switch (state) {
-            case "closed":
-                dialog.closed()
-                break
-            case "opened":
-                dialog.opened()
-                break
-            }
-        }
     }
 
     MouseArea { // for out of bar click test
-        anchors.fill: dialog
+        anchors.fill: parent
         onClicked: dialog.active = false // if clicked, then out of dialog element and dialog must be closed
     }
 
-    onContentItemChanged: {
-        contentItem.parent = dialog
-        contentItem.focus = true
+    onActiveChanged: {
+        if (active) {
+            contentItem.forceActiveFocus()
+            dialog.opened()
+        } else
+            if (parent) parent.forceActiveFocus()
+            dialog.closed()
     }
 
     Keys.onPressed: {
         switch (event.key) {
-        case Qt.Key_Backspace:
-        case Qt.Key_Escape:
+        case closeKey:
             active = false
             break
         }

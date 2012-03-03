@@ -36,18 +36,20 @@ QKitButton {
     width: 0.18 * parent.width
     height: 0.8 * parent.height
     radius: 0.3 * height
-    border.width: uiControl.toolbarButtonBorderWidth
-    smooth: uiControl.toolbarButtonSmooth
-    backgroundColor: uiControl.toolbarButtonBackgroundColor // background color
-    backgroundColorDimmed: uiControl.toolbarButtonBackgroundColorDimmed // background color when button is pressed
-    backgroundColorSelected: uiControl.toolbarButtonBackgroundColorSelected // background color when button is selected
-    borderColor: uiControl.toolbarButtonBorderColor // border color
-    borderColorDimmed: uiControl.toolbarButtonBorderColorDimmed // border color when button is pressed
-    borderColorSelected: uiControl.toolbarButtonBorderColorSelected // border color when button is selected
-    textColor: uiControl.toolbarButtonTextColor // text color
-    textColorDimmed: uiControl.toolbarButtonTextColorDimmed // text color when button is pressed
-    textColorSelected: uiControl.toolbarButtonTextColorSelected // text color when button is selected
-    mouseHoverEnabled: uiControl.mouseHoverEnabled // handle mouse hover or not
+    borderWidth: uiController.toolbarButtonBorderWidth
+    smooth: uiController.toolbarButtonSmooth
+    backgroundColor: uiController.toolbarButtonBackgroundColor // background color
+    backgroundColorDimmed: uiController.toolbarButtonBackgroundColorDimmed // background color when button is pressed
+    backgroundColorSelected: uiController.toolbarButtonBackgroundColorSelected // background color when button is selected
+    borderColor: uiController.toolbarButtonBorderColor // border color
+    borderColorDimmed: uiController.toolbarButtonBorderColorDimmed // border color when button is pressed
+    borderColorSelected: uiController.toolbarButtonBorderColorSelected // border color when button is selected
+    textColor: uiController.toolbarButtonTextColor // text color
+    textColorDimmed: uiController.toolbarButtonTextColorDimmed // text color when button is pressed
+    textColorSelected: uiController.toolbarButtonTextColorSelected // text color when button is selected
+    mouseHoverEnabled: uiController.mouseHoverEnabled // handle mouse hover or not
+    // key properties
+    pressKey: keyController.toolbarButtonPressKey // key for press
 
     Item { // position states
         id: position

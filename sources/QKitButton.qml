@@ -30,9 +30,8 @@ QKitRectangle {
     id: button
 
     property string text: "" // button text
-    property url imageSource: "" // url to image
-    property url imageSourceDimmed: imageSource // url to image when button is pressed
-    property url imageSourceSelected: imageSource // url to image when button is selected
+    // UI properties
+    property int borderWidth // width of border
     property color backgroundColor // background color
     property color backgroundColorDimmed: backgroundColor // background color when button is pressed
     property color backgroundColorSelected: backgroundColor // background color when button is selected
@@ -42,9 +41,15 @@ QKitRectangle {
     property color textColor // text color
     property color textColorDimmed: textColor // text color when button is pressed
     property color textColorSelected: textColor // text color when button is selected
+    property url imageSource: "" // url to image
+    property url imageSourceDimmed: imageSource // url to image when button is pressed
+    property url imageSourceSelected: imageSource // url to image when button is selected
+    property bool mouseHoverEnabled: uiController.mouseHoverEnabled // handle mouse hover or not
+    // key properties
+    property int pressKey: keyController.buttonPressKey // key for press
+    // other properties
     property Item textItem: buttonTextItem // item with text
     property Item imageItem: buttonImageItem // item with image
-    property bool mouseHoverEnabled: uiControl.mouseHoverEnabled // handle mouse hover or not
 
     function pressByKey(event) { // press button by particular key
         if (!active) return // must be active to press
@@ -65,6 +70,7 @@ QKitRectangle {
 
     color: button.backgroundColor
     border.color: button.borderColor
+    border.width: button.borderWidth
 
     Item { // local variables
         id: local
@@ -150,9 +156,7 @@ QKitRectangle {
     Keys.onPressed: {
         if (!active) return // must be active to handle
         switch (event.key) {
-        case Qt.Key_Select:
-        case Qt.Key_Return:
-        case Qt.Key_Enter:
+        case button.pressKey:
             button.pressByKey(event)
             break
         default:

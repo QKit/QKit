@@ -30,8 +30,8 @@ QKitRectangle {
     id: page
 
     property Item toolbar
-    property color backgroundColor: uiControl.pageBackgroundColor
-    property color textColor: uiControl.pageTextColor
+    property color backgroundColor: uiController.pageBackgroundColor
+    property color textColor: uiController.pageTextColor
 
     signal backToggled() // goto previos page signal
     signal menuToggled() // open menu signal

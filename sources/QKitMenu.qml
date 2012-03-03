@@ -29,7 +29,15 @@ import QtQuick 1.0
 QKitDialog {
     id: menu
 
-    contentItem: QKitNavColumn {
+    default property alias content: menuContent.children // menu content
+
+    contentItem: menuContent
+
+    QKitNavColumn { // menu content
+        id: menuContent
+
+        property alias menuItem: menu // menu item for elements
+
         anchors.centerIn: parent
         width: parent.width
         height: children.height

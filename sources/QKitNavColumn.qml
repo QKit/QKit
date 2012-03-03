@@ -27,51 +27,51 @@
 import QtQuick 1.0
 
 QKitColumn {
-    property int currentItem: -1 // current active item
-    property bool focusOnCurrent: false // highlight current item or not
     property bool looped: true // firt to last and vice versa
+    property int currentIndex: -1 // current active item
+    property bool focusOnCurrent: false // highlight current item or not
 
     Keys.onUpPressed: {
         if (!focusOnCurrent) {
             focusOnCurrent = true
-            currentItem = children.length - 1
+            currentIndex = children.length - 1
         } else {
-            var newCurrentItem = currentItem - 1
-            if (newCurrentItem >= 0)
-                currentItem = newCurrentItem
+            var newcurrentIndex = currentIndex - 1
+            if (newcurrentIndex >= 0)
+                currentIndex = newcurrentIndex
             else if (looped)
-                currentItem = children.length - 1
+                currentIndex = children.length - 1
             else
-                currentItem = 0
+                currentIndex = 0
         }
     }
     Keys.onDownPressed: {
         if (!focusOnCurrent) {
             focusOnCurrent = true
-            currentItem = 0
+            currentIndex = 0
         } else {
-            var newCurrentItem = currentItem + 1
-            if (newCurrentItem <= children.length - 1)
-                currentItem = newCurrentItem
+            var newcurrentIndex = currentIndex + 1
+            if (newcurrentIndex <= children.length - 1)
+                currentIndex = newcurrentIndex
             else if (looped)
-                currentItem = 0
+                currentIndex = 0
             else
-                currentItem = children.length - 1
+                currentIndex = children.length - 1
         }
     }
 
     onVisibleChanged: {
         if (!visible) {
             focusOnCurrent = false
-            currentItem = -1
+            currentIndex = -1
         }
     }
     onChildrenChanged: {
         focusOnCurrent = false
-        currentItem = -1
+        currentIndex = -1
     }
-    onCurrentItemChanged: {
-        if (focusOnCurrent && currentItem >= 0)
-            children[currentItem].focus = true
+    onCurrentIndexChanged: {
+        if (focusOnCurrent && currentIndex >= 0)
+            children[currentIndex].focus = true
     }
 }

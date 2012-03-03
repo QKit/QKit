@@ -36,7 +36,7 @@ QKitToolbarButton {
     borderColor: "#00000000"
     borderColorDimmed: "#00000000"
     borderColorSelected: "#00000000"
-    imageSource: uiControl.iconMToolbarViewMenu
-    imageSourceSelected: uiControl.iconMToolbarViewMenuSelected
-    imageSourceDimmed: uiControl.iconMToolbarViewMenuDimmed
+    imageSource: uiController.iconMToolbarViewMenu
+    imageSourceSelected: uiController.iconMToolbarViewMenuSelected
+    imageSourceDimmed: uiController.iconMToolbarViewMenuDimmed
 }

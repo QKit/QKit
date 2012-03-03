@@ -1,6 +1,6 @@
 /*******************************************************************************
 *                                                                              *
-*  Rectangle item implementation.                                              *
+*  Meta information item implementation.                                       *
 *                                                                              *
 *  Copyright (C) 2011 Kirill Chuvilin.                                         *
 *  All rights reserved.                                                        *
@@ -26,12 +26,13 @@
 
 import QtQuick 1.0
 
-Rectangle {
-    id: qKitItem
-    property alias active: meta.active // active or not
-    property alias selected: meta.selected // selected or not
-    property alias uiController: meta.uiController // item with UI settings
-    property alias keyController: meta.keyController // item with key settings
-    property alias navController: meta.navController // key navigation controllerler
-    resources: [QKitMeta { id: meta; item: qKitItem}]
+Item {
+    property Item item // QKit item
+    property Item uiController: item.parent.uiController // item with UI settings
+    property Item keyController: item.parent.keyController // item with key settings
+    property Item navController: item.parent.navController // key navigation controllerler
+    property bool active: true // active or not
+    property bool selected: false // selected or not
+    property bool activeFocus: item.activeFocus
+    onActiveFocusChanged: selected = activeFocus
 }
