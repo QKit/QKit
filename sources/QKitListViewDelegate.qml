@@ -1,6 +1,6 @@
 /*******************************************************************************
 *                                                                              *
-*  General item implementation.                                                *
+*  Delegete for ListView implementation.                                       *
 *                                                                              *
 *  Copyright (C) 2011 Kirill Chuvilin.                                         *
 *  All rights reserved.                                                        *
@@ -26,22 +26,10 @@
 
 import QtQuick 1.0
 
-Item {
-    id: item
-    objectName: "QKitItem"
-    // controllers
-    property Item logController: parent.logController // logging settings
-    property Item uiController:  parent.uiController  // item with UI settings
-    property Item keyController: parent.keyController // item with key settings
-    property Item navController: parent.navController // key navigation controllerler
-    // QKit properties
-    property bool active: true // active or not
-    property bool selected: activeFocus // selected or not
-    // logging
-    Component.onCompleted: if (logController && logController.createdLogging) console.log(item.objectName + " - created")
-    onParentChanged: if (logController && logController.parentLogging) console.log(item.objectName + " - parent changed to " + (item.parent ? item.parent.objectName : "[NULL]"))
-    onActiveChanged: if (logController && logController.activeLogging) console.log(item.objectName + " - active changed to " + active)
-    onSelectedChanged: if (logController && logController.selectedLogging) console.log(item.objectName + " - selected changed to " + selected)
-    onFocusChanged: if (logController && logController.focusLogging) console.log(item.objectName + " - focus changed to " + focus)
-    onActiveFocusChanged: if (logController && logController.activeFocusLogging) console.log(item.objectName + " - activeFocus changed to " + activeFocus)
+QKitItem {
+    objectName: "QKitListViewDelegate"
+    logController: ListView.view.logController // logging settings
+    uiController:  ListView.view.uiController  // item with UI settings
+    keyController: ListView.view.keyController // item with key settings
+    navController: ListView.view.navController // key navigation controllerler
 }

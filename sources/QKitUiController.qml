@@ -32,6 +32,7 @@ Item {
 
     property color pageBackgroundColor: "#FFFFFF"
     property color pageTextColor: "#000000"
+    property url   pageTexture // image to fill page
 
     property int   dialogAnimationDuration: 250
     property int   dialogButtonBorderWidth: 1

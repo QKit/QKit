@@ -30,19 +30,23 @@ QKitDialog {
     id: menu
     objectName: "QKitMenu"
 
-    default property alias content: menuContent.children // menu content
+    default property alias content: menuModel.children // menu content
 
-    contentItem: menuContent
+    property int elementWidth: 0.9 * Math.min(width, height)
+    property int elementHeight: 0.1 * Math.min(width, height)
 
-    QKitNavColumn { // menu content
-        id: menuContent
-        objectName: menu.objectName + ":Content"
+    contentItem: menuView
 
-        property alias menuItem: menu // menu item for elements
-
+    QKitNavListView { // menu view
+        id: menuView
+        objectName: menu.objectName + ":View"
         anchors.centerIn: parent
-        width: parent.width
-        height: children.height
-        spacing: 0.05 * Math.min(menu.width, menu.height)
+        width: menu.elementWidth
+        height: Math.min(parent.height, childrenRect.height)
+        spacing: 0.5 * menu.elementHeight
+        keyNavigationWraps: true
+        model: VisualItemModel { id: menuModel }
     }
+
+    onOpened: menuView.currentIndex = -1 // reset selected item on open
 }

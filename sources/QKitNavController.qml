@@ -27,16 +27,32 @@
 import QtQuick 1.0
 
 Item {
+    property Component highlight // component to use as the highlight
+    property bool highlightFollowsCurrentItem: false // whether the highlight is managed by the view
+    property real highlightMoveSpeed: 400 // highlight move animation speed
+    property int  highlightMoveDuration: -1 // highlight move animation duration
+    property real highlightResizeSpeed: 400 // highlight resize animation speed
+    property int  highlightResizeDuration: -1 // highlight resize animation duration
+    property bool keyNavigationWraps: false // whether the list wraps key navigation
+
     // changes navItem's current item, according to key event
-    function moveByKey(event, navItem) {
+    function moveCurrentIndexByKey(navItem, event) {
         switch (event.key) {
-        case navItem.leftKey:
+        case navItem.moveLeftKey:
+            navItem.highlightFollowsCurrentItem = true
+            navItem.moveCurrentIndexLeft()
             break
-        case navItem.rightKey:
+        case navItem.moveRightKey:
+            navItem.highlightFollowsCurrentItem = true
+            navItem.moveCurrentIndexRight()
             break
-        case navItem.upKey:
+        case navItem.moveUpKey:
+            navItem.highlightFollowsCurrentItem = true
+            navItem.moveCurrentIndexUp()
             break
-        case navItem.downKey:
+        case navItem.moveDownKey:
+            navItem.highlightFollowsCurrentItem = true
+            navItem.moveCurrentIndexDown()
             break
         default: return // to not accept event
         }

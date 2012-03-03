@@ -27,8 +27,8 @@
 import QtQuick 1.0
 
 Item {
-    property bool useFullId
     property bool createdLogging: false
+    property bool parentLogging: false
     property bool activeLogging: false
     property bool selectedLogging: false
     property bool activeFocusLogging: false

@@ -1,6 +1,6 @@
 /*******************************************************************************
 *                                                                              *
-*  General item implementation.                                                *
+*  ListView item implementation.                                               *
 *                                                                              *
 *  Copyright (C) 2011 Kirill Chuvilin.                                         *
 *  All rights reserved.                                                        *
@@ -26,9 +26,9 @@
 
 import QtQuick 1.0
 
-Item {
+ListView {
     id: item
-    objectName: "QKitItem"
+    objectName: "QKitListView"
     // controllers
     property Item logController: parent.logController // logging settings
     property Item uiController:  parent.uiController  // item with UI settings
@@ -39,7 +39,6 @@ Item {
     property bool selected: activeFocus // selected or not
     // logging
     Component.onCompleted: if (logController && logController.createdLogging) console.log(item.objectName + " - created")
-    onParentChanged: if (logController && logController.parentLogging) console.log(item.objectName + " - parent changed to " + (item.parent ? item.parent.objectName : "[NULL]"))
     onActiveChanged: if (logController && logController.activeLogging) console.log(item.objectName + " - active changed to " + active)
     onSelectedChanged: if (logController && logController.selectedLogging) console.log(item.objectName + " - selected changed to " + selected)
     onFocusChanged: if (logController && logController.focusLogging) console.log(item.objectName + " - focus changed to " + focus)

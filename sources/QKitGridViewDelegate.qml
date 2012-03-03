@@ -1,6 +1,6 @@
 /*******************************************************************************
 *                                                                              *
-*  Column item with key navigation implementation.                             *
+*  Delegete for GridView implementation.                                       *
 *                                                                              *
 *  Copyright (C) 2011 Kirill Chuvilin.                                         *
 *  All rights reserved.                                                        *
@@ -26,54 +26,10 @@
 
 import QtQuick 1.0
 
-QKitColumn {
-    objectName: "QKitNavColumn"
-
-    property bool looped: true // firt to last and vice versa
-    property int currentIndex: -1 // current active item
-    property bool focusOnCurrent: false // highlight current item or not
-
-    Keys.onUpPressed: {
-        if (!focusOnCurrent) {
-            focusOnCurrent = true
-            currentIndex = children.length - 1
-        } else {
-            var newcurrentIndex = currentIndex - 1
-            if (newcurrentIndex >= 0)
-                currentIndex = newcurrentIndex
-            else if (looped)
-                currentIndex = children.length - 1
-            else
-                currentIndex = 0
-        }
-    }
-    Keys.onDownPressed: {
-        if (!focusOnCurrent) {
-            focusOnCurrent = true
-            currentIndex = 0
-        } else {
-            var newcurrentIndex = currentIndex + 1
-            if (newcurrentIndex <= children.length - 1)
-                currentIndex = newcurrentIndex
-            else if (looped)
-                currentIndex = 0
-            else
-                currentIndex = children.length - 1
-        }
-    }
-
-    onVisibleChanged: {
-        if (!visible) {
-            focusOnCurrent = false
-            currentIndex = -1
-        }
-    }
-    onChildrenChanged: {
-        focusOnCurrent = false
-        currentIndex = -1
-    }
-    onCurrentIndexChanged: {
-        if (focusOnCurrent && currentIndex >= 0)
-            children[currentIndex].focus = true
-    }
+QKitItem {
+    objectName: "QKitGridViewDelegate"
+    logController: GridView.view.logController // logging settings
+    uiController:  GridView.view.uiController  // item with UI settings
+    keyController: GridView.view.keyController // item with key settings
+    navController: GridView.view.navController // key navigation controllerler
 }

@@ -27,13 +27,21 @@
 import QtQuick 1.0
 
 QKitDialogButton {
+    id: menuElement
     objectName: "QKitMenuElement"
 
-    property Item menuItem: parent.menuItem // menu item
+    logController: local.menuItem.logController
+    uiController: local.menuItem.uiController
+    keyController: local.menuItem.keyController
+    navController: local.menuItem.navController
 
-    anchors.horizontalCenter: parent.horizontalCenter
-    width: 0.9 * Math.min(menuItem.width, menuItem.height)
-    height: 0.1 * Math.min(menuItem.width, menuItem.height)
+    width: local.menuItem.elementWidth
+    height: local.menuItem.elementHeight
 
-    onClicked: menuItem.active = false // to close menu after click on item
+    onClicked: local.menuItem.active = false // to close menu after click on item
+
+    Item { // local variables
+        id: local
+        property Item menuItem: menuElement.parent.parent.parent // menu item
+    }
 }

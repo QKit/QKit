@@ -33,12 +33,19 @@ QKitRectangle {
     property Item toolbar
     property color backgroundColor: uiController.pageBackgroundColor
     property color textColor: uiController.pageTextColor
+    property url   texture: uiController.pageTexture
 
     signal backToggled() // goto previos page signal
     signal menuToggled() // open menu signal
 
     anchors.fill: parent
     color: backgroundColor
+
+    Image {
+        anchors.fill: parent
+        fillMode: Image.Tile
+        source: page.texture
+    }
 
     Keys.onPressed: {
         if (toolbar) // if toolbar exists
