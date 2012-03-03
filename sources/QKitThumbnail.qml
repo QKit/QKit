@@ -24,7 +24,7 @@
 *                                                                              *
 *******************************************************************************/
 
-import QtQuick 1.0
+import Qt 4.7
 
 QKitItem {
     id: thumbnail
@@ -45,11 +45,12 @@ QKitItem {
 
         visible: thumbnailImage.status == Image.Ready // to view only when image viewed
         anchors.centerIn: parent
-        width: thumbnailImage.paintedWidth
-        height: thumbnailImage.paintedHeight
+        width: thumbnailImage.paintedWidth + border.width
+        height: thumbnailImage.paintedHeight + border.width
         border.width: thumbnail.borderWidth
         border.color: thumbnail.borderColor
         color: thumbnail.backgroundColor
+        smooth: thumbnail.smooth
 
         states: [
             State { // on selected or focused
@@ -69,7 +70,7 @@ QKitItem {
         objectName: thumbnail.objectName + ":Image"
 
         anchors.fill: parent
-        anchors.margins: thumbnail.borderWidth
+        anchors.margins: 2 * thumbnail.borderWidth
         fillMode: Image.PreserveAspectFit
         source: thumbnail.source
         smooth: thumbnail.smooth
