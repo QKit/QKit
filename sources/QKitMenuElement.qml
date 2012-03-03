@@ -27,6 +27,8 @@
 import QtQuick 1.0
 
 QKitDialogButton {
+    objectName: "QKitMenuElement"
+
     property Item menuItem: parent.menuItem // menu item
 
     anchors.horizontalCenter: parent.horizontalCenter

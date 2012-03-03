@@ -27,8 +27,7 @@
 import QtQuick 1.0
 
 QKitToolbarButton {
-    id: button
-
+    objectName: "QKitToolbarMenuButton"
     border.width: 0
     backgroundColor: "#00000000"
     backgroundColorDimmed: "#00000000"

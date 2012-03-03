@@ -28,6 +28,7 @@ import QtQuick 1.0
 
 QKitRectangle {
     id: button
+    objectName: "QKitButton"
 
     property string text: "" // button text
     // UI properties

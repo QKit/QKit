@@ -28,6 +28,7 @@ import QtQuick 1.0
 
 QKitRectangle {
     id: toolbar
+    objectName: "QKitToolbar"
 
     // UI properties
     property int   animationDuration: uiController.toolbarAnimationDuration

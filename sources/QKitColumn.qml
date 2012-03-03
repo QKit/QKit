@@ -27,11 +27,20 @@
 import QtQuick 1.0
 
 Column {
-    id: qKitItem
-    property alias active: meta.active // active or not
-    property alias selected: meta.selected // selected or not
-    property alias uiController: meta.uiController // item with UI settings
-    property alias keyController: meta.keyController // item with key settings
-    property alias navController: meta.navController // key navigation controllerler
-    resources: [QKitMeta { id: meta; item: qKitItem}]
+    id: item
+    objectName: "QKitColumn"
+    // controllers
+    property Item logController: parent.logController // logging settings
+    property Item uiController:  parent.uiController  // item with UI settings
+    property Item keyController: parent.keyController // item with key settings
+    property Item navController: parent.navController // key navigation controllerler
+    // QKit properties
+    property bool active: true // active or not
+    property bool selected: activeFocus // selected or not
+    // logging
+    Component.onCompleted: if (logController && logController.createdLogging) console.log(item.objectName + " - created")
+    onActiveChanged: if (logController && logController.activeLogging) console.log(item.objectName + " - active changed to " + active)
+    onSelectedChanged: if (logController && logController.selectedLogging) console.log(item.objectName + " - selected changed to " + selected)
+    onFocusChanged: if (logController && logController.focusLogging) console.log(item.objectName + " - focus changed to " + focus)
+    onActiveFocusChanged: if (logController && logController.activeFocusLogging) console.log(item.objectName + " - activeFocus changed to " + activeFocus)
 }

@@ -28,6 +28,7 @@ import QtQuick 1.0
 
 QKitItem {
     id: dialog
+    objectName: "QKitDialog"
 
     // UI properties
     property int animationDuration: uiController.dialogAnimationDuration

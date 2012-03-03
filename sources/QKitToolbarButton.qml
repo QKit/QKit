@@ -28,6 +28,7 @@ import QtQuick 1.0
 
 QKitButton {
     id: button
+    objectName: "QKitToolbarButton"
 
     function makeLeft() {position.state = "left"}
     function makeRight() {position.state = "right"}

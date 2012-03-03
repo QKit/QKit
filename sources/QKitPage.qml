@@ -28,6 +28,7 @@ import QtQuick 1.0
 
 QKitRectangle {
     id: page
+    objectName: "QKitPage"
 
     property Item toolbar
     property color backgroundColor: uiController.pageBackgroundColor

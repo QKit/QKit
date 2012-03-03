@@ -1,6 +1,6 @@
 /*******************************************************************************
 *                                                                              *
-*  Meta information item implementation.                                       *
+*  Logging settings item implementation.                                       *
 *                                                                              *
 *  Copyright (C) 2011 Kirill Chuvilin.                                         *
 *  All rights reserved.                                                        *
@@ -27,12 +27,10 @@
 import QtQuick 1.0
 
 Item {
-    property Item item // QKit item
-    property Item uiController: item.parent.uiController // item with UI settings
-    property Item keyController: item.parent.keyController // item with key settings
-    property Item navController: item.parent.navController // key navigation controllerler
-    property bool active: true // active or not
-    property bool selected: false // selected or not
-    property bool activeFocus: item.activeFocus
-    onActiveFocusChanged: selected = activeFocus
+    property bool useFullId
+    property bool createdLogging: false
+    property bool activeLogging: false
+    property bool selectedLogging: false
+    property bool activeFocusLogging: false
+    property bool focusLogging: false
 }

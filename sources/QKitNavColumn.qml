@@ -27,6 +27,8 @@
 import QtQuick 1.0
 
 QKitColumn {
+    objectName: "QKitNavColumn"
+
     property bool looped: true // firt to last and vice versa
     property int currentIndex: -1 // current active item
     property bool focusOnCurrent: false // highlight current item or not

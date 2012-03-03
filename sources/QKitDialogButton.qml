@@ -27,6 +27,8 @@
 import QtQuick 1.0
 
 QKitButton {
+    objectName: "QKitDialogButton"
+
     radius: 0.4 * height
     // UI properties
     borderWidth: uiController.dialogButtonBorderWidth

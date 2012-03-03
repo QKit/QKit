@@ -28,6 +28,7 @@ import QtQuick 1.0
 
 QKitItem {
     id: thumbnail
+    objectName: "QKitThumbnail"
 
     property url source // image source
     property int borderWidth: uiController.thumbnailBorderWidth
@@ -40,6 +41,7 @@ QKitItem {
 
     QKitRectangle { // background
         id: thumbnailBackground
+        objectName: thumbnail.objectName + ":Background"
 
         visible: thumbnailImage.status == Image.Ready // to view only when image viewed
         anchors.centerIn: parent
@@ -68,6 +70,7 @@ QKitItem {
 
         QKitImage {
             id: thumbnailImage
+            objectName: thumbnail.objectName + ":Image"
 
             property int maxWidth: thumbnail.width - 2 * thumbnail.borderWidth
             property int maxHeight: thumbnail.height - 2 * thumbnail.borderWidth

@@ -28,6 +28,7 @@ import QtQuick 1.0
 
 QKitDialog {
     id: menu
+    objectName: "QKitMenu"
 
     default property alias content: menuContent.children // menu content
 
@@ -35,6 +36,7 @@ QKitDialog {
 
     QKitNavColumn { // menu content
         id: menuContent
+        objectName: menu.objectName + ":Content"
 
         property alias menuItem: menu // menu item for elements
 
