@@ -1,8 +1,8 @@
 /*******************************************************************************
 *                                                                              *
-*  Button "Back" item for toolbars implementation.                             *
+*  Row item implementation.                                                    *
 *                                                                              *
-*  Copyright (C) 2011-2012 Kirill Chuvilin.                                    *
+*  Copyright (C) 2012 Kirill Chuvilin.                                         *
 *  All rights reserved.                                                        *
 *  Contact: Kirill Chuvilin (kirill.chuvilin@gmail.com, kirik-ch.ru)           *
 *                                                                              *
@@ -26,16 +26,23 @@
 
 import Qt 4.7
 
-QKitToolbarButton {
-    objectName: "QKitToolbarBackButton"
-    border.width: 0
-    backgroundColor: "#00000000"
-    backgroundColorDimmed: "#00000000"
-    backgroundColorSelected: "#00000000"
-    borderColor: "#00000000"
-    borderColorDimmed: "#00000000"
-    borderColorSelected: "#00000000"
-    imageSource: uiController.iconMToolbarBack
-    imageSourceSelected: uiController.iconMToolbarBackSelected
-    imageSourceDimmed: uiController.iconMToolbarBackDimmed
+Row {
+    id: item
+    objectName: "QKitRow"
+    // controllers
+    property Item controllerSource: parent // source of controller items
+    property Item logController: controllerSource.logController // logging settings
+    property Item uiController:  controllerSource.uiController  // item with UI settings
+    property Item keyController: controllerSource.keyController // item with key settings
+    property Item navController: controllerSource.navController // key navigation controllerler
+    // QKit properties
+    property bool active: true // active or not
+    property bool selected: activeFocus // selected or not
+    // logging
+    Component.onCompleted: if (logController && logController.createdLogging) console.log(item.objectName + " - created")
+    onParentChanged: if (logController && logController.parentLogging) console.log(item.objectName + " - parent changed to " + (item.parent ? item.parent.objectName : "[NULL]"))
+    onActiveChanged: if (logController && logController.activeLogging) console.log(item.objectName + " - active changed to " + active)
+    onSelectedChanged: if (logController && logController.selectedLogging) console.log(item.objectName + " - selected changed to " + selected)
+    onFocusChanged: if (logController && logController.focusLogging) console.log(item.objectName + " - focus changed to " + focus)
+    onActiveFocusChanged: if (logController && logController.activeFocusLogging) console.log(item.objectName + " - activeFocus changed to " + activeFocus)
 }

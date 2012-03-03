@@ -1,8 +1,8 @@
 /*******************************************************************************
 *                                                                              *
-*  Button "Back" item for toolbars implementation.                             *
+*  Button "Menu" item for toolbars implementation.                             *
 *                                                                              *
-*  Copyright (C) 2011-2012 Kirill Chuvilin.                                    *
+*  Copyright (C) 2012 Kirill Chuvilin.                                         *
 *  All rights reserved.                                                        *
 *  Contact: Kirill Chuvilin (kirill.chuvilin@gmail.com, kirik-ch.ru)           *
 *                                                                              *
@@ -27,7 +27,7 @@
 import Qt 4.7
 
 QKitToolbarButton {
-    objectName: "QKitToolbarBackButton"
+    objectName: "QKitToolbarMenuButton"
     border.width: 0
     backgroundColor: "#00000000"
     backgroundColorDimmed: "#00000000"
@@ -35,7 +35,7 @@ QKitToolbarButton {
     borderColor: "#00000000"
     borderColorDimmed: "#00000000"
     borderColorSelected: "#00000000"
-    imageSource: uiController.iconMToolbarBack
-    imageSourceSelected: uiController.iconMToolbarBackSelected
-    imageSourceDimmed: uiController.iconMToolbarBackDimmed
+    imageSource: uiController.iconMToolbarUp
+    imageSourceSelected: uiController.iconMToolbarUpSelected
+    imageSourceDimmed: uiController.iconMToolbarUpDimmed
 }

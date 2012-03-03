@@ -1,8 +1,8 @@
 /*******************************************************************************
 *                                                                              *
-*  Button "Back" item for toolbars implementation.                             *
+*  Text item for dialogs implementation.                                       *
 *                                                                              *
-*  Copyright (C) 2011-2012 Kirill Chuvilin.                                    *
+*  Copyright (C) 2012 Kirill Chuvilin.                                         *
 *  All rights reserved.                                                        *
 *  Contact: Kirill Chuvilin (kirill.chuvilin@gmail.com, kirik-ch.ru)           *
 *                                                                              *
@@ -24,18 +24,6 @@
 *                                                                              *
 *******************************************************************************/
 
-import Qt 4.7
-
-QKitToolbarButton {
-    objectName: "QKitToolbarBackButton"
-    border.width: 0
-    backgroundColor: "#00000000"
-    backgroundColorDimmed: "#00000000"
-    backgroundColorSelected: "#00000000"
-    borderColor: "#00000000"
-    borderColorDimmed: "#00000000"
-    borderColorSelected: "#00000000"
-    imageSource: uiController.iconMToolbarBack
-    imageSourceSelected: uiController.iconMToolbarBackSelected
-    imageSourceDimmed: uiController.iconMToolbarBackDimmed
+QKitText {
+    color: uiController.dialogTextColor
 }
