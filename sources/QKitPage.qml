@@ -35,6 +35,7 @@ QKitRectangle {
     property color backgroundColor: uiController.pageBackgroundColor
     property color textColor: uiController.pageTextColor
     property url   texture: uiController.pageTexture
+    property alias workspaceClip: pageWorkspace.clip
 
     signal backToggled() // goto previos page signal
     signal menuToggled() // open menu signal
@@ -69,10 +70,9 @@ QKitRectangle {
     }
 
     QKitItem {
-//    QKitRectangle {
         id: pageWorkspace
+
         objectName: menu.objectName + ":Workspace"
-//        color: "#FF0000"
         anchors.fill: parent
 
         states: [
