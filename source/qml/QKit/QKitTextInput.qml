@@ -30,14 +30,14 @@ TextInput {
     objectName: "QKitTextInput"
     // controllers
     property Item controllerSource: parent // source of controller items
-    property QtObject logController: controllerSource.logController // logging settings
-    property QtObject uiController:  controllerSource.uiController  // item with UI settings
-    property QtObject keyController: controllerSource.keyController // item with key settings
-    property QtObject navController: controllerSource.navController // key navigation controllerler
+    property QtObject logController: controllerSource ? controllerSource.logController : null // logging settings
+    property QtObject uiController:  controllerSource ? controllerSource.uiController : null  // item with UI settings
+    property QtObject keyController: controllerSource ? controllerSource.keyController : null // item with key settings
+    property QtObject navController: controllerSource ? controllerSource.navController : null // key navigation controllerler
     // QKit properties
-    property bool active: true // active or not
     property bool selected: activeFocus // selected or not
-    property string uiAmbience: controllerSource.uiAmbience // UI ambience: dialog, page, toolbar
+    property string uiAmbience: controllerSource ? controllerSource.uiAmbience : "" // UI ambience: dialog, page, toolbar
+    property bool active: true // active or not
     // logging
     Component.onCompleted: if (logController && logController.createdLogging) console.log(item.objectName + " - created")
     onParentChanged: if (logController && logController.parentLogging) console.log(item.objectName + " - parent changed to " + (item.parent ? item.parent.objectName : "[NULL]"))

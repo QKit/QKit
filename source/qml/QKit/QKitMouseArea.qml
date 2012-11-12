@@ -30,13 +30,13 @@ MouseArea {
     objectName: "QKitMouseArea"
     // controllers
     property Item controllerSource: parent // source of controller items
-    property QtObject logController: controllerSource.logController // logging settings
-    property QtObject uiController:  controllerSource.uiController  // item with UI settings
-    property QtObject keyController: controllerSource.keyController // item with key settings
-    property QtObject navController: controllerSource.navController // key navigation controllerler
+    property QtObject logController: controllerSource ? controllerSource.logController : null // logging settings
+    property QtObject uiController:  controllerSource ? controllerSource.uiController : null  // item with UI settings
+    property QtObject keyController: controllerSource ? controllerSource.keyController : null // item with key settings
+    property QtObject navController: controllerSource ? controllerSource.navController : null // key navigation controllerler
     // QKit properties
     property bool selected: activeFocus // selected or not
-    property string uiAmbience: controllerSource.uiAmbience // UI ambience: dialog, page, toolbar
+    property string uiAmbience: controllerSource ? controllerSource.uiAmbience : "" // UI ambience: dialog, page, toolbar
     // logging
     Component.onCompleted: if (logController && logController.createdLogging) console.log(item.objectName + " - created")
     onActiveFocusChanged: if (logController && logController.activeFocusLogging) console.log(item.objectName + " - activeFocus changed to " + activeFocus)

@@ -29,10 +29,10 @@ QKitListView {
     id: navListView
     objectName: "QKitNavListView"
 
-    property int moveLeftKey: keyController.navMoveLeftKey
-    property int moveRightKey: keyController.navMoveRightKey
-    property int moveUpKey: keyController.navMoveUpKey
-    property int moveDownKey: keyController.navMoveDownKey
+    property int moveLeftKey: keyController ? keyController.navMoveLeftKey : 0
+    property int moveRightKey: keyController ? keyController.navMoveRightKey : 0
+    property int moveUpKey: keyController ? keyController.navMoveUpKey : 0
+    property int moveDownKey: keyController ? keyController.navMoveDownKey : 0
 
     function moveCurrentIndexLeft() {
         if (orientation == Qt.Horizontal) {
@@ -97,13 +97,13 @@ QKitListView {
 
     Item { id: invisible; visible: false } // to reset focus
 
-    highlight: navController.highlight // component to use as the highlight
-    highlightFollowsCurrentItem: navController.highlightFollowsCurrentItem // whether the highlight is managed by the view
-    highlightMoveSpeed: navController.highlightMoveSpeed // highlight move animation speed
-    highlightMoveDuration: navController.highlightMoveDuration // highlight move animation duration
-    highlightResizeSpeed: navController.highlightResizeSpeed // highlight resize animation speed
-    highlightResizeDuration: navController.highlightResizeDuration // highlight resize animation duration
-    keyNavigationWraps: navController.keyNavigationWraps // whether the list wraps key navigation
+    highlight: navController ? navController.highlight : null // component to use as the highlight
+    highlightFollowsCurrentItem: navController ? navController.highlightFollowsCurrentItem : false // whether the highlight is managed by the view
+    highlightMoveSpeed: navController ? navController.highlightMoveSpeed : 0 // highlight move animation speed
+    highlightMoveDuration: navController ? navController.highlightMoveDuration : 0 // highlight move animation duration
+    highlightResizeSpeed: navController ? navController.highlightResizeSpeed : 0 // highlight resize animation speed
+    highlightResizeDuration: navController ? navController.highlightResizeDuration : 0 // highlight resize animation duration
+    keyNavigationWraps: navController ? navController.keyNavigationWraps : false // whether the list wraps key navigation
 
     currentIndex: -1 // no selected item
 

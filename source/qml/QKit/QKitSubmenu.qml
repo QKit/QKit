@@ -1,6 +1,6 @@
 /*******************************************************************************
 *                                                                              *
-*  General item implementation.                                                *
+*  Submenu item implementation.                                                *
 *                                                                              *
 *  Copyright (C) 2011-2012 Kirill Chuvilin.                                    *
 *  Contact: Kirill Chuvilin (kirill.chuvilin@gmail.com, kirill.chuvilin.pro)   *
@@ -25,23 +25,43 @@
 
 import Qt 4.7
 
-Item {
-    id: item
-    objectName: "QKitItem"
-    // controllers
-    property Item controllerSource: parent // source of controller items
-    property QtObject logController: controllerSource ? controllerSource.logController : null // logging settings
-    property QtObject uiController:  controllerSource ? controllerSource.uiController : null  // item with UI settings
-    property QtObject keyController: controllerSource ? controllerSource.keyController : null // item with key settings
-    property QtObject navController: controllerSource ? controllerSource.navController : null // key navigation controllerler
-    // QKit properties
-    property bool selected: activeFocus // selected or not
-    property string uiAmbience: controllerSource ? controllerSource.uiAmbience : "" // UI ambience: dialog, page, toolbar
-    // logging
-    Component.onCompleted: if (logController && logController.createdLogging) console.log(item.objectName + " - created")
-    onActiveFocusChanged: if (logController && logController.activeFocusLogging) console.log(item.objectName + " - activeFocus changed to " + activeFocus)
-    onEnabledChanged: if (logController && logController.enabledLogging) console.log(item.objectName + " - enabled changed to " + enabled)
-    onFocusChanged: if (logController && logController.focusLogging) console.log(item.objectName + " - focus changed to " + focus)
-    onParentChanged: if (logController && logController.parentLogging) console.log(item.objectName + " - parent changed to " + (item.parent ? item.parent.objectName : "[NULL]"))
-    onSelectedChanged: if (logController && logController.selectedLogging) console.log(item.objectName + " - selected changed to " + selected)
+QKitMenuElement {
+    id: submenu
+    objectName: "QKitSubmenu"
+
+    default property alias content: submenuModel.children // submenu content
+
+    QKitItem {
+        id: submenuRoot
+        objectName: submenu.objectName + ":Root"
+
+        visible: false
+        width: menu.width
+        height: menu.height
+
+        QKitNavListView { // menu view
+            id: submenuView
+            objectName: submenu.objectName + ":View"
+
+            property alias menuItem: submenu.__menuItem
+
+            anchors.centerIn: parent
+            width: menu.elementWidth
+            height: Math.min(parent.height - 2 * spacing, childrenRect.height)
+            spacing: 0.5 * menu.elementHeight
+            keyNavigationWraps: true
+            model: VisualItemModel {id: submenuModel}
+        }
+
+        onActiveFocusChanged: {
+            if (activeFocus) {
+                submenuView.currentIndex = -1; // reset selected item on open
+                submenuView.forceActiveFocus();
+            }
+        }
+    }
+
+    onClicked: {
+        __menuItem.__stack.push(submenuRoot);
+    }
 }

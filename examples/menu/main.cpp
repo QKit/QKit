@@ -1,11 +1,11 @@
 /*******************************************************************************
 *                                                                              *
-*  Element item for menus implementation.                                      *
+*  Main function implementation.                                               *
 *                                                                              *
 *  Copyright (C) 2011-2012 Kirill Chuvilin.                                    *
 *  Contact: Kirill Chuvilin (kirill.chuvilin@gmail.com, kirill.chuvilin.pro)   *
 *                                                                              *
-*  This file is part of the QKit project.                                      *
+*  This file is part of an example for the QKit project.                       *
 *                                                                              *
 *  $QT_BEGIN_LICENSE:GPL$                                                      *
 *  You may use this file under the terms of the GNU General Public License     *
@@ -23,16 +23,33 @@
 *                                                                              *
 *******************************************************************************/
 
-import Qt 4.7
+#include <QtGui/QApplication>
+#include "qmlapplicationviewer.h"
 
-QKitButton {
-    id: menuElement
-    objectName: "QKitMenuElement"
+Q_DECL_EXPORT int main(int argc, char *argv[]) {
+    QScopedPointer<QApplication> app(createApplication(argc, argv));
+    QmlApplicationViewer viewer;
 
-    property Item __menuItem: parent ? parent.parent ? parent.parent.menuItem : null : null // menu, that contains the element
+#if defined(QKIT_OS_SIMULATOR)
+    viewer.setOrientation(QmlApplicationViewer::ScreenOrientationAuto);
+    viewer.setMainQmlFile(QLatin1String("qml/Main_simulator.qml"));
+    viewer.showFullScreen();
+#elif defined(QKIT_OS_FREMANTLE)
+    viewer.setOrientation(QmlApplicationViewer::ScreenOrientationAuto);
+    viewer.setMainQmlFile(QLatin1String("qml/Main_fremantle.qml"));
+    viewer.showFullScreen();
+#elif defined(QKIT_OS_HARMATTAN)
+    viewer.setOrientation(QmlApplicationViewer::ScreenOrientationAuto);
+    viewer.setMainQmlFile(QLatin1String("qml/Main_harmattan.qml"));
+    viewer.showFullScreen();
+#elif defined(QKIT_OS_SYMBIAN)
+    viewer.setOrientation(QmlApplicationViewer::ScreenOrientationAuto);
+    viewer.setMainQmlFile(QLatin1String("qml/Main_symbian.qml"));
+    viewer.showFullScreen();
+#else
+    viewer.setMainQmlFile(QLatin1String("qml/Main_desktop.qml"));
+    viewer.show();
+#endif
 
-    controllerSource: __menuItem
-    width: __menuItem ? __menuItem.elementWidth : 0
-    height: __menuItem ? __menuItem.elementHeight : 0
-    onClicked: __menuItem.elementSelected()
+    return app->exec();
 }

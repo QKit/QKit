@@ -1,11 +1,11 @@
 /*******************************************************************************
 *                                                                              *
-*  Element item for menus implementation.                                      *
+*  Main item adaptor for desktop implementation.                               *
 *                                                                              *
 *  Copyright (C) 2011-2012 Kirill Chuvilin.                                    *
 *  Contact: Kirill Chuvilin (kirill.chuvilin@gmail.com, kirill.chuvilin.pro)   *
 *                                                                              *
-*  This file is part of the QKit project.                                      *
+*  This file is part of an example for the QKit project.                       *
 *                                                                              *
 *  $QT_BEGIN_LICENSE:GPL$                                                      *
 *  You may use this file under the terms of the GNU General Public License     *
@@ -24,15 +24,19 @@
 *******************************************************************************/
 
 import Qt 4.7
+import "QKit"
 
-QKitButton {
-    id: menuElement
-    objectName: "QKitMenuElement"
-
-    property Item __menuItem: parent ? parent.parent ? parent.parent.menuItem : null : null // menu, that contains the element
-
-    controllerSource: __menuItem
-    width: __menuItem ? __menuItem.elementWidth : 0
-    height: __menuItem ? __menuItem.elementHeight : 0
-    onClicked: __menuItem.elementSelected()
+Main {
+    id: application
+    width: 640
+    height: 480
+    os: "Desktop"
+    uiController: QKitUiController {
+        mouseHoverEnabled: true
+        buttonSmooth: true
+        thumbnailSmooth: true
+    }
+    keyController: QKitKeyController {
+        buttonPressKey: Qt.Key_Return
+    }
 }

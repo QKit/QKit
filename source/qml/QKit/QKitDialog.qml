@@ -36,14 +36,15 @@ QKitItem {
     property int closeKey: keyController.dialogCloseKey
     // other properties
     property Item contentItem: dialog // item with content
+    property bool closeOnBack: true // close dialog on click on back signal or not
 
     signal opened() // emits on dialog open
     signal closed() // emits on dialog close
+    signal back() // emits on back action
 
     uiAmbience: "dialog" // UI ambience
     enabled: false // initially closed
     visible: enabled // visible only if enabled
-    anchors.fill: parent // fill parent when opened
     z: 1 // to view ower other
 
     Rectangle { // background
@@ -81,24 +82,27 @@ QKitItem {
 
     MouseArea { // for out of bar click test
         anchors.fill: parent
-        onClicked: dialog.enabled = false // if clicked, then out of dialog element and dialog must be closed
+        onClicked: dialog.back() // if clicked, then click if out of dialog element, and back signal generates
     }
 
     onEnabledChanged: {
         if (enabled) {
             contentItem.forceActiveFocus()
             dialog.opened()
-        } else
+        } else {
             if (parent) parent.forceActiveFocus()
             dialog.closed()
+        }
     }
 
     Keys.onPressed: {
         switch (event.key) {
         case closeKey:
-            enabled = false
-            break
+            back();
+            break;
         }
         event.accepted = true
     }
+
+    onBack: if (closeOnBack) enabled = false;
 }

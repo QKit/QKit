@@ -63,9 +63,22 @@ QtObject {
     property url iconMToolbarUpSelected: "images/icon-m-toolbar-up-selected.png"
     property url iconMToolbarUpDimmed: "images/icon-m-toolbar-up-dimmed.png"
 
+    property int itemStackAnimationDuration: 250 // duration of scroll animation
+
     property color pageBackgroundColor: "#FFFFFF"
+    property int   pageButtonBorderWidth: 1
+    property bool  pageButtonSmooth: buttonSmooth // use smooth for buttons or not
+    property color pageButtonBackgroundColor: "#BFFFFFFF"
+    property color pageButtonBackgroundColorDimmed: "#0F000000"
+    property color pageButtonBackgroundColorSelected: pageButtonBackgroundColor
+    property color pageButtonBorderColor: "#7F000000"
+    property color pageButtonBorderColorDimmed: "#000000"
+    property color pageButtonBorderColorSelected: "#000000"
+    property color pageButtonTextColor: pageButtonBorderColor
+    property color pageButtonTextColorDimmed: pageButtonBorderColorDimmed
+    property color pageButtonTextColorSelected: pageButtonBorderColorSelected
     property color pageTextColor: "#000000"
-    property url   pageTexture // image to fill page
+    property url   pageTexture: "" // image to fill page
 
     property bool  thumbnailAsynchronous: true // load in separate thread or not
     property color thumbnailBackgroundColor: "#DFDFDF"

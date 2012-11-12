@@ -1,6 +1,6 @@
 /*******************************************************************************
 *                                                                              *
-*  Abstract button item implementation.                                        *
+*  Button item implementation.                                                 *
 *                                                                              *
 *  Copyright (C) 2011-2012 Kirill Chuvilin.                                    *
 *  Contact: Kirill Chuvilin (kirill.chuvilin@gmail.com, kirill.chuvilin.pro)   *
@@ -27,34 +27,34 @@ import Qt 4.7
 
 QKitRectangle {
     id: button
-    objectName: "QKitAbstractButton"
+    objectName: "QKitButton"
 
     property string text: "" // button text
     // UI properties
-    property int borderWidth: uiAmbience === "dialog" ? uiController.dialogButtonBorderWidth : uiAmbience === "toolbar" ? uiController.toolbarButtonBorderWidth : null // width of border
-    property color backgroundColor: uiAmbience === "dialog" ? uiController.dialogButtonBackgroundColor : uiAmbience === "toolbar" ? uiController.toolbarButtonBackgroundColor : null // background color
-    property color backgroundColorDimmed: uiAmbience === "dialog" ? uiController.dialogButtonBackgroundColorDimmed : uiAmbience === "toolbar" ? uiController.toolbarButtonBackgroundColorDimmed : backgroundColor // background color when button is pressed
-    property color backgroundColorSelected: uiAmbience === "dialog" ? uiController.dialogButtonBackgroundColorSelected : uiAmbience === "toolbar" ? uiController.toolbarButtonBackgroundColorSelected : backgroundColor // background color when button is selected
-    property color borderColor: uiAmbience === "dialog" ? uiController.dialogButtonBorderColor : uiAmbience === "toolbar" ? uiController.toolbarButtonBorderColor : null // border color
-    property color borderColorDimmed: uiAmbience === "dialog" ? uiController.dialogButtonBorderColorDimmed : uiAmbience === "toolbar" ? uiController.toolbarButtonBorderColorDimmed : borderColor // border color when button is pressed
-    property color borderColorSelected: uiAmbience === "dialog" ? uiController.dialogButtonBorderColorSelected : uiAmbience === "toolbar" ? uiController.toolbarButtonBorderColorSelected : borderColor // border color when button is selected
-    property color textColor: uiAmbience === "dialog" ? uiController.dialogButtonTextColor : uiAmbience === "toolbar" ? uiController.toolbarButtonTextColor : null // text color
-    property color textColorDimmed: uiAmbience === "dialog" ? uiController.dialogButtonTextColorDimmed : uiAmbience === "toolbar" ? uiController.toolbarButtonTextColorDimmed : textColor // text color when button is pressed
-    property color textColorSelected: uiAmbience === "dialog" ? uiController.dialogButtonTextColorSelected : uiAmbience === "toolbar" ? uiController.toolbarButtonTextColorSelected : textColor // text color when button is selected
+    property int borderWidth: uiController ? uiAmbience === "dialog" ? uiController.dialogButtonBorderWidth : uiAmbience === "page" ? uiController.pageButtonBorderWidth : uiAmbience === "toolbar" ? uiController.toolbarButtonBorderWidth : 0 : 0 // width of border
+    property color backgroundColor: uiController ?  uiAmbience === "dialog" ? uiController.dialogButtonBackgroundColor : uiAmbience === "page" ? uiController.pageButtonBackgroundColor : uiAmbience === "toolbar" ? uiController.toolbarButtonBackgroundColor :  "#FFFFFF" : "#FFFFFF" // background color
+    property color backgroundColorDimmed: uiController ? uiAmbience === "dialog" ? uiController.dialogButtonBackgroundColorDimmed : uiAmbience === "page" ? uiController.pageButtonBackgroundColorDimmed : uiAmbience === "toolbar" ? uiController.toolbarButtonBackgroundColorDimmed : backgroundColor : backgroundColor // background color when button is pressed
+    property color backgroundColorSelected: uiController ? uiAmbience === "dialog" ? uiController.dialogButtonBackgroundColorSelected : uiAmbience === "page" ? uiController.pageButtonBackgroundColorSelected : uiAmbience === "toolbar" ? uiController.toolbarButtonBackgroundColorSelected : backgroundColor : backgroundColor // background color when button is selected
+    property color borderColor: uiController ?  uiAmbience === "dialog" ? uiController.dialogButtonBorderColor : uiAmbience === "page" ? uiController.pageButtonBorderColor : uiAmbience === "toolbar" ? uiController.toolbarButtonBorderColor :  "#000000" : "#000000" // border color
+    property color borderColorDimmed: uiController ? uiAmbience === "dialog" ? uiController.dialogButtonBorderColorDimmed : uiAmbience === "page" ? uiController.pageButtonBorderColorDimmed : uiAmbience === "toolbar" ? uiController.toolbarButtonBorderColorDimmed : borderColor : borderColor // border color when button is pressed
+    property color borderColorSelected: uiController ? uiAmbience === "dialog" ? uiController.dialogButtonBorderColorSelected : uiAmbience === "page" ? uiController.pageButtonBorderColorSelected : uiAmbience === "toolbar" ? uiController.toolbarButtonBorderColorSelected : borderColor : borderColor // border color when button is selected
+    property color textColor: uiController ?  uiAmbience === "dialog" ? uiController.dialogButtonTextColor : uiAmbience === "page" ? uiController.pageButtonTextColor : uiAmbience === "toolbar" ? uiController.toolbarButtonTextColor : "#000000" : "#000000" // text color
+    property color textColorDimmed: uiController ? uiAmbience === "dialog" ? uiController.dialogButtonTextColorDimmed : uiAmbience === "page" ? uiController.pageButtonTextColorDimmed : uiAmbience === "toolbar" ? uiController.toolbarButtonTextColorDimmed : textColor : textColor // text color when button is pressed
+    property color textColorSelected: uiController ? uiAmbience === "dialog" ? uiController.dialogButtonTextColorSelected : uiAmbience === "page" ? uiController.pageButtonTextColorSelected : uiAmbience === "toolbar" ? uiController.toolbarButtonTextColorSelected : textColor : textColor // text color when button is selected
     property url imageSource: "" // url to image
     property url imageSourceDimmed: imageSource // url to image when button is pressed
     property url imageSourceSelected: imageSource // url to image when button is selected
-    property bool mouseHoverEnabled: uiController.mouseHoverEnabled // handle mouse hover or not
+    property bool mouseHoverEnabled: uiController ? uiController.mouseHoverEnabled : false // handle mouse hover or not
     // key properties
-    property int pressKey: uiAmbience === "dialog" ? keyController.dialogButtonPressKey : uiAmbience === "toolbar" ? keyController.toolbarButtonPressKey : keyController.buttonPressKey // key for press
+    property int pressKey: keyController ? uiAmbience === "dialog" ? keyController.dialogButtonPressKey : uiAmbience === "toolbar" ? keyController.toolbarButtonPressKey : keyController.buttonPressKey : 0 // key for press
     // other properties
     property Item textItem: buttonTextItem // item with text
     property Item imageItem: buttonImageItem // item with image
 
-    smooth: uiAmbience === "dialog" ? uiController.dialogButtonSmooth : uiAmbience === "toolbar" ? uiController.toolbarButtonSmooth : false // do smooth scale or transform
-    radius: uiAmbience === "dialog" ? 0.4 * height : uiAmbience === "toolbar" ? 0.3 * height : null // angle radius
-    width: uiAmbience === "toolbar" ? uiController.isDesktopOs ? height : parent.flow === Grid.LeftToRight ? (parent.width - (parent.nChildren - 1) * parent.spacing) / parent.nChildren : parent.width : null // width
-    height: uiAmbience === "toolbar" ? parent.flow === Grid.LeftToRight ? parent.height : (parent.height - (parent.nChildren - 1) * parent.spacing) / parent.nChildren : null // height
+    smooth: uiController ? uiAmbience === "dialog" ? uiController.dialogButtonSmooth : uiAmbience === "page" ? uiController.pageButtonSmooth : uiAmbience === "toolbar" ? uiController.toolbarButtonSmooth : false : false // do smooth scale or transform
+    radius: uiAmbience === "dialog" ? 0.4 * height : uiAmbience === "page" ? 0.4 * height : uiAmbience === "toolbar" ? 0.3 * height : 0 // angle radius
+    width: uiController ? uiAmbience === "toolbar" ? uiController.isDesktopOs ? height : parent.flow === Grid.LeftToRight ? (parent.width - (parent.nChildren - 1) * parent.spacing) / parent.nChildren : parent.width : null : null // width
+    height: uiController ? uiAmbience === "toolbar" ? parent.flow === Grid.LeftToRight ? parent.height : (parent.height - (parent.nChildren - 1) * parent.spacing) / parent.nChildren : null : null // height
 
     signal clicked() // emits when button is clicked
     signal doubleClicked() // emits when button is double clicked

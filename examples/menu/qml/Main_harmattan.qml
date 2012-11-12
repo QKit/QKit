@@ -1,11 +1,11 @@
 /*******************************************************************************
 *                                                                              *
-*  Dialog item implementation.                                                 *
+*  Main item adaptor for Harmattan implementation.                             *
 *                                                                              *
 *  Copyright (C) 2011-2012 Kirill Chuvilin.                                    *
 *  Contact: Kirill Chuvilin (kirill.chuvilin@gmail.com, kirill.chuvilin.pro)   *
 *                                                                              *
-*  This file is part of the QKit project.                                      *
+*  This file is part of an example for the QKit project.                       *
 *                                                                              *
 *  $QT_BEGIN_LICENSE:GPL$                                                      *
 *  You may use this file under the terms of the GNU General Public License     *
@@ -23,64 +23,21 @@
 *                                                                              *
 *******************************************************************************/
 
-import Qt 4.7
+import com.nokia.meego 1.0
+import "QKit"
 
-QKitDialog {
-    id: menu
-    objectName: "QKitMenu"
-
-    default property alias content: menuModel.children // menu content
-    property alias __stack: menuStack
-
-    property int elementWidth: 0.9 * Math.min(width, height) // width of elements
-    property int elementHeight: 0.1 * Math.min(width, height) // height of elements
-
-    signal elementSelected() // emits on any element select
-
-    contentItem: menuView // item with content
-    closeOnBack: false // to handle back manually
-
-    QKitItemStack {
-        id: menuStack
-        objectName: menu.objectName + ":Stack"
+Window {
+    Main {
+        id: application
         anchors.fill: parent
-
-        QKitItem {
-            objectName: menu.objectName + ":Root"
-
-            QKitNavListView { // menu view
-                id: menuView
-                objectName: menu.objectName + ":View"
-
-                property alias menuItem: menu
-
-                anchors.centerIn: parent
-                width: menu.elementWidth
-                height: Math.min(parent.height - 2 * spacing, childrenRect.height)
-                spacing: 0.5 * menu.elementHeight
-                keyNavigationWraps: true
-                model: VisualItemModel {id: menuModel}
-            }
-
-            onActiveFocusChanged: {
-                if (activeFocus) {
-                    menuView.currentIndex = -1;
-                    menuView.forceActiveFocus();
-                }
-            }
+        os: "Harmattan"
+        uiController: QKitUiController {
+            mouseHoverEnabled: false
+            buttonSmooth: true
+            thumbnailSmooth: false
         }
-    }
-
-    onBack: {
-        if (menuStack.count() > 1) {
-            menuStack.pop();
-        } else {
-            enabled = false;
-        }
-    }
-    onEnabledChanged: { // on menu close orr open
-        if (!enabled) { // if close
-            while (menuStack.count() > 1) menuStack.pop(); // return to root
+        keyController: QKitKeyController {
+            buttonPressKey: Qt.Key_Return
         }
     }
 }

@@ -1,11 +1,11 @@
 ################################################################################
 #                                                                              #
-#  QKit items.                                                                 #
+#  QKit menu example.                                                          #
 #                                                                              #
 #  Copyright (C) 2011-2012 Kirill Chuvilin.                                    #
 #  Contact: Kirill Chuvilin (kirill.chuvilin@gmail.com, kirill.chuvilin.pro)   #
 #                                                                              #
-#  This file is part of the QKit project.                                      #
+#  This file is part of an example for the QKit project.                       #
 #                                                                              #
 #  $QT_BEGIN_LICENSE:GPL$                                                      #
 #  You may use this file under the terms of the GNU General Public License     #
@@ -23,26 +23,43 @@
 #                                                                              #
 ################################################################################
 
-folder_QKit.source = $$PWD/qml
-folder_QKit.target = .
-DEPLOYMENTFOLDERS += folder_QKit
+# QKit
+include(../../source/QKit.pri)
 
-simulator {
-    DEFINES += QKIT_OS_MOBILE
-    DEFINES += QKIT_OS_SIMULATOR
-} else:symbian {
-    DEFINES += QKIT_OS_MOBILE
-    DEFINES += QKIT_OS_SYMBIAN
-} else:maemo5 {
-    DEFINES += QKIT_OS_MOBILE
-    DEFINES += QKIT_OS_FREMANTLE
-} else:contains(MEEGO_EDITION,harmattan) {
-    DEFINES += QKIT_OS_MOBILE
-    DEFINES += QKIT_OS_HARMATTAN
-} else:win32 {
-    DEFINES += QKIT_OS_DESKTOP
-    DEFINES += QKIT_OS_WINDOWS
-} else:unix {
-    DEFINES += QKIT_OS_DESKTOP
-    DEFINES += QKIT_OS_UNIX
-}
+# Add more folders to ship with the application, here
+folder_qml.source = qml
+folder_qml.target = .
+DEPLOYMENTFOLDERS += folder_qml
+
+# Additional import path used to resolve QML modules in Creator's code model
+QML_IMPORT_PATH =
+
+symbian:TARGET.UID3 = 0xE8E0C101
+
+# Smart Installer package's UID
+# This UID is from the protected range and therefore the package will
+# fail to install if self-signed. By default qmake uses the unprotected
+# range value if unprotected UID is defined for the application and
+# 0x2002CCCF value if protected UID is given to the application
+#symbian:DEPLOYMENT.installer_header = 0x2002CCCF
+
+# Allow network access on Symbian
+# symbian:TARGET.CAPABILITY += NetworkServices
+
+# If your application uses the Qt Mobility libraries, uncomment the following
+# lines and add the respective components to the MOBILITY variable.
+# CONFIG += mobility
+# MOBILITY +=
+
+# Speed up launching on MeeGo/Harmattan when using applauncherd daemon
+CONFIG += qdeclarative-boostable
+
+# Add dependency to Symbian components
+# CONFIG += qt-components
+
+# Please do not modify the following two lines. Required for deployment.
+# It is fixed qmlapplicationviewer.pri for the correct load deployment folders with absolute paths.
+include(../../include/qmlapplicationviewer/qmlapplicationviewer.pri)
+qtcAddDeployment()
+
+SOURCES += main.cpp
