@@ -1,6 +1,6 @@
 /*******************************************************************************
 *                                                                              *
-*  Main function implementation.                                               *
+*  Main item implementation.                                                   *
 *                                                                              *
 *  Copyright (C) 2011-2012 Kirill Chuvilin.                                    *
 *  Contact: Kirill Chuvilin (kirill.chuvilin@gmail.com, kirill.chuvilin.pro)   *
@@ -23,33 +23,41 @@
 *                                                                              *
 *******************************************************************************/
 
-#include <QtGui/QApplication>
-#include "qmlapplicationviewer.h"
+import "QKit"
 
-Q_DECL_EXPORT int main(int argc, char *argv[]) {
-    QScopedPointer<QApplication> app(createApplication(argc, argv));
-    QmlApplicationViewer viewer;
+QKitApplication {
+    QKitItemStack {
+        id: stack
+        width: parent.width
+        height: parent.height
 
-#if defined(QKIT_OS_SIMULATOR)
-    viewer.setOrientation(QmlApplicationViewer::ScreenOrientationAuto);
-    viewer.setMainQmlFile(QLatin1String("qml/Main_simulator.qml"));
-    viewer.showFullScreen();
-#elif defined(QKIT_OS_FREMANTLE)
-    viewer.setOrientation(QmlApplicationViewer::ScreenOrientationAuto);
-    viewer.setMainQmlFile(QLatin1String("qml/Main_fremantle.qml"));
-    viewer.show();
-#elif defined(QKIT_OS_HARMATTAN)
-    viewer.setOrientation(QmlApplicationViewer::ScreenOrientationAuto);
-    viewer.setMainQmlFile(QLatin1String("qml/Main_harmattan.qml"));
-    viewer.showFullScreen();
-#elif defined(QKIT_OS_SYMBIAN)
-    viewer.setOrientation(QmlApplicationViewer::ScreenOrientationAuto);
-    viewer.setMainQmlFile(QLatin1String("qml/Main_symbian.qml"));
-    viewer.showFullScreen();
-#else
-    viewer.setMainQmlFile(QLatin1String("qml/Main_desktop.qml"));
-    viewer.show();
-#endif
+        Page {
+            id: rootPage
+        }
+    }
 
-    return app->exec();
+    Page {
+        id: redPage
+        backgroundColor: "#FF0000"
+    }
+    Page {
+        id: greenPage
+        backgroundColor: "#00FF00"
+    }
+    Page {
+        id: bluePage
+        backgroundColor: "#0000FF"
+    }
+    Page {
+        id: yellowPage
+        backgroundColor: "#FFFF00"
+    }
+    Page {
+        id: magentaPage
+        backgroundColor: "#FF00FF"
+    }
+    Page {
+        id: cyanPage
+        backgroundColor: "#00FFFF"
+    }
 }

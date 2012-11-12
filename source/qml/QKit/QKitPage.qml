@@ -41,7 +41,6 @@ QKitRectangle {
     signal backToggled() // goto previos page signal
     signal menuToggled() // open menu signal
 
-    anchors.fill: parent
     color: backgroundColor
 
     Keys.onPressed: {
@@ -73,7 +72,7 @@ QKitRectangle {
     QKitItem {
         id: pageWorkspace
 
-        objectName: menu.objectName + ":Workspace"
+        objectName: page.objectName + ":Workspace"
         anchors.fill: parent
 
         states: [

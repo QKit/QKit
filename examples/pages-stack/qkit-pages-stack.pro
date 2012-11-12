@@ -35,8 +35,8 @@ DEPLOYMENTFOLDERS += folder_qml
 QML_IMPORT_PATH =
 
 symbian {
-    TARGET.UID3 = 0xE8E0C101
-    DEPLOYMENT.display_name += QKit Menu example
+    TARGET.UID3 = 0xE8E0C102
+    DEPLOYMENT.display_name += QKit Pages stack example
 }
 
 # Smart Installer package's UID

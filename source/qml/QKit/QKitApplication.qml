@@ -37,4 +37,6 @@ QKitItem {
     uiController:  QKitUiController{}  // item with UI settings
     keyController: QKitKeyController{} // item with key settings
     navController: QKitNavController{} // key navigation controllerler
+
+    Component.onCompleted: forceActiveFocus()
 }

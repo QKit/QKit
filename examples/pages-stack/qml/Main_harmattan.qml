@@ -1,6 +1,6 @@
 /*******************************************************************************
 *                                                                              *
-*  Main function implementation.                                               *
+*  Main item adaptor for Harmattan implementation.                             *
 *                                                                              *
 *  Copyright (C) 2011-2012 Kirill Chuvilin.                                    *
 *  Contact: Kirill Chuvilin (kirill.chuvilin@gmail.com, kirill.chuvilin.pro)   *
@@ -23,33 +23,21 @@
 *                                                                              *
 *******************************************************************************/
 
-#include <QtGui/QApplication>
-#include "qmlapplicationviewer.h"
+import com.nokia.meego 1.0
+import "QKit"
 
-Q_DECL_EXPORT int main(int argc, char *argv[]) {
-    QScopedPointer<QApplication> app(createApplication(argc, argv));
-    QmlApplicationViewer viewer;
-
-#if defined(QKIT_OS_SIMULATOR)
-    viewer.setOrientation(QmlApplicationViewer::ScreenOrientationAuto);
-    viewer.setMainQmlFile(QLatin1String("qml/Main_simulator.qml"));
-    viewer.showFullScreen();
-#elif defined(QKIT_OS_FREMANTLE)
-    viewer.setOrientation(QmlApplicationViewer::ScreenOrientationAuto);
-    viewer.setMainQmlFile(QLatin1String("qml/Main_fremantle.qml"));
-    viewer.show();
-#elif defined(QKIT_OS_HARMATTAN)
-    viewer.setOrientation(QmlApplicationViewer::ScreenOrientationAuto);
-    viewer.setMainQmlFile(QLatin1String("qml/Main_harmattan.qml"));
-    viewer.showFullScreen();
-#elif defined(QKIT_OS_SYMBIAN)
-    viewer.setOrientation(QmlApplicationViewer::ScreenOrientationAuto);
-    viewer.setMainQmlFile(QLatin1String("qml/Main_symbian.qml"));
-    viewer.showFullScreen();
-#else
-    viewer.setMainQmlFile(QLatin1String("qml/Main_desktop.qml"));
-    viewer.show();
-#endif
-
-    return app->exec();
+Window {
+    Main {
+        id: application
+        anchors.fill: parent
+        os: "Harmattan"
+        uiController: QKitUiController {
+            mouseHoverEnabled: false
+            buttonSmooth: true
+            thumbnailSmooth: false
+        }
+        keyController: QKitKeyController {
+            buttonPressKey: Qt.Key_Return
+        }
+    }
 }

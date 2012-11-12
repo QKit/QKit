@@ -67,6 +67,16 @@ QKitItem {
 
 
     /*!
+     * \brief Test has the stack an item or not.
+     * \return true if item is in the stack, false otherwise
+     * \param item item to test
+     */
+    function has(item) {
+        return item.parent === itemsContainer;
+    }
+
+
+    /*!
      * \brief Get active item.
      * \return last pushed item
      */

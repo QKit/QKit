@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Version=1.0
+Type=Application
+Terminal=false
+Name=QKit Pages stack example
+Exec=/opt/qkit-pages-stack/bin/qkit-pages-stack
+Icon=qkit-pages-stack64
+X-Window-Icon=
+X-HildonDesk-ShowInToolbar=true
+X-Osso-Type=application/x-executable

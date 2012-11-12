@@ -23,12 +23,14 @@
 *                                                                              *
 *******************************************************************************/
 
-import QtQuick 1.0
 import "QKit"
 
 QKitApplication {
     QKitPage {
+        anchors.fill: parent
+
         QKitButton {
+            id: menuButton
             anchors.centerIn: parent
             width: 0.8 * Math.min(parent.width, parent.height)
             height: width / 3
@@ -37,63 +39,10 @@ QKitApplication {
         }
     }
 
-    QKitMenu {
+    onFocusChanged: if (activeFocus) menuButton.forceActiveFocus()
+
+    Menu {
         id: menu
-
         anchors.fill: parent
-
-        QKitMenuElement {
-            text: qsTr("Back")
-            onClicked: menu.back()
-        }
-        QKitMenuElement {
-            text: qsTr("Do nothing")
-        }
-        QKitSubmenu {
-            text: qsTr("Submenu 1")
-            QKitMenuElement {
-                text: qsTr("Back")
-                onClicked: menu.back()
-            }
-            QKitMenuElement {
-                text: qsTr("Quit")
-                onClicked: Qt.quit()
-            }
-        }
-        QKitMenuElement {
-            text: qsTr("Do nothing")
-        }
-        QKitSubmenu {
-            text: qsTr("Submenu 2")
-            QKitMenuElement {
-                text: qsTr("Close menu")
-                onClicked: menu.enabled = false
-            }
-            QKitMenuElement {
-                text: qsTr("Back")
-                onClicked: menu.back()
-            }
-            QKitSubmenu {
-                text: qsTr("Submenu submenu")
-                QKitMenuElement {
-                    text: qsTr("Do nothing")
-                }
-                QKitMenuElement {
-                    text: qsTr("Back")
-                    onClicked: menu.back()
-                }
-                QKitMenuElement {
-                    text: qsTr("Quit")
-                    onClicked: Qt.quit()
-                }
-            }
-        }
-        QKitMenuElement {
-            text: qsTr("Quit")
-            onClicked: Qt.quit()
-        }
-        QKitMenuElement {
-            text: qsTr("Do nothing")
-        }
     }
 }
