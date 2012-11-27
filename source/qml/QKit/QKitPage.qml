@@ -5,93 +5,85 @@
 *  Copyright (C) 2011-2012 Kirill Chuvilin.                                    *
 *  Contact: Kirill Chuvilin (kirill.chuvilin@gmail.com, kirill.chuvilin.pro)   *
 *                                                                              *
-*  This file is part of the Folder Gallery project.                            *
+*  This file is a part of the QKit project.                                    *
 *                                                                              *
-*  $QT_BEGIN_LICENSE:GPL$                                                      *
-*  You may use this file under the terms of the GNU General Public License     *
-*  as published by the Free Software Foundation; version 3 of the License.     *
+*  $QT_BEGIN_LICENSE:LGPL$                                                     *
 *                                                                              *
-*  This file is distributed in the hope that it will be useful,                *
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of              *
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the                *
-*  GNU General Public License for more details.                                *
+*  GNU Lesser General Public License Usage                                     *
+*  This file may be used under the terms of the GNU Lesser General Public      *
+*  License version 3.0 as published by the Free Software Foundation and        *
+*  appearing in the file LICENSE.LGPL included in the packaging of this file.  *
+*  Please review the following information to ensure the GNU Lesser General    *
+*  Public License version 3.0 requirements will be met:                        *
+*  http://www.gnu.org/licenses/old-licenses/lgpl.html.                         *
 *                                                                              *
-*  You should have received a copy of the GNU General Public License           *
-*  along with this package; if not, write to the Free Software                 *
-*  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.   *
+*  GNU General Public License Usage                                            *
+*  Alternatively, this file may be used under the terms of the GNU General     *
+*  Public License version 3.0 as published by the Free Software Foundation     *
+*  and appearing in the file LICENSE.GPL included in the packaging of this     *
+*  file. Please review the following information to ensure the GNU General     *
+*  Public License version 3.0 requirements will be met:                        *
+*  http://www.gnu.org/copyleft/gpl.html.                                       *
+*                                                                              *
+*  This file is distributed in the hope that it will be useful, but WITHOUT    *
+*  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+*  FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
+*  more details.                                                               *
+*                                                                              *
 *  $QT_END_LICENSE$                                                            *
 *                                                                              *
 *******************************************************************************/
 
 import Qt 4.7
 
-QKitRectangle {
+QKitFocusScope {
     id: page
     objectName: "QKitPage"
 
-    default property alias content: pageWorkspace.children // page content
-    property Item toolbar
+    default property alias content: pageWorkspace.children //!< page content
+    property Item toolbar: null //!< toolbar item
     property color backgroundColor: uiController.pageBackgroundColor
     property color textColor: uiController.pageTextColor
     property url   texture: uiController.pageTexture
     property alias workspaceClip: pageWorkspace.clip
+
     // QKit properties
     uiAmbience: "page" // UI ambience
 
-    signal backToggled() // goto previos page signal
-    signal menuToggled() // open menu signal
-
-    color: backgroundColor
-
-    Keys.onPressed: {
-        if (toolbar) // if toolbar exists
-            toolbar.keyPressedEvent(event) // send first to toolbar
-        if (!event.accepted) { // if wasn't acceptet by toolbar
-            switch (event.key) {
-            case Qt.Key_Backspace:
-                backToggled()
-                break
-            case Qt.Key_Escape:
-                menuToggled()
-                break
-            default:
-                return
-            }
-            event.accepted = true
-        }
+    Rectangle { // background
+        anchors.fill: page
+        color: page.backgroundColor
     }
-    onVisibleChanged: if (visible) focus = true // to focuse on current page
-    onToolbarChanged: if (toolbar) toolbar.parent = page
 
-    Image {
-        anchors.fill: parent
+    Image { // texture
+        anchors.fill: page
         fillMode: Image.Tile
         source: page.texture
     }
 
-    QKitItem {
+    QKitFocusScope {
         id: pageWorkspace
-
         objectName: page.objectName + ":Workspace"
-        anchors.fill: parent
+        anchors.fill: page
+        focus: true
 
         states: [
             State {
-                when: uiController.isDesktopOs
+                when: page.application.isDesktopOs
                 PropertyChanges {
                     target: pageWorkspace
                     anchors.topMargin: page.toolbar ? page.toolbar.height : 0
                 }
             },
             State {
-                when: !uiController.isDesktopOs && uiController.isLandscapeOrientation
+                when: !page.application.isDesktopOs && page.application.isLandscapeOrientation
                 PropertyChanges {
                     target: pageWorkspace
                     anchors.rightMargin: page.toolbar ? page.toolbar.width : 0
                 }
             },
             State {
-                when: !uiController.isDesktopOs && uiController.isPortraitOrientation
+                when: !page.application.isDesktopOs && page.application.isPortraitOrientation
                 PropertyChanges {
                     target: pageWorkspace
                     anchors.bottomMargin: page.toolbar ? page.toolbar.height : 0
@@ -99,4 +91,7 @@ QKitRectangle {
             }
         ]
     }
+
+    onKeysPressed: if (toolbar !== null) toolbar.keysPressed(event) // send event first to toolbar if toolbar exists
+    onToolbarChanged: if (toolbar !== null) toolbar.parent = page
 }

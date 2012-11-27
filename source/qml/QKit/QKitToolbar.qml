@@ -5,20 +5,31 @@
 *  Copyright (C) 2011-2012 Kirill Chuvilin.                                    *
 *  Contact: Kirill Chuvilin (kirill.chuvilin@gmail.com, kirill.chuvilin.pro)   *
 *                                                                              *
-*  This file is part of the QKit project.                                      *
+*  This file is a part of the QKit project.                                    *
 *                                                                              *
-*  $QT_BEGIN_LICENSE:GPL$                                                      *
-*  You may use this file under the terms of the GNU General Public License     *
-*  as published by the Free Software Foundation; version 3 of the License.     *
+*  $QT_BEGIN_LICENSE:LGPL$                                                     *
 *                                                                              *
-*  This file is distributed in the hope that it will be useful,                *
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of              *
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the                *
-*  GNU General Public License for more details.                                *
+*  GNU Lesser General Public License Usage                                     *
+*  This file may be used under the terms of the GNU Lesser General Public      *
+*  License version 3.0 as published by the Free Software Foundation and        *
+*  appearing in the file LICENSE.LGPL included in the packaging of this file.  *
+*  Please review the following information to ensure the GNU Lesser General    *
+*  Public License version 3.0 requirements will be met:                        *
+*  http://www.gnu.org/licenses/old-licenses/lgpl.html.                         *
 *                                                                              *
-*  You should have received a copy of the GNU General Public License           *
-*  along with this package; if not, write to the Free Software                 *
-*  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.   *
+*  GNU General Public License Usage                                            *
+*  Alternatively, this file may be used under the terms of the GNU General     *
+*  Public License version 3.0 as published by the Free Software Foundation     *
+*  and appearing in the file LICENSE.GPL included in the packaging of this     *
+*  file. Please review the following information to ensure the GNU General     *
+*  Public License version 3.0 requirements will be met:                        *
+*  http://www.gnu.org/copyleft/gpl.html.                                       *
+*                                                                              *
+*  This file is distributed in the hope that it will be useful, but WITHOUT    *
+*  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+*  FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
+*  more details.                                                               *
+*                                                                              *
 *  $QT_END_LICENSE$                                                            *
 *                                                                              *
 *******************************************************************************/
@@ -30,8 +41,6 @@ QKitRectangle {
     objectName: "QKitToolbar"
 
     default property alias content: toolbarContent.children // toolbar content
-    // QKit properties
-    uiAmbience: "toolbar" // UI ambience
     // UI properties
     property int   animationDuration: uiController.toolbarAnimationDuration
     property int   borderWidth: uiController.toolbarBorderWidth
@@ -39,28 +48,13 @@ QKitRectangle {
     // key properties
     property int leftButtonPressKey: keyController.toolbarLeftButtonPressKey
     property int rightButtonPressKey: keyController.toolbarRightButtonPressKey
-
-    function keyPressedEvent(event) { // key event handler
-        switch (event.key) {
-        case leftButtonPressKey:
-            if (local.leftButton)
-                local.leftButton.pressByKey(event);
-            break;
-        case rightButtonPressKey:
-            if (local.rightButton)
-                local.rightButton.pressByKey(event);
-            break;
-        default:
-            return;
-        }
-        event.accepted = true;
-    }
-
+    // QKit properties
+    uiAmbience: "toolbar" // UI ambience
+    // QML properties
     enabled: true // initially opened
     anchors.fill: parent
     z: 1 // to view ower other
-    color: uiController.toolbarBackgroundColor
-    Keys.onPressed: keyPressedEvent(event);
+
     resources: [
         Item { // local variables
             id: local
@@ -69,11 +63,10 @@ QKitRectangle {
             states: [
                 State {
                     name: "opened desktop"
-                    when: toolbar.enabled && uiController.isDesktopOs
+                    when: toolbar.enabled && toolbar.application.isDesktopOs
                     PropertyChanges {
                         target: toolbar
                         visible: true
-                        focus: true
                         anchors.bottomMargin: toolbar.parent.height - 24
                     }
                     PropertyChanges {
@@ -91,15 +84,11 @@ QKitRectangle {
                 },
                 State {
                     name: "closed desktop"
-                    when: !toolbar.enabled && uiController.isDesktopOs
+                    when: !toolbar.enabled && toolbar.application.isDesktopOs
                     PropertyChanges {
                         target: toolbar
                         visible: false
                         anchors.bottomMargin: toolbar.parent.height
-                    }
-                    PropertyChanges {
-                        target: toolbar.parent
-                        focus: true
                     }
                     PropertyChanges {
                         target: toolbarBorder
@@ -111,11 +100,10 @@ QKitRectangle {
                 },
                 State {
                     name: "opened landskape"
-                    when: toolbar.enabled && !uiController.isDesktopOs && uiController.isLandscapeOrientation
+                    when: toolbar.enabled && !toolbar.application.isDesktopOs && toolbar.application.isLandscapeOrientation
                     PropertyChanges {
                         target: toolbar
                         visible: true
-                        focus: true
                         anchors.leftMargin: toolbar.parent.width - toolbar.parent.height / 6
                     }
                     PropertyChanges {
@@ -138,7 +126,7 @@ QKitRectangle {
                 },
                 State {
                     name: "closed landskape"
-                    when: !toolbar.enabled && !uiController.isDesktopOs && uiController.isLandscapeOrientation
+                    when: !toolbar.enabled && !toolbar.application.isDesktopOs && toolbar.application.isLandscapeOrientation
                     PropertyChanges {
                         target: toolbar
                         visible: false
@@ -156,18 +144,13 @@ QKitRectangle {
                         x: 0
                         y: 0
                     }
-                    PropertyChanges {
-                        target: toolbar.parent
-                        focus: true
-                    }
                 },
                 State {
                     name: "opened portrait"
-                    when: toolbar.enabled && !uiController.isDesktopOs && uiController.isPortraitOrientation
+                    when: toolbar.enabled && !toolbar.application.isDesktopOs && toolbar.application.isPortraitOrientation
                     PropertyChanges {
                         target: toolbar
                         visible: true
-                        focus: true
                         anchors.topMargin: toolbar.parent.height - toolbar.parent.width / 8
                     }
                     PropertyChanges {
@@ -190,15 +173,11 @@ QKitRectangle {
                 },
                 State {
                     name: "closed portrait"
-                    when: !toolbar.enabled && !uiController.isDesktopOs && uiController.isPortraitOrientation
+                    when: !toolbar.enabled && !toolbar.application.isDesktopOs && toolbar.application.isPortraitOrientation
                     PropertyChanges {
                         target: toolbar
                         visible: false
                         anchors.topMargin: toolbar.parent.height
-                    }
-                    PropertyChanges {
-                        target: toolbar.parent
-                        focus: true
                     }
                     PropertyChanges {
                         target: toolbarBorder
@@ -321,6 +300,11 @@ QKitRectangle {
         }
     ]
 
+    Rectangle { // background
+        anchors.fill: parent
+        color: uiController.toolbarBackgroundColor
+    }
+
     QKitGrid {
         id: toolbarContent
         objectName: toolbar.objectName + ":Content"
@@ -335,8 +319,21 @@ QKitRectangle {
         }
     }
 
-    Rectangle {
+    Rectangle { // border line
         id: toolbarBorder
         color: toolbar.borderColor
+    }
+
+    onKeysPressed: { // key event handler
+        switch (event.key) {
+        case toolbar.leftButtonPressKey:
+            if (local.leftButton) local.leftButton.pressByKey(event);
+            break;
+        case toolbar.rightButtonPressKey:
+            if (local.rightButton) local.rightButton.pressByKey(event);
+            break;
+        default:
+            return;
+        }
     }
 }

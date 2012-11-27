@@ -5,20 +5,31 @@
 *  Copyright (C) 2012 Kirill Chuvilin.                                         *
 *  Contact: Kirill Chuvilin (kirill.chuvilin@gmail.com, kirill.chuvilin.pro)   *
 *                                                                              *
-*  This file is part of the Folder Gallery project.                            *
+*  This file is a part of the QKit project.                                    *
 *                                                                              *
-*  $QT_BEGIN_LICENSE:GPL$                                                      *
-*  You may use this file under the terms of the GNU General Public License     *
-*  as published by the Free Software Foundation; version 3 of the License.     *
+*  $QT_BEGIN_LICENSE:LGPL$                                                     *
 *                                                                              *
-*  This file is distributed in the hope that it will be useful,                *
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of              *
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the                *
-*  GNU General Public License for more details.                                *
+*  GNU Lesser General Public License Usage                                     *
+*  This file may be used under the terms of the GNU Lesser General Public      *
+*  License version 3.0 as published by the Free Software Foundation and        *
+*  appearing in the file LICENSE.LGPL included in the packaging of this file.  *
+*  Please review the following information to ensure the GNU Lesser General    *
+*  Public License version 3.0 requirements will be met:                        *
+*  http://www.gnu.org/licenses/old-licenses/lgpl.html.                         *
 *                                                                              *
-*  You should have received a copy of the GNU General Public License           *
-*  along with this package; if not, write to the Free Software                 *
-*  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.   *
+*  GNU General Public License Usage                                            *
+*  Alternatively, this file may be used under the terms of the GNU General     *
+*  Public License version 3.0 as published by the Free Software Foundation     *
+*  and appearing in the file LICENSE.GPL included in the packaging of this     *
+*  file. Please review the following information to ensure the GNU General     *
+*  Public License version 3.0 requirements will be met:                        *
+*  http://www.gnu.org/copyleft/gpl.html.                                       *
+*                                                                              *
+*  This file is distributed in the hope that it will be useful, but WITHOUT    *
+*  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+*  FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
+*  more details.                                                               *
+*                                                                              *
 *  $QT_END_LICENSE$                                                            *
 *                                                                              *
 *******************************************************************************/
@@ -59,7 +70,7 @@ QKitNavGridView {
     delegate: QKitItem {
         width: folderView.cellWidth
         height: folderView.cellHeight
-        controllerSource: GridView.view
+        meta: GridView.view
         Image {
             anchors.fill: parent
             anchors.margins: folderView.model[index] ? 0.1 * parent.height : 0.2 * parent.height

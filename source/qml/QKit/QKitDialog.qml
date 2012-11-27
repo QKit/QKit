@@ -5,27 +5,38 @@
 *  Copyright (C) 2011-2012 Kirill Chuvilin.                                    *
 *  Contact: Kirill Chuvilin (kirill.chuvilin@gmail.com, kirill.chuvilin.pro)   *
 *                                                                              *
-*  This file is part of the QKit project.                                      *
+*  This file is a part of the QKit project.                                    *
 *                                                                              *
-*  $QT_BEGIN_LICENSE:GPL$                                                      *
-*  You may use this file under the terms of the GNU General Public License     *
-*  as published by the Free Software Foundation; version 3 of the License.     *
+*  $QT_BEGIN_LICENSE:LGPL$                                                     *
 *                                                                              *
-*  This file is distributed in the hope that it will be useful,                *
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of              *
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the                *
-*  GNU General Public License for more details.                                *
+*  GNU Lesser General Public License Usage                                     *
+*  This file may be used under the terms of the GNU Lesser General Public      *
+*  License version 3.0 as published by the Free Software Foundation and        *
+*  appearing in the file LICENSE.LGPL included in the packaging of this file.  *
+*  Please review the following information to ensure the GNU Lesser General    *
+*  Public License version 3.0 requirements will be met:                        *
+*  http://www.gnu.org/licenses/old-licenses/lgpl.html.                         *
 *                                                                              *
-*  You should have received a copy of the GNU General Public License           *
-*  along with this package; if not, write to the Free Software                 *
-*  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.   *
+*  GNU General Public License Usage                                            *
+*  Alternatively, this file may be used under the terms of the GNU General     *
+*  Public License version 3.0 as published by the Free Software Foundation     *
+*  and appearing in the file LICENSE.GPL included in the packaging of this     *
+*  file. Please review the following information to ensure the GNU General     *
+*  Public License version 3.0 requirements will be met:                        *
+*  http://www.gnu.org/copyleft/gpl.html.                                       *
+*                                                                              *
+*  This file is distributed in the hope that it will be useful, but WITHOUT    *
+*  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+*  FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
+*  more details.                                                               *
+*                                                                              *
 *  $QT_END_LICENSE$                                                            *
 *                                                                              *
 *******************************************************************************/
 
 import Qt 4.7
 
-QKitItem {
+QKitFocusScope {
     id: dialog
     objectName: "QKitDialog"
 
@@ -33,24 +44,23 @@ QKitItem {
     property int animationDuration: uiController.dialogAnimationDuration
     property color backgroundColor: uiController.dialogBackgroundColor
     // key properties
-    property int closeKey: keyController.dialogCloseKey
+    property int backKey: keyController.dialogBackKey
     // other properties
-    property Item contentItem: dialog // item with content
-    property bool closeOnBack: true // close dialog on click on back signal or not
+    property bool activeFocusOnOpen: true //!< whether the diialog should gain active focus on open
+    property bool closeOnBack: true //!< close dialog on click on back signal or not
 
-    signal opened() // emits on dialog open
-    signal closed() // emits on dialog close
+    signal open() // emits on dialog open
+    signal close() // emits on dialog close
     signal back() // emits on back action
 
     uiAmbience: "dialog" // UI ambience
-    enabled: false // initially closed
-    visible: enabled // visible only if enabled
+    visible: false // initially closed
     z: 1 // to view ower other
 
     Rectangle { // background
         id: dialogBackground
 
-        anchors.fill: parent // fill parent when opened
+        anchors.fill: dialog // fill dialog when opened
         color: dialog.backgroundColor
 
         state: (dialog.visible ? "shown" : "hidden")
@@ -70,11 +80,9 @@ QKitItem {
         transitions: [
             Transition {
                 to: "shown"
-                SequentialAnimation {
-                    ColorAnimation {
-                        target:  dialogBackground
-                        duration: animationDuration
-                    }
+                ColorAnimation {
+                    target:  dialogBackground
+                    duration: animationDuration
                 }
             }
         ]
@@ -85,24 +93,26 @@ QKitItem {
         onClicked: dialog.back() // if clicked, then click if out of dialog element, and back signal generates
     }
 
-    onEnabledChanged: {
-        if (enabled) {
-            contentItem.forceActiveFocus()
-            dialog.opened()
-        } else {
-            if (parent) parent.forceActiveFocus()
-            dialog.closed()
-        }
-    }
-
-    Keys.onPressed: {
+    onKeysPressed: {
         switch (event.key) {
-        case closeKey:
-            back();
+        case backKey:
+            dialog.back();
             break;
+        default:
+            return; // to not accept the event
         }
-        event.accepted = true
+        event.accepted = true;
     }
 
-    onBack: if (closeOnBack) enabled = false;
+    onOpen: {
+        visible = true; // show the dialog
+        if (dialog.activeFocusOnOpen) dialog.forceActiveFocus();
+    }
+
+    onClose: {
+        visible = false; // hide the dialog
+        focus = false; // disfocus the dialog
+    }
+
+    onBack: if (dialog.closeOnBack) dialog.close();
 }

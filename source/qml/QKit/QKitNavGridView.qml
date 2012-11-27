@@ -5,20 +5,31 @@
 *  Copyright (C) 2011-2012 Kirill Chuvilin.                                    *
 *  Contact: Kirill Chuvilin (kirill.chuvilin@gmail.com, kirill.chuvilin.pro)   *
 *                                                                              *
-*  This file is part of the QKit project.                                      *
+*  This file is a part of the QKit project.                                    *
 *                                                                              *
-*  $QT_BEGIN_LICENSE:GPL$                                                      *
-*  You may use this file under the terms of the GNU General Public License     *
-*  as published by the Free Software Foundation; version 3 of the License.     *
+*  $QT_BEGIN_LICENSE:LGPL$                                                     *
 *                                                                              *
-*  This file is distributed in the hope that it will be useful,                *
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of              *
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the                *
-*  GNU General Public License for more details.                                *
+*  GNU Lesser General Public License Usage                                     *
+*  This file may be used under the terms of the GNU Lesser General Public      *
+*  License version 3.0 as published by the Free Software Foundation and        *
+*  appearing in the file LICENSE.LGPL included in the packaging of this file.  *
+*  Please review the following information to ensure the GNU Lesser General    *
+*  Public License version 3.0 requirements will be met:                        *
+*  http://www.gnu.org/licenses/old-licenses/lgpl.html.                         *
 *                                                                              *
-*  You should have received a copy of the GNU General Public License           *
-*  along with this package; if not, write to the Free Software                 *
-*  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.   *
+*  GNU General Public License Usage                                            *
+*  Alternatively, this file may be used under the terms of the GNU General     *
+*  Public License version 3.0 as published by the Free Software Foundation     *
+*  and appearing in the file LICENSE.GPL included in the packaging of this     *
+*  file. Please review the following information to ensure the GNU General     *
+*  Public License version 3.0 requirements will be met:                        *
+*  http://www.gnu.org/copyleft/gpl.html.                                       *
+*                                                                              *
+*  This file is distributed in the hope that it will be useful, but WITHOUT    *
+*  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+*  FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
+*  more details.                                                               *
+*                                                                              *
 *  $QT_END_LICENSE$                                                            *
 *                                                                              *
 *******************************************************************************/
@@ -29,21 +40,19 @@ QKitGridView {
     id: navGridView
     objectName: "QKitNavGridView"
 
-    property int moveLeftKey: keyController.navMoveLeftKey
-    property int moveRightKey: keyController.navMoveRightKey
-    property int moveUpKey: keyController.navMoveUpKey
-    property int moveDownKey: keyController.navMoveDownKey
+    property int moveDownKey: keyController ? keyController.navMoveDownKey : 0 //!< key for down moving
+    property int moveLeftKey: keyController ? keyController.navMoveLeftKey : 0 //!< key for left moving
+    property int moveRightKey: keyController ? keyController.navMoveRightKey : 0 //!< key for right moving
+    property int moveUpKey: keyController ? keyController.navMoveUpKey : 0 //!< key for up moving
+    property Item __previousCurrentItem: null // previous current item
 
     function highlightCurrentItem() {
-        if (currentItem && highlightFollowsCurrentItem) { // if there is selected item
+        if (currentItem !== null && highlightFollowsCurrentItem) { // if there is selected item
             currentItem.focus = true // focus on it
         } else { // if no selected item
-            invisible.focus = true // reset focus from previous item
-            navGridView.focus = true // set focus to view
+            navListView.focus = true // set focus to view
         }
     }
-
-    Item { id: invisible; visible: false } // to reset focus
 
     highlight: navController.highlight // component to use as the highlight
     // todo: remove declaration
@@ -57,7 +66,11 @@ QKitGridView {
     currentIndex: -1 // no selected item
 
     onHighlightFollowsCurrentItemChanged: highlightCurrentItem()
-    onCurrentItemChanged: highlightCurrentItem()
+    onCurrentItemChanged: {
+        if (__previousCurrentItem !== null) __previousCurrentItem.focus = false; // deselect previous current item if exists
+        __previousCurrentItem = currentItem;
+        highlightCurrentItem();
+    }
     onModelChanged: currentIndex = -1
 
     Keys.onLeftPressed: navController.moveCurrentIndexByKey(navGridView, event) // standart left key handler

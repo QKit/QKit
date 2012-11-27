@@ -5,20 +5,31 @@
 *  Copyright (C) 2011-2012 Kirill Chuvilin.                                    *
 *  Contact: Kirill Chuvilin (kirill.chuvilin@gmail.com, kirill.chuvilin.pro)   *
 *                                                                              *
-*  This file is part of the QKit project.                                      *
+*  This file is a part of the QKit project.                                    *
 *                                                                              *
-*  $QT_BEGIN_LICENSE:GPL$                                                      *
-*  You may use this file under the terms of the GNU General Public License     *
-*  as published by the Free Software Foundation; version 3 of the License.     *
+*  $QT_BEGIN_LICENSE:LGPL$                                                     *
 *                                                                              *
-*  This file is distributed in the hope that it will be useful,                *
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of              *
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the                *
-*  GNU General Public License for more details.                                *
+*  GNU Lesser General Public License Usage                                     *
+*  This file may be used under the terms of the GNU Lesser General Public      *
+*  License version 3.0 as published by the Free Software Foundation and        *
+*  appearing in the file LICENSE.LGPL included in the packaging of this file.  *
+*  Please review the following information to ensure the GNU Lesser General    *
+*  Public License version 3.0 requirements will be met:                        *
+*  http://www.gnu.org/licenses/old-licenses/lgpl.html.                         *
 *                                                                              *
-*  You should have received a copy of the GNU General Public License           *
-*  along with this package; if not, write to the Free Software                 *
-*  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.   *
+*  GNU General Public License Usage                                            *
+*  Alternatively, this file may be used under the terms of the GNU General     *
+*  Public License version 3.0 as published by the Free Software Foundation     *
+*  and appearing in the file LICENSE.GPL included in the packaging of this     *
+*  file. Please review the following information to ensure the GNU General     *
+*  Public License version 3.0 requirements will be met:                        *
+*  http://www.gnu.org/copyleft/gpl.html.                                       *
+*                                                                              *
+*  This file is distributed in the hope that it will be useful, but WITHOUT    *
+*  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+*  FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
+*  more details.                                                               *
+*                                                                              *
 *  $QT_END_LICENSE$                                                            *
 *                                                                              *
 *******************************************************************************/
@@ -29,22 +40,23 @@ QKitListView {
     id: navListView
     objectName: "QKitNavListView"
 
-    property int moveLeftKey: keyController ? keyController.navMoveLeftKey : 0
-    property int moveRightKey: keyController ? keyController.navMoveRightKey : 0
-    property int moveUpKey: keyController ? keyController.navMoveUpKey : 0
-    property int moveDownKey: keyController ? keyController.navMoveDownKey : 0
+    property int moveDownKey: keyController ? keyController.navMoveDownKey : 0 //!< key for down moving
+    property int moveLeftKey: keyController ? keyController.navMoveLeftKey : 0 //!< key for left moving
+    property int moveRightKey: keyController ? keyController.navMoveRightKey : 0 //!< key for right moving
+    property int moveUpKey: keyController ? keyController.navMoveUpKey : 0 //!< key for up moving
+    property Item __previousCurrentItem: null // previous current item
 
     function moveCurrentIndexLeft() {
         if (orientation == Qt.Horizontal) {
             switch (layoutDirection) {
             case Qt.LeftToRight:
-                if (currentIndex == -1)
+                if (currentIndex === -1)
                     currentIndex = count - 1
                 else
                     decrementCurrentIndex()
                 break;
             case Qt.RightToLeft:
-                if (currentIndex == -1)
+                if (currentIndex === -1)
                     currentIndex = 0
                 else
                     incrementCurrentIndex()
@@ -56,13 +68,13 @@ QKitListView {
         if (orientation == Qt.Horizontal) {
             switch (layoutDirection) {
             case Qt.LeftToRight:
-                if (currentIndex == -1)
+                if (currentIndex === -1)
                     currentIndex = 0
                 else
                     incrementCurrentIndex()
                 break;
             case Qt.RightToLeft:
-                if (currentIndex == -1)
+                if (currentIndex === -1)
                     currentIndex = count - 1
                 else
                     decrementCurrentIndex()
@@ -72,7 +84,7 @@ QKitListView {
     }
     function moveCurrentIndexUp() {
         if (orientation == Qt.Vertical) {
-            if (currentIndex == -1)
+            if (currentIndex === -1)
                 currentIndex = count - 1
             else
                 decrementCurrentIndex()
@@ -80,22 +92,19 @@ QKitListView {
     }
     function moveCurrentIndexDown() {
         if (orientation == Qt.Vertical) {
-            if (currentIndex == -1)
+            if (currentIndex === -1)
                 currentIndex = 0
             else
                 incrementCurrentIndex()
         }
     }
     function highlightCurrentItem() {
-        if (currentItem && highlightFollowsCurrentItem) { // if there is selected item
+        if (currentItem !== null && highlightFollowsCurrentItem) { // if there is selected item
             currentItem.focus = true // focus on it
         } else { // if no selected item
-            invisible.focus = true // reset focus from previous item
             navListView.focus = true // set focus to view
         }
     }
-
-    Item { id: invisible; visible: false } // to reset focus
 
     highlight: navController ? navController.highlight : null // component to use as the highlight
     highlightFollowsCurrentItem: navController ? navController.highlightFollowsCurrentItem : false // whether the highlight is managed by the view
@@ -105,10 +114,14 @@ QKitListView {
     highlightResizeDuration: navController ? navController.highlightResizeDuration : 0 // highlight resize animation duration
     keyNavigationWraps: navController ? navController.keyNavigationWraps : false // whether the list wraps key navigation
 
-    currentIndex: -1 // no selected item
+    currentIndex: -1 // no selected item on start
 
     onHighlightFollowsCurrentItemChanged: highlightCurrentItem()
-    onCurrentItemChanged: highlightCurrentItem()
+    onCurrentItemChanged: {
+        if (__previousCurrentItem !== null) __previousCurrentItem.focus = false; // deselect previous current item if exists
+        __previousCurrentItem = currentItem;
+        highlightCurrentItem();
+    }
     onModelChanged: currentIndex = -1
 
     Keys.onLeftPressed: navController.moveCurrentIndexByKey(navListView, event) // standart left key handler

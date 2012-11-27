@@ -5,20 +5,31 @@
 *  Copyright (C) 2011-2012 Kirill Chuvilin.                                    *
 *  Contact: Kirill Chuvilin (kirill.chuvilin@gmail.com, kirill.chuvilin.pro)   *
 *                                                                              *
-*  This file is part of the QKit project.                                      *
+*  This file is a part of the QKit project.                                    *
 *                                                                              *
-*  $QT_BEGIN_LICENSE:GPL$                                                      *
-*  You may use this file under the terms of the GNU General Public License     *
-*  as published by the Free Software Foundation; version 3 of the License.     *
+*  $QT_BEGIN_LICENSE:LGPL$                                                     *
 *                                                                              *
-*  This file is distributed in the hope that it will be useful,                *
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of              *
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the                *
-*  GNU General Public License for more details.                                *
+*  GNU Lesser General Public License Usage                                     *
+*  This file may be used under the terms of the GNU Lesser General Public      *
+*  License version 3.0 as published by the Free Software Foundation and        *
+*  appearing in the file LICENSE.LGPL included in the packaging of this file.  *
+*  Please review the following information to ensure the GNU Lesser General    *
+*  Public License version 3.0 requirements will be met:                        *
+*  http://www.gnu.org/licenses/old-licenses/lgpl.html.                         *
 *                                                                              *
-*  You should have received a copy of the GNU General Public License           *
-*  along with this package; if not, write to the Free Software                 *
-*  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.   *
+*  GNU General Public License Usage                                            *
+*  Alternatively, this file may be used under the terms of the GNU General     *
+*  Public License version 3.0 as published by the Free Software Foundation     *
+*  and appearing in the file LICENSE.GPL included in the packaging of this     *
+*  file. Please review the following information to ensure the GNU General     *
+*  Public License version 3.0 requirements will be met:                        *
+*  http://www.gnu.org/copyleft/gpl.html.                                       *
+*                                                                              *
+*  This file is distributed in the hope that it will be useful, but WITHOUT    *
+*  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+*  FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
+*  more details.                                                               *
+*                                                                              *
 *  $QT_END_LICENSE$                                                            *
 *                                                                              *
 *******************************************************************************/
@@ -50,11 +61,14 @@ QKitRectangle {
     // other properties
     property Item textItem: buttonTextItem // item with text
     property Item imageItem: buttonImageItem // item with image
-
+    // QML properties
     smooth: uiController ? uiAmbience === "dialog" ? uiController.dialogButtonSmooth : uiAmbience === "page" ? uiController.pageButtonSmooth : uiAmbience === "toolbar" ? uiController.toolbarButtonSmooth : false : false // do smooth scale or transform
     radius: uiAmbience === "dialog" ? 0.4 * height : uiAmbience === "page" ? 0.4 * height : uiAmbience === "toolbar" ? 0.3 * height : 0 // angle radius
-    width: uiController ? uiAmbience === "toolbar" ? uiController.isDesktopOs ? height : parent.flow === Grid.LeftToRight ? (parent.width - (parent.nChildren - 1) * parent.spacing) / parent.nChildren : parent.width : null : null // width
+    width: uiController ? uiAmbience === "toolbar" ? button.application.isDesktopOs ? height : parent.flow === Grid.LeftToRight ? (parent.width - (parent.nChildren - 1) * parent.spacing) / parent.nChildren : parent.width : null : null // width
     height: uiController ? uiAmbience === "toolbar" ? parent.flow === Grid.LeftToRight ? parent.height : (parent.height - (parent.nChildren - 1) * parent.spacing) / parent.nChildren : null : null // height
+    color: button.backgroundColor
+    border.color: button.borderColor
+    border.width: button.borderWidth
 
     signal clicked() // emits when button is clicked
     signal doubleClicked() // emits when button is double clicked
@@ -67,15 +81,13 @@ QKitRectangle {
 
     function pressByKey(event) { // press button by particular key
         if (!enabled) return // must be enabled to press
+        event.accepted = true;  // the key was handled
+        button.forceActiveFocus() // focus on button to handle key release
         local.key = event.key // remember key
         local.pressed = true // press button
-        focus = true // focus on button to handle key release
         button.pressed() // press signal
     }
 
-    color: button.backgroundColor
-    border.color: button.borderColor
-    border.width: button.borderWidth
     resources: [
         Item { // local variables
             id: local
@@ -162,27 +174,14 @@ QKitRectangle {
         onReleased: button.released()
     }
 
-    Keys.onPressed: {
-        switch (event.key) {
-        case button.pressKey:
-            button.pressByKey(event)
-            break
-        default:
-            return
-        }
-        event.accepted = true
-    }
-    Keys.onReleased: {
-        switch (event.key) {
-        case local.key: // was pressed by that key
+    onKeysPressed: if (event.key === button.pressKey) button.pressByKey(event);
+    onKeysReleased: {
+        if (event.key === local.key) { // if was pressed by that key
             local.key = 0 // forget press key
             local.pressed = false // now not pressed
             button.released() // release signal
             button.clicked() // click signal
-            break
-        default:
-            return
+            event.accepted = true;
         }
-        event.accepted = true
     }
 }

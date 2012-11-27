@@ -5,20 +5,31 @@
 *  Copyright (C) 2011-2012 Kirill Chuvilin.                                    *
 *  Contact: Kirill Chuvilin (kirill.chuvilin@gmail.com, kirill.chuvilin.pro)   *
 *                                                                              *
-*  This file is part of the QKit project.                                      *
+*  This file is a part of the QKit project.                                    *
 *                                                                              *
-*  $QT_BEGIN_LICENSE:GPL$                                                      *
-*  You may use this file under the terms of the GNU General Public License     *
-*  as published by the Free Software Foundation; version 3 of the License.     *
+*  $QT_BEGIN_LICENSE:LGPL$                                                     *
 *                                                                              *
-*  This file is distributed in the hope that it will be useful,                *
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of              *
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the                *
-*  GNU General Public License for more details.                                *
+*  GNU Lesser General Public License Usage                                     *
+*  This file may be used under the terms of the GNU Lesser General Public      *
+*  License version 3.0 as published by the Free Software Foundation and        *
+*  appearing in the file LICENSE.LGPL included in the packaging of this file.  *
+*  Please review the following information to ensure the GNU Lesser General    *
+*  Public License version 3.0 requirements will be met:                        *
+*  http://www.gnu.org/licenses/old-licenses/lgpl.html.                         *
 *                                                                              *
-*  You should have received a copy of the GNU General Public License           *
-*  along with this package; if not, write to the Free Software                 *
-*  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.   *
+*  GNU General Public License Usage                                            *
+*  Alternatively, this file may be used under the terms of the GNU General     *
+*  Public License version 3.0 as published by the Free Software Foundation     *
+*  and appearing in the file LICENSE.GPL included in the packaging of this     *
+*  file. Please review the following information to ensure the GNU General     *
+*  Public License version 3.0 requirements will be met:                        *
+*  http://www.gnu.org/copyleft/gpl.html.                                       *
+*                                                                              *
+*  This file is distributed in the hope that it will be useful, but WITHOUT    *
+*  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+*  FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
+*  more details.                                                               *
+*                                                                              *
 *  $QT_END_LICENSE$                                                            *
 *                                                                              *
 *******************************************************************************/
@@ -26,19 +37,13 @@
 import Qt 4.7
 
 QtObject {
-    property string os: application.os // operating system (Desktop, Harmattan, Fremantle, Symbian S60, Symnian^3)
-    property bool isDesktopOs: os == "Desktop" // operating system
-    property bool isMultitouch: (os == "Harmattan") || (os == "Symbian^3") // multitouch test
-    property string orientation: application.width > application.height ? "Landscape" : "Portrait" // orientation
-    property bool isLandscapeOrientation: orientation == "Landscape" // orientation
-    property bool isPortraitOrientation: orientation == "Portrait" // orientation
-    property bool buttonSmooth: true // use smooth for buttons or not
-    property bool mouseHoverEnabled: true // handle mouse hover or not
+    property bool buttonSmooth: true //!< use smooth for buttons or not
+    property bool mouseHoverEnabled: true //!< handle mouse hover or not
 
     property int   dialogAnimationDuration: 250
     property color dialogBackgroundColor: "#DF000000"
     property int   dialogButtonBorderWidth: 1
-    property bool  dialogButtonSmooth: buttonSmooth // use smooth for buttons or not
+    property bool  dialogButtonSmooth: buttonSmooth //!< use smooth for buttons or not
     property color dialogButtonBackgroundColor: "#BF000000"
     property color dialogButtonBackgroundColorDimmed: "#0FFFFFFF"
     property color dialogButtonBackgroundColorSelected: dialogButtonBackgroundColor
@@ -63,11 +68,11 @@ QtObject {
     property url iconMToolbarUpSelected: "images/icon-m-toolbar-up-selected.png"
     property url iconMToolbarUpDimmed: "images/icon-m-toolbar-up-dimmed.png"
 
-    property int itemStackAnimationDuration: 250 // duration of scroll animation
+    property int itemStackAnimationDuration: 250 //!< duration of scroll animation
 
     property color pageBackgroundColor: "#FFFFFF"
     property int   pageButtonBorderWidth: 1
-    property bool  pageButtonSmooth: buttonSmooth // use smooth for buttons or not
+    property bool  pageButtonSmooth: buttonSmooth //!< use smooth for buttons or not
     property color pageButtonBackgroundColor: "#BFFFFFFF"
     property color pageButtonBackgroundColorDimmed: "#0F000000"
     property color pageButtonBackgroundColorSelected: pageButtonBackgroundColor
@@ -78,15 +83,15 @@ QtObject {
     property color pageButtonTextColorDimmed: pageButtonBorderColorDimmed
     property color pageButtonTextColorSelected: pageButtonBorderColorSelected
     property color pageTextColor: "#000000"
-    property url   pageTexture: "" // image to fill page
+    property url   pageTexture: "" //!< image to fill page
 
-    property bool  thumbnailAsynchronous: true // load in separate thread or not
+    property bool  thumbnailAsynchronous: true //!< load in separate thread or not
     property color thumbnailBackgroundColor: "#DFDFDF"
     property color thumbnailBackgroundColorSelected: thumbnailBackgroundColor
     property color thumbnailBorderColor: "#DF7F7F7F"
     property color thumbnailBorderColorSelected: "#0000DF"
     property int   thumbnailBorderWidth: 6
-    property bool  thumbnailSmooth: false // use smooth for thumbnails or not
+    property bool  thumbnailSmooth: false //!< use smooth for thumbnails or not
 
     property int   toolbarAnimationDuration: 250
     property color toolbarBackgroundColor: "#7FDFDFDF"
@@ -99,7 +104,7 @@ QtObject {
     property color toolbarButtonBorderColorDimmed: "#FFFFFF"
     property color toolbarButtonBorderColorSelected: "#FFFFFF"
     property int   toolbarButtonBorderWidth: 1
-    property bool  toolbarButtonSmooth: buttonSmooth // use smooth for buttons or not
+    property bool  toolbarButtonSmooth: buttonSmooth //!< use smooth for buttons or not
     property color toolbarButtonTextColor: toolbarButtonBorderColor
     property color toolbarButtonTextColorDimmed: toolbarButtonBorderColorDimmed
     property color toolbarButtonTextColorSelected: toolbarButtonBorderColorSelected
