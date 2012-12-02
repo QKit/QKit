@@ -1,6 +1,6 @@
 /*******************************************************************************
 *                                                                              *
-*  Element item for menus implementation.                                      *
+*  Tool "Menu" item implementation.                                            *
 *                                                                              *
 *  Copyright (C) 2011-2012 Kirill Chuvilin.                                    *
 *  Contact: Kirill Chuvilin (kirill.chuvilin@gmail.com, kirill.chuvilin.pro)   *
@@ -36,14 +36,16 @@
 
 import Qt 4.7
 
-QKitButton {
-    id: menuElement
-    objectName: "QKitMenuElement"
-
-    property Item __menuItem: parent ? parent.parent ? parent.parent.menuItem : null : null // menu, that contains the element
-
-    meta: __menuItem
-    width: __menuItem ? __menuItem.elementWidth : 0
-    height: __menuItem ? __menuItem.elementHeight : 0
-    onClicked: __menuItem.elementSelected()
+QKitToolItem {
+    objectName: "QKitToolMenuItem"
+    border.width: 0
+    backgroundColor: "#00000000"
+    backgroundColorDimmed: "#00000000"
+    backgroundColorSelected: "#00000000"
+    borderColor: "#00000000"
+    borderColorDimmed: "#00000000"
+    borderColorSelected: "#00000000"
+    imageSource: uiController.iconMToolbarViewMenu
+    imageSourceSelected: uiController.iconMToolbarViewMenuSelected
+    imageSourceDimmed: uiController.iconMToolbarViewMenuDimmed
 }

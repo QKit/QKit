@@ -34,10 +34,13 @@
 *                                                                              *
 *******************************************************************************/
 
-QKitFocusScope {
-    id: item
+import Qt 4.7
+
+QKitPage {
+    id: qkitApplication
     objectName: "QKitApplication"
 
+    default property alias content: applicationWorkspace.children //!< application content
     property string os: "Desktop" // operating system (Desktop, Harmattan, Fremantle, Symbian S60, Symnian^3)
     property bool isSimulator: os == "Simulator" // operating system
     property bool isDesktopOs: os == "Desktop" // operating system
@@ -45,15 +48,61 @@ QKitFocusScope {
     property bool isSymbianOS: os == "Symbian" || os == "Symbian S60" || os == "Symbian^3"
     property bool isLandscapeOrientation: width >= height // orientation
     property bool isPortraitOrientation: !isLandscapeOrientation // orientation
+    property Item toolBar: null //!< application tool bar
+    property alias workspace: applicationWorkspace //!< application workspace
+    property bool toolbarOverWorkspace: true
 
+    // QKitPage properties
+    tools: null
     // QKit properties
-    meta: item
-    application: item
-    uiAmbience: "" // UI ambience
-    logController: QKitLogController{} // logging settings
-    uiController:  QKitUiController{}  // item with UI settings
-    keyController: QKitKeyController{} // item with key settings
-    navController: QKitNavController{} // key navigation controllerler
+    meta: qkitApplication
+    application: qkitApplication
+    logController: QKitLogController { } // logging settings
+    uiController:  QKitUiController { }  // item with UI settings
+    keyController: QKitKeyController { } // item with key settings
+    navController: QKitNavController { } // key navigation controllerler
     // QML properties
     focus: true
+
+    QKitFocusScope {
+        id: applicationWorkspace
+        objectName: qkitApplication.objectName + ":Workspace"
+
+        property bool margeByToolbar: !qkitApplication.toolbarOverWorkspace && qkitApplication.toolBar !== null && qkitApplication.toolBar.visible
+
+        anchors.fill: qkitApplication
+        focus: true
+
+        states: [
+            State {
+                when: qkitApplication.isDesktopOs
+                PropertyChanges {
+                    target: applicationWorkspace
+                    anchors.topMargin: margeByToolbar ? qkitApplication.toolBar.y + qkitApplication.toolBar.height : 0
+                }
+            },
+            State {
+                when: !qkitApplication.isDesktopOs && qkitApplication.isLandscapeOrientation
+                PropertyChanges {
+                    target: applicationWorkspace
+                    anchors.rightMargin: margeByToolbar ? qkitApplication.width - qkitApplication.toolBar.x : 0
+                }
+            },
+            State {
+                when: !qkitApplication.isDesktopOs && qkitApplication.isPortraitOrientation
+                PropertyChanges {
+                    target: applicationWorkspace
+                    anchors.bottomMargin: margeByToolbar ? qkitApplication.height - qkitApplication.toolBar.y : 0
+                }
+            }
+        ]
+    }
+
+    onKeysPressed: if (toolBar !== null) toolBar.keysPressed(event) // send event first to toolbar if toolbar exists
+    onToolBarChanged: {
+        if (toolBar !== null) {
+            toolBar.parent = qkitApplication;
+            qkitApplication.tools = toolBar.defaultTools;
+        }
+    }
 }

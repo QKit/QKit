@@ -64,8 +64,6 @@ QKitRectangle {
     // QML properties
     smooth: uiController ? uiAmbience === "dialog" ? uiController.dialogButtonSmooth : uiAmbience === "page" ? uiController.pageButtonSmooth : uiAmbience === "toolbar" ? uiController.toolbarButtonSmooth : false : false // do smooth scale or transform
     radius: uiAmbience === "dialog" ? 0.4 * height : uiAmbience === "page" ? 0.4 * height : uiAmbience === "toolbar" ? 0.3 * height : 0 // angle radius
-    width: uiController ? uiAmbience === "toolbar" ? button.application.isDesktopOs ? height : parent.flow === Grid.LeftToRight ? (parent.width - (parent.nChildren - 1) * parent.spacing) / parent.nChildren : parent.width : null : null // width
-    height: uiController ? uiAmbience === "toolbar" ? parent.flow === Grid.LeftToRight ? parent.height : (parent.height - (parent.nChildren - 1) * parent.spacing) / parent.nChildren : null : null // height
     color: button.backgroundColor
     border.color: button.borderColor
     border.width: button.borderWidth
@@ -174,6 +172,12 @@ QKitRectangle {
         onReleased: button.released()
     }
 
+    onEnabledChanged: {
+        if (enabled && visible) {
+            visible = false;
+            visible = true;
+        }
+    }
     onKeysPressed: if (event.key === button.pressKey) button.pressByKey(event);
     onKeysReleased: {
         if (event.key === local.key) { // if was pressed by that key

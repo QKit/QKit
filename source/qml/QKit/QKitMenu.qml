@@ -62,10 +62,10 @@ QKitDialog {
             QKitNavListView { // menu view
                 id: menuView
                 objectName: menuRoot.objectName + ":View"
+
+                property alias menu: menu
+
                 focus: true
-
-                property alias menuItem: menu
-
                 anchors.centerIn: parent
                 width: menu.elementWidth
                 height: Math.min(parent.height - 2 * spacing, childrenRect.height)

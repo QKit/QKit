@@ -37,32 +37,33 @@
 import QtQuick 1.1
 
 PinchArea {
+    id: qkitItem
     objectName: "QKitPinchArea"
     // meta data
-    property Item meta: parent //!< source of meta data
-    property Item application: meta ? meta.application : null //!< application item
-    property string uiAmbience: meta ? meta.uiAmbience : "" //!< UI ambience: dialog, page, toolbar
+    property Item meta: qkitItem.parent //!< source of meta data
+    property Item application: qkitItem.meta ? qkitItem.meta.application : null //!< application item
+    property string uiAmbience: qkitItem.meta ? qkitItem.meta.uiAmbience : "" //!< UI ambience: dialog, page, toolbar
     // controllers
-    property QtObject logController: meta ? meta.logController : null //!< logging settings
-    property QtObject uiController:  meta ? meta.uiController  : null //!< item with UI settings
-    property QtObject keyController: meta ? meta.keyController : null //!< item with key settings
-    property QtObject navController: meta ? meta.navController : null //!< key navigation controllerler
+    property QtObject logController: qkitItem.meta ? qkitItem.meta.logController : null //!< logging settings
+    property QtObject uiController:  qkitItem.meta ? qkitItem.meta.uiController  : null //!< item with UI settings
+    property QtObject keyController: qkitItem.meta ? qkitItem.meta.keyController : null //!< item with key settings
+    property QtObject navController: qkitItem.meta ? qkitItem.meta.navController : null //!< key navigation controllerler
     // QKit properties
-    property bool selected: activeFocus //!< selected or not
+    property bool selected: qkitItem.activeFocus //!< selected or not
     // signals
-    signal componentComplited() // handler for Component.onComplited
-    signal keysPressed(variant event) // handler for Keys.onPressed
-    signal keysReleased(variant event) // handler for Keys.onReleased
+    signal componentCompleted() //!< handler for Component.onComplited
+    signal keysPressed(variant event) //!< handler for Keys.onPressed
+    signal keysReleased(variant event) //!< handler for Keys.onReleased
     // handlers
     Component.onCompleted: {
-        if (logController && logController.completedLogging) console.log(objectName + " - completed");
-        componentComplited();
+        if (qkitItem.logController && qkitItem.logController.completedLogging) console.log(qkitItem.objectName + " - completed");
+        qkitItem.componentCompleted();
     }
-    Keys.onPressed: keysPressed(event)
-    Keys.onReleased: keysReleased(event)
-    onActiveFocusChanged: if (logController && logController.activeFocusLogging) console.log(objectName + " - activeFocus changed to " + activeFocus)
-    onEnabledChanged: if (logController && logController.enabledLogging) console.log(objectName + " - enabled changed to " + enabled)
-    onFocusChanged: if (logController && logController.focusLogging) console.log(objectName + " - focus changed to " + focus)
-    onParentChanged: if (logController && logController.parentLogging) console.log(objectName + " - parent changed to " + (parent ? parent.objectName : "[NULL]"))
-    onSelectedChanged: if (logController && logController.selectedLogging) console.log(objectName + " - selected changed to " + selected)
+    Keys.onPressed: qkitItem.keysPressed(event)
+    Keys.onReleased: qkitItem.keysReleased(event)
+    onActiveFocusChanged: if (qkitItem.logController && qkitItem.logController.activeFocusLogging) console.log(qkitItem.objectName + " - activeFocus changed to " + qkitItem.activeFocus)
+    onEnabledChanged: if (qkitItem.logController && qkitItem.logController.enabledLogging) console.log(qkitItem.objectName + " - enabled changed to " + qkitItem.enabled)
+    onFocusChanged: if (qkitItem.logController && qkitItem.logController.focusLogging) console.log(qkitItem.objectName + " - focus changed to " + qkitItem.focus)
+    onParentChanged: if (qkitItem.logController && qkitItem.logController.parentLogging) console.log(qkitItem.objectName + " - parent changed to " + (qkitItem.parent ? qkitItem.parent.objectName : "[NULL]"))
+    onSelectedChanged: if (qkitItem.logController && qkitItem.logController.selectedLogging) console.log(qkitItem.objectName + " - selected changed to " + qkitItem.selected)
 }

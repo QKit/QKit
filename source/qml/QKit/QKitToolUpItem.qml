@@ -1,6 +1,6 @@
 /*******************************************************************************
 *                                                                              *
-*  Button "Up" item for toolbars implementation.                               *
+*  Tool "Up" item implementation.                                              *
 *                                                                              *
 *  Copyright (C) 2012 Kirill Chuvilin.                                         *
 *  Contact: Kirill Chuvilin (kirill.chuvilin@gmail.com, kirill.chuvilin.pro)   *
@@ -36,8 +36,8 @@
 
 import Qt 4.7
 
-QKitButton {
-    objectName: "QKitToolbarMenuButton"
+QKitToolItem {
+    objectName: "QKitToolUpItem"
     border.width: 0
     backgroundColor: "#00000000"
     backgroundColorDimmed: "#00000000"

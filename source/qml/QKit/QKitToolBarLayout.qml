@@ -1,8 +1,8 @@
 /*******************************************************************************
 *                                                                              *
-*  Button "Menu" item for toolbars implementation.                             *
+*  Tool bar layout item implementation.                                        *
 *                                                                              *
-*  Copyright (C) 2011-2012 Kirill Chuvilin.                                    *
+*  Copyright (C) 2012 Kirill Chuvilin.                                         *
 *  Contact: Kirill Chuvilin (kirill.chuvilin@gmail.com, kirill.chuvilin.pro)   *
 *                                                                              *
 *  This file is a part of the QKit project.                                    *
@@ -36,16 +36,4 @@
 
 import Qt 4.7
 
-QKitButton {
-    objectName: "QKitToolbarMenuButton"
-    border.width: 0
-    backgroundColor: "#00000000"
-    backgroundColorDimmed: "#00000000"
-    backgroundColorSelected: "#00000000"
-    borderColor: "#00000000"
-    borderColorDimmed: "#00000000"
-    borderColorSelected: "#00000000"
-    imageSource: uiController.iconMToolbarViewMenu
-    imageSourceSelected: uiController.iconMToolbarViewMenuSelected
-    imageSourceDimmed: uiController.iconMToolbarViewMenuDimmed
-}
+VisualItemModel { }

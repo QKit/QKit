@@ -1,6 +1,6 @@
 /*******************************************************************************
 *                                                                              *
-*  Button "Add" item for toolbars implementation.                              *
+*  Menu layout item implementation.                                            *
 *                                                                              *
 *  Copyright (C) 2012 Kirill Chuvilin.                                         *
 *  Contact: Kirill Chuvilin (kirill.chuvilin@gmail.com, kirill.chuvilin.pro)   *
@@ -36,16 +36,38 @@
 
 import Qt 4.7
 
-QKitButton {
-    objectName: "QKitToolbarAddButton"
-    border.width: 0
-    backgroundColor: "#00000000"
-    backgroundColorDimmed: "#00000000"
-    backgroundColorSelected: "#00000000"
-    borderColor: "#00000000"
-    borderColorDimmed: "#00000000"
-    borderColorSelected: "#00000000"
-    imageSource: uiController.iconMToolbarAdd
-    imageSourceSelected: uiController.iconMToolbarAddSelected
-    imageSourceDimmed: uiController.iconMToolbarAddDimmed
+QKitMenuItem {
+    id: menuLayout
+    objectName: "QKitMenuLayout"
+
+    default property alias content: submenuModel.children // submenu content
+
+    QKitFocusScope {
+        id: menuLayoutRoot
+        objectName: menuLayout.objectName + ":Root"
+
+        visible: false
+        width: menuLayout.width
+        height: menuLayout.height
+
+        QKitNavListView { // menu view
+            id: menuLayoutView
+            objectName: menuLayout.objectName + ":View"
+
+            property alias menu: menuLayout.__menu
+
+            focus: true
+            anchors.centerIn: parent
+            width: menu !== null ? menu.elementWidth : 1
+            height: menu !== null ? Math.min(menu.height - 2 * spacing, childrenRect.height) : 1
+            spacing: menu !== null ? 0.5 * menu.elementHeight : 1
+            keyNavigationWraps: true
+            model: VisualItemModel {id: submenuModel}
+        }
+    }
+
+    onClicked: {
+        menuLayoutView.currentIndex = -1; // reset selected item
+        __menu.__stack.push(menuLayoutRoot);
+    }
 }

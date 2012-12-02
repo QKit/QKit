@@ -1,11 +1,11 @@
 /*******************************************************************************
 *                                                                              *
-*  Main item implementation.                                                   *
+*  Element item for menus implementation.                                      *
 *                                                                              *
-*  Copyright (C) 2012 Kirill Chuvilin.                                         *
+*  Copyright (C) 2011-2012 Kirill Chuvilin.                                    *
 *  Contact: Kirill Chuvilin (kirill.chuvilin@gmail.com, kirill.chuvilin.pro)   *
 *                                                                              *
-*  This file is part of an example for the QKit project.                       *
+*  This file is a part of the QKit project.                                    *
 *                                                                              *
 *  $QT_BEGIN_LICENSE:LGPL$                                                     *
 *                                                                              *
@@ -34,24 +34,16 @@
 *                                                                              *
 *******************************************************************************/
 
-import "QKit"
+import Qt 4.7
 
-QKitApplication {
-    QKitButton {
-        id: button
-        objectName: "Button"
-        focus: true
-        anchors.centerIn: parent
-        width: 0.8 * Math.min(parent.width, parent.height)
-        height: width / 3
-        text: qsTr("Menu")
-        onClicked: menu.open()
-    }
+QKitButton {
+    id: menuItem
+    objectName: "QKitMenuItem"
 
-    Menu {
-        id: menu
-        objectName: "Menu"
-        anchors.fill: parent
-        onClose: button.forceActiveFocus()
-    }
+    property Item __menu: parent ? parent.parent ? parent.parent.menu : null : null // menu, that contains the element
+
+    meta: __menu
+    width: __menu ? __menu.elementWidth : 0
+    height: __menu ? __menu.elementHeight : 0
+    onClicked: __menu.elementSelected()
 }

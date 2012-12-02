@@ -36,7 +36,7 @@
 
 import Qt 4.7
 
-QKitItem {
+QKitFocusScope {
     id: itemStack
 
     property int animationDuration: uiController.itemStackAnimationDuration //!< duration of animation
@@ -47,13 +47,13 @@ QKitItem {
      * \param item item to push
      */
     function push(item) {
-        if (item.parent === itemSrackContainer) return; // do nothing if item already in stack
-        var items = itemSrackContainer.items; // items in stack
+        if (item.parent === itemStackContainer) return; // do nothing if item already in stack
+        var items = itemStackContainer.items; // items in stack
         items.push(item); // add new item
-        itemSrackContainer.items = items; // update items
-        itemSrackContainer.pushedItem = item;
-        itemsStackHorizontalAnimation.enabled = true;
-        itemSrackContainer.x = -itemStack.width;
+        itemStackContainer.items = items; // update items
+        itemStackContainer.pushedItem = item;
+        itemStackHorizontalAnimation.enabled = true;
+        itemStackContainer.x = -itemStack.width;
     }
 
 
@@ -62,13 +62,13 @@ QKitItem {
      * \return poped item
      */
     function pop() {
-        var items = itemSrackContainer.items; // items in stack
+        var items = itemStackContainer.items; // items in stack
         if (items.legnth === 0) return null; // do nothing if no items
         var item = items.pop(); // take last item
-        itemSrackContainer.items = items; // update items
-        itemSrackContainer.popedItem = item;
-        itemsStackHorizontalAnimation.enabled = true;
-        itemSrackContainer.x = itemStack.width;
+        itemStackContainer.items = items; // update items
+        itemStackContainer.popedItem = item;
+        itemStackHorizontalAnimation.enabled = true;
+        itemStackContainer.x = itemStack.width;
         return item;
     }
 
@@ -77,14 +77,14 @@ QKitItem {
      * \brief Get items count.
      * \return number of items in stack
      */
-    function count() {return itemSrackContainer.itemsCount;}
+    function count() {return itemStackContainer.itemsCount;}
 
 
     /*!
      * \brief Get active item.
      * \return last pushed item
      */
-    function activeItem() {return itemSrackContainer.activeItem;}
+    function activeItem() {return itemStackContainer.activeItem;}
 
 
     /*!
@@ -92,19 +92,19 @@ QKitItem {
      * \return true if item is in the stack, false otherwise
      * \param item item to test
      */
-    function has(item) {return item.parent === itemSrackContainer;}
+    function has(item) {return item.parent === itemStackContainer;}
 
     clip: true
 
     QKitItem {
-        id: itemSrackContainer
+        id: itemStackContainer
         objectName: itemStack.objectName + ":Container"
 
-        property variant items: []; //!< items in stack
-        property int itemsCount: itemSrackContainer.count();
-        property Item activeItem: null; //!< active item
-        property Item pushedItem: null; //!< item to add
-        property Item popedItem: null; //!< item to remove
+        property variant items: []; // items in stack
+        property int itemsCount: itemStackContainer.count();
+        property Item activeItem: null; // active item
+        property Item pushedItem: null; // item to add
+        property Item popedItem: null; // item to remove
         property bool itemStackComplited: false
 
         /*!
@@ -112,7 +112,7 @@ QKitItem {
          * \return number of items in stack
          */
         function count() {
-            var itmes = itemSrackContainer.items;
+            var itmes = itemStackContainer.items;
             return itmes.length;
         }
 
@@ -122,75 +122,58 @@ QKitItem {
         height: itemStack.height
 
         Behavior on x {
-            id: itemsStackHorizontalAnimation
+            id: itemStackHorizontalAnimation
             SequentialAnimation {
                 ScriptAction {
                     script: {
-                        itemsStackHorizontalAnimation.enabled = false;
-                        if (itemSrackContainer.pushedItem !== null) { // if item was pushed
-                            itemSrackContainer.pushedItem.visible = false; // to hide all changes
-                            itemSrackContainer.pushedItem.parent = itemSrackContainer;
-                            itemSrackContainer.pushedItem.x = itemStack.width;
-                            itemSrackContainer.pushedItem.y = 0;
-                            itemSrackContainer.pushedItem.width = itemStack.width;
-                            itemSrackContainer.pushedItem.height = itemStack.height;
-                            itemSrackContainer.pushedItem.visible = true;
-                        } else if (itemSrackContainer.popedItem !== null) { // if item was poped
-                            if (itemSrackContainer.itemsCount > 0) { // if there are any items
-                                var items = itemSrackContainer.items; // items in stack
-                                itemSrackContainer.activeItem = items[items.length - 1]; // new active item
-                                itemSrackContainer.activeItem.x = -itemStack.width;
-                                itemSrackContainer.activeItem.y = 0;
-                                itemSrackContainer.activeItem.width = itemStack.width;
-                                itemSrackContainer.activeItem.height = itemStack.height;
-                                itemSrackContainer.activeItem.visible = true; // show previous active item
-                                if (itemSrackContainer.popedItem.activeFocus) {
-                                    itemSrackContainer.activeItem.forceActiveFocus(); // focus on new active item
-                                } else if (itemSrackContainer.popedItem.focus) {
-                                    itemSrackContainer.activeItem.focus = true; // focus on new active item
-                                }
-                            } else { // if there are no items
-                                itemSrackContainer.activeItem = null; // no active item
-                                if (itemSrackContainer.popedItem.activeFocus) {
-                                    itemSrack.forceActiveFocus(); // focus on stack
-                                } else if (itemSrackContainer.popedItem.focus) {
-                                    itemSrack.focus = true; // focus on stack
-                                }
+                        itemStackHorizontalAnimation.enabled = false;
+                        if (itemStackContainer.pushedItem !== null) { // if item was pushed
+                            itemStackContainer.pushedItem.visible = false; // to hide all changes
+                            itemStackContainer.pushedItem.parent = itemStackContainer;
+                            itemStackContainer.pushedItem.x = itemStack.width;
+                            itemStackContainer.pushedItem.y = 0;
+                            itemStackContainer.pushedItem.width = itemStack.width;
+                            itemStackContainer.pushedItem.height = itemStack.height;
+                            itemStackContainer.pushedItem.visible = true;
+                        } else if (itemStackContainer.popedItem !== null) { // if item was poped
+                            if (itemStackContainer.itemsCount > 0) { // if there are any items
+                                var items = itemStackContainer.items; // items in stack
+                                itemStackContainer.activeItem = items[items.length - 1]; // new active item
+                                itemStackContainer.activeItem.x = -itemStack.width;
+                                itemStackContainer.activeItem.y = 0;
+                                itemStackContainer.activeItem.width = itemStack.width;
+                                itemStackContainer.activeItem.height = itemStack.height;
+                                itemStackContainer.activeItem.visible = true; // show previous active item
                             }
                         }
                     }
                 }
                 NumberAnimation {
-                    duration: itemSrackContainer.itemStackComplited && itemSrackContainer.activeItem !== null ? itemStack.animationDuration : 0
+                    duration: itemStackContainer.itemStackComplited && itemStackContainer.activeItem !== null ? itemStack.animationDuration : 0
                 }
                 ScriptAction {
                     script: {
-                        if (itemSrackContainer.pushedItem !== null) { // if item was pushed
-                            if (itemSrackContainer.activeItem !== null) { // if there was item
-                                if (itemSrackContainer.activeItem.activeFocus) {
-                                    itemSrackContainer.pushedItem.forceActiveFocus(); // focus on new active item
-                                } else if (itemSrackContainer.activeItem.focus) {
-                                    itemSrackContainer.pushedItem.focus = true; // focus on new active item
-                                }
-                                itemSrackContainer.activeItem.visible = false; // hide previous active item
-                            } else {
-                                if (itemStack.activeFocus) {
-                                    itemSrackContainer.pushedItem.forceActiveFocus(); // focus on new active item
-                                } else if (itemStack.focus) {
-                                    itemSrackContainer.pushedItem.focus = true; // focus on new active item
-                                }
+                        if (itemStackContainer.pushedItem !== null) { // if item was pushed
+                            itemStackContainer.pushedItem.focus = true; // focus on new active item
+                            if (itemStackContainer.activeItem !== null) { // if there was item
+                                itemStackContainer.activeItem.visible = false; // hide previous active item
                             }
-                            itemSrackContainer.activeItem = itemSrackContainer.pushedItem; // set new active item
-                            itemSrackContainer.pushedItem = null;
-                        } else if (itemSrackContainer.popedItem !== null) { // if item was poped
-                            itemSrackContainer.popedItem.visible = false; // hide previous active item
-                            itemSrackContainer.popedItem.parent = itemsStackNotPushed;
-                            itemSrackContainer.popedItem = null;
+                            itemStackContainer.activeItem = itemStackContainer.pushedItem; // set new active item
+                            itemStackContainer.pushedItem = null;
+                        } else if (itemStackContainer.popedItem !== null) { // if item was poped
+                            if (itemStackContainer.activeItem !== null) {
+                                itemStackContainer.activeItem.focus = true; // focus on new active item
+                            } else {
+                                itemStackContainer.focus = true; // focus on container
+                            }
+                            itemStackContainer.popedItem.visible = false; // hide previous active item
+                            itemStackContainer.popedItem.parent = itemsStackNotPushed;
+                            itemStackContainer.popedItem = null;
                         }
-                        itemSrackContainer.activeItem.x = 0;
-                        itemSrackContainer.activeItem.y = 0;
-                        itemSrackContainer.x = 0;
-                        itemSrackContainer.y = 0;
+                        itemStackContainer.activeItem.x = 0;
+                        itemStackContainer.activeItem.y = 0;
+                        itemStackContainer.x = 0;
+                        itemStackContainer.y = 0;
                     }
                 }
             }
@@ -202,12 +185,10 @@ QKitItem {
         visible: false
     }
 
-    onWidthChanged: if (itemSrackContainer.activeItem !== null) itemSrackContainer.activeItem.width = itemStack.width; // resize active item if it exists
-    onHeightChanged: if (itemSrackContainer.activeItem !== null) itemSrackContainer.activeItem.height = itemStack.height; // resize active item if it exists
+    onWidthChanged: if (itemStackContainer.activeItem !== null) itemStackContainer.activeItem.width = itemStack.width; // resize active item if it exists
+    onHeightChanged: if (itemStackContainer.activeItem !== null) itemStackContainer.activeItem.height = itemStack.height; // resize active item if it exists
     onComponentCompleted: {
         while (__initialItems[0]) itemStack.push(__initialItems[0]); // push each initial item
-        itemSrackContainer.itemStackComplited = true;
+        itemStackContainer.itemStackComplited = true;
     }
-    onFocusChanged: if (itemStack.focus && itemSrackContainer.activeItem !== null) itemSrackContainer.activeItem.focus = true
-    onActiveFocusChanged:  if (itemStack.activeFocus && itemSrackContainer.activeItem !== null) itemSrackContainer.activeItem.forceActiveFocus()
 }

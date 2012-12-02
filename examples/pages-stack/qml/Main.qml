@@ -37,6 +37,8 @@
 import "QKit"
 
 QKitApplication {
+    toolBar: ToolBar { }
+
     QKitItemStack {
         id: stack
         width: parent.width

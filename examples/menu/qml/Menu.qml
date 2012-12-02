@@ -39,57 +39,57 @@ import "QKit"
 QKitMenu {
     id: menu
 
-    QKitMenuElement {
+    QKitMenuItem {
         text: qsTr("Back")
         onClicked: menu.back()
     }
-    QKitMenuElement {
+    QKitMenuItem {
         text: qsTr("Do nothing")
     }
-    QKitSubmenu {
+    QKitMenuLayout {
         text: qsTr("Submenu 1")
-        QKitMenuElement {
+        QKitMenuItem {
             text: qsTr("Back")
             onClicked: menu.back()
         }
-        QKitMenuElement {
+        QKitMenuItem {
             text: qsTr("Quit")
             onClicked: Qt.quit()
         }
     }
-    QKitMenuElement {
+    QKitMenuItem {
         text: qsTr("Do nothing")
     }
-    QKitSubmenu {
+    QKitMenuLayout {
         text: qsTr("Submenu 2")
-        QKitMenuElement {
+        QKitMenuItem {
             text: qsTr("Close menu")
             onClicked: menu.close()
         }
-        QKitMenuElement {
+        QKitMenuItem {
             text: qsTr("Back")
             onClicked: menu.back()
         }
-        QKitSubmenu {
+        QKitMenuLayout {
             text: qsTr("Submenu submenu")
-            QKitMenuElement {
+            QKitMenuItem {
                 text: qsTr("Do nothing")
             }
-            QKitMenuElement {
+            QKitMenuItem {
                 text: qsTr("Back")
                 onClicked: menu.back()
             }
-            QKitMenuElement {
+            QKitMenuItem {
                 text: qsTr("Quit")
                 onClicked: Qt.quit()
             }
         }
     }
-    QKitMenuElement {
+    QKitMenuItem {
         text: qsTr("Quit")
         onClicked: Qt.quit()
     }
-    QKitMenuElement {
+    QKitMenuItem {
         text: qsTr("Do nothing")
     }
 }

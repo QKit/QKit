@@ -1,6 +1,6 @@
 /*******************************************************************************
 *                                                                              *
-*  Submenu item implementation.                                                *
+*  Tool "Add" item implementation.                                             *
 *                                                                              *
 *  Copyright (C) 2012 Kirill Chuvilin.                                         *
 *  Contact: Kirill Chuvilin (kirill.chuvilin@gmail.com, kirill.chuvilin.pro)   *
@@ -36,38 +36,16 @@
 
 import Qt 4.7
 
-QKitMenuElement {
-    id: submenu
-    objectName: "QKitSubmenu"
-
-    default property alias content: submenuModel.children // submenu content
-
-    QKitFocusScope {
-        id: submenuRoot
-        objectName: submenu.objectName + ":Root"
-
-        visible: false
-        width: submenu.width
-        height: submenu.height
-
-        QKitNavListView { // menu view
-            id: submenuView
-            objectName: submenu.objectName + ":View"
-            focus: true
-
-            property alias menuItem: submenu.__menuItem
-
-            anchors.centerIn: parent
-            width: menu.elementWidth
-            height: Math.min(parent.height - 2 * spacing, childrenRect.height)
-            spacing: 0.5 * menu.elementHeight
-            keyNavigationWraps: true
-            model: VisualItemModel {id: submenuModel}
-        }
-    }
-
-    onClicked: {
-        submenuView.currentIndex = -1; // reset selected item
-        __menuItem.__stack.push(submenuRoot);
-    }
+QKitToolItem {
+    objectName: "QKitToolAddItem"
+    border.width: 0
+    backgroundColor: "#00000000"
+    backgroundColorDimmed: "#00000000"
+    backgroundColorSelected: "#00000000"
+    borderColor: "#00000000"
+    borderColorDimmed: "#00000000"
+    borderColorSelected: "#00000000"
+    imageSource: uiController.iconMToolbarAdd
+    imageSourceSelected: uiController.iconMToolbarAddSelected
+    imageSourceDimmed: uiController.iconMToolbarAddDimmed
 }

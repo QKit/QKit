@@ -1,11 +1,11 @@
 /*******************************************************************************
 *                                                                              *
-*  Main item implementation.                                                   *
+*  Tool item implementation.                                                   *
 *                                                                              *
-*  Copyright (C) 2012 Kirill Chuvilin.                                         *
+*  Copyright (C) 2011-2012 Kirill Chuvilin.                                    *
 *  Contact: Kirill Chuvilin (kirill.chuvilin@gmail.com, kirill.chuvilin.pro)   *
 *                                                                              *
-*  This file is part of an example for the QKit project.                       *
+*  This file is a part of the QKit project.                                    *
 *                                                                              *
 *  $QT_BEGIN_LICENSE:LGPL$                                                     *
 *                                                                              *
@@ -34,24 +34,9 @@
 *                                                                              *
 *******************************************************************************/
 
-import "QKit"
-
-QKitApplication {
-    QKitButton {
-        id: button
-        objectName: "Button"
-        focus: true
-        anchors.centerIn: parent
-        width: 0.8 * Math.min(parent.width, parent.height)
-        height: width / 3
-        text: qsTr("Menu")
-        onClicked: menu.open()
-    }
-
-    Menu {
-        id: menu
-        objectName: "Menu"
-        anchors.fill: parent
-        onClose: button.forceActiveFocus()
-    }
+QKitButton {
+    objectName: "QKitToolItem"
+    meta: parent !== null ? parent.parent : null
+    width: meta !== null ? meta.itemWidth : 1
+    height: meta !== null ? meta.itemHeight : 1
 }

@@ -37,6 +37,10 @@
 import "QKit"
 
 QKitPage {
+    id: page
     visible: false
-    toolbar: Toolbar {}
+    QKitMouseArea {
+        anchors.fill: parent
+        onClicked: application.toolBar.visible = !application.toolBar.visible;
+    }
 }

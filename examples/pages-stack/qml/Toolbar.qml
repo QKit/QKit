@@ -35,15 +35,16 @@
 *******************************************************************************/
 
 import "QKit"
+import Qt 4.7
 
-QKitToolbar {
+QKitToolBar {
     id: toolbar
-    QKitToolbarBackButton {
+    QKitToolBackItem {
         id: backButton
-        enabled: toolbar.parent !== rootPage
+        enabled: stack.count() > 1
         onClicked: stack.pop()
     }
-    QKitButton {
+    QKitToolItem {
         id: redPageButton
         enabled: !stack.has(redPage)
         text: "1"
@@ -51,7 +52,7 @@ QKitToolbar {
         backgroundColor: redPage.backgroundColor
         onClicked: stack.push(redPage)
     }
-    QKitButton {
+    QKitToolItem {
         id: greenPageButton
         enabled: !stack.has(greenPage)
         text: "2"
@@ -59,7 +60,7 @@ QKitToolbar {
         backgroundColor: greenPage.backgroundColor
         onClicked: stack.push(greenPage)
     }
-    QKitButton {
+    QKitToolItem {
         id: bluePageButton
         enabled: !stack.has(bluePage)
         text: "3"
@@ -67,7 +68,7 @@ QKitToolbar {
         backgroundColor: bluePage.backgroundColor
         onClicked: stack.push(bluePage)
     }
-    QKitButton {
+    QKitToolItem {
         id: yellowPageButton
         enabled: !stack.has(yellowPage)
         text: "4"
@@ -75,7 +76,7 @@ QKitToolbar {
         backgroundColor: yellowPage.backgroundColor
         onClicked: stack.push(yellowPage)
     }
-    QKitButton {
+    QKitToolItem {
         id: magentaPageButton
         enabled: !stack.has(magentaPage)
         text: "5"
@@ -83,7 +84,7 @@ QKitToolbar {
         backgroundColor: magentaPage.backgroundColor
         onClicked: stack.push(magentaPage)
     }
-    QKitButton {
+    QKitToolItem {
         id: cyanPageButton
         enabled: !stack.has(cyanPage)
         text: "6"

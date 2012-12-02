@@ -40,12 +40,9 @@ QKitFocusScope {
     id: page
     objectName: "QKitPage"
 
-    default property alias content: pageWorkspace.children //!< page content
-    property Item toolbar: null //!< toolbar item
-    property color backgroundColor: uiController.pageBackgroundColor
-    property color textColor: uiController.pageTextColor
-    property url   texture: uiController.pageTexture
-    property alias workspaceClip: pageWorkspace.clip
+    property color   backgroundColor: uiController.pageBackgroundColor //!< page background color
+    property url     texture: uiController.pageTexture //!< page background image
+    property variant tools: page.application.tools //!< tools for tool bar
 
     // QKit properties
     uiAmbience: "page" // UI ambience
@@ -61,37 +58,5 @@ QKitFocusScope {
         source: page.texture
     }
 
-    QKitFocusScope {
-        id: pageWorkspace
-        objectName: page.objectName + ":Workspace"
-        anchors.fill: page
-        focus: true
-
-        states: [
-            State {
-                when: page.application.isDesktopOs
-                PropertyChanges {
-                    target: pageWorkspace
-                    anchors.topMargin: page.toolbar ? page.toolbar.height : 0
-                }
-            },
-            State {
-                when: !page.application.isDesktopOs && page.application.isLandscapeOrientation
-                PropertyChanges {
-                    target: pageWorkspace
-                    anchors.rightMargin: page.toolbar ? page.toolbar.width : 0
-                }
-            },
-            State {
-                when: !page.application.isDesktopOs && page.application.isPortraitOrientation
-                PropertyChanges {
-                    target: pageWorkspace
-                    anchors.bottomMargin: page.toolbar ? page.toolbar.height : 0
-                }
-            }
-        ]
-    }
-
-    onKeysPressed: if (toolbar !== null) toolbar.keysPressed(event) // send event first to toolbar if toolbar exists
-    onToolbarChanged: if (toolbar !== null) toolbar.parent = page
+    onActiveFocusChanged: if (activeFocus && page.application !== null && page.application.toolBar !== null) page.application.toolBar.tools = page.tools
 }
