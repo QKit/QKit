@@ -6,6 +6,7 @@
 *  Contact: Kirill Chuvilin (kirill.chuvilin@gmail.com, kirill.chuvilin.pro)   *
 *                                                                              *
 *  This file is a part of the QKit project.                                    *
+*  https://github.com/QKit/QKit                                                *
 *                                                                              *
 *  $QT_BEGIN_LICENSE:LGPL$                                                     *
 *                                                                              *

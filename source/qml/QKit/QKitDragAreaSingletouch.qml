@@ -2,10 +2,11 @@
 *                                                                              *
 *  DragArea item singletouch implementation.                                   *
 *                                                                              *
-*  Copyright (C) 2012 Kirill Chuvilin.                                         *
+*  Copyright (C) 2012-2013 Kirill Chuvilin.                                    *
 *  Contact: Kirill Chuvilin (kirill.chuvilin@gmail.com, kirill.chuvilin.pro)   *
 *                                                                              *
 *  This file is a part of the QKit project.                                    *
+*  https://github.com/QKit/QKit                                                *
 *                                                                              *
 *  $QT_BEGIN_LICENSE:LGPL$                                                     *
 *                                                                              *
@@ -35,6 +36,7 @@
 *******************************************************************************/
 
 import Qt 4.7
+import "js/QKit.js" as QKit
 
 QKitItem {
     id: dragArea
@@ -82,7 +84,7 @@ QKitItem {
         property variant startTargetPosition
         property real startTargetRotation
         property real startTargetScale
-        property variant pressedKeys: null
+        property int pressedKeysSetId: QKit.create('Set') //!< set of pressed keys
 
         /*!
          * \brief Test horizontal position of the limitations.
@@ -269,12 +271,7 @@ QKitItem {
          * \brief Get count of pressed keys.
          * \return count of handeled key presses with no releases
          */
-        function pressedKeysCount() {
-            var pressedKeys = dragAreaMouseArea.pressedKeys; // pressed keys
-            var nPressedKeys = 0;
-            for (var key in pressedKeys) nPressedKeys++;
-            return nPressedKeys;
-        }
+        function pressedKeysCount() { return QKit.instance(dragAreaMouseArea.pressedKeysSetId).size(); }
 
 
         /*!
@@ -321,6 +318,7 @@ QKitItem {
             State {name: "move"},
             State {name: "center_transform"}
         ]
+        onComponentDestruction: QKit.destroy(dragAreaMouseArea.pressedKeysSetId)
         onPressed: {
             dragAreaMouseArea.dragEvent.center = {'x': dragArea.transformCenterX, 'y': dragArea.transformCenterY};
             dragAreaMouseArea.dragEvent.angle = dragAreaMouseArea.angle(mouse, dragAreaMouseArea.dragEvent.center);
@@ -379,8 +377,8 @@ QKitItem {
     }
 
     Keys.onPressed: {
-        var pressedKeys = dragAreaMouseArea.pressedKeys; // pressed keys
-        if (pressedKeys == null) { // start of drag
+        var pressedKeysSet = QKit.instance(dragAreaMouseArea.pressedKeysSetId); // pressed keys
+        if (pressedKeysSet.size() === 0) { // start of drag
             dragAreaMouseArea.dragEvent.accepted = true;
             dragAreaMouseArea.dragEvent.angle = 0;
             dragAreaMouseArea.dragEvent.center = {'x': dragArea.transformCenterX, 'y': dragArea.transformCenterY};
@@ -394,10 +392,8 @@ QKitItem {
             dragAreaMouseArea.dragEvent.startPoints = dragAreaMouseArea.dragEvent.points;
             dragArea.drag.active = true; // start of dragging
             dragAreaMouseArea.startDrag();
-            pressedKeys = {};
         }
-        pressedKeys[event.key] = true; // new pressed key
-        dragAreaMouseArea.pressedKeys = pressedKeys; // udate pressed keys
+        pressedKeysSet.insert(event.key); // add pressed key
         if (!dragAreaMouseArea.dragEvent.accepted) return;
         dragAreaMouseArea.dragEvent.previousAngle = dragAreaMouseArea.dragEvent.angle;
         dragAreaMouseArea.dragEvent.previousCenter = dragAreaMouseArea.dragEvent.center;
@@ -437,11 +433,9 @@ QKitItem {
         dragAreaMouseArea.updateDrag();
     }
     Keys.onReleased: {
-        var pressedKeys = dragAreaMouseArea.pressedKeys; // pressed keys
-        delete pressedKeys[event.key];
-        dragAreaMouseArea.pressedKeys = pressedKeys; // udate pressed keys
-        if (dragAreaMouseArea.pressedKeysCount() > 0) return; // some keys are still pressed
-        dragAreaMouseArea.pressedKeys = null; // no keys pressed
+        var pressedKeysSet = QKit.instance(dragAreaMouseArea.pressedKeysSetId); // pressed keys
+        pressedKeysSet.remove(event.key); // remove the key from pressed
+        if (pressedKeysSet.size() > 0) return; // some keys are still pressed
         if (!dragAreaMouseArea.dragEvent.accepted) return;
         dragAreaMouseArea.finishDrag();
     }

@@ -1,8 +1,8 @@
 /*******************************************************************************
 *                                                                              *
-*  Key settings item implementation.                                            *
+*  Base object class implementation.                                           *
 *                                                                              *
-*  Copyright (C) 2011-2012 Kirill Chuvilin.                                    *
+*  Copyright (C) 2013 Kirill Chuvilin.                                         *
 *  Contact: Kirill Chuvilin (kirill.chuvilin@gmail.com, kirill.chuvilin.pro)   *
 *                                                                              *
 *  This file is a part of the QKit project.                                    *
@@ -35,31 +35,75 @@
 *                                                                              *
 *******************************************************************************/
 
-import Qt 4.7
+var __qkit__objects = []; //!< array of objects
 
-QtObject {
-    property int backKey: Qt.Key_Backspace //!< key for back action
 
-    property int navMoveLeftKey: Qt.Key_Left //!< key for left moving in nav items
-    property int navMoveRightKey: Qt.Key_Right //!< key for right moving in nav items
-    property int navMoveUpKey: Qt.Key_Up //!< key for up moving in nav items
-    property int navMoveDownKey: Qt.Key_Down //!< key for down moving in nav items
+/*!
+ * \brief Base object class.
+ */
+function Object() {
+    if (!(this instanceof Object)) return new Object(); // create new object if function was called without 'new' operator
 
-    property int buttonPressKey: Qt.Key_Select //!< key for button press
+    this.__qkit__id = __qkit__objects.length; // object id
+    __qkit__objects.push(this); // add new object to array
+    this.destroyed = Signal(); // emitted immediately before the object is destroyed
+}
 
-    property int dialogBackKey: backKey //!< key for dialog back action
-    property int dialogButtonPressKey: buttonPressKey //!< key for dialog button press
 
-    property int dragMoveDownKey: navMoveDownKey //!< key for down moving on drag
-    property int dragMoveLeftKey: navMoveLeftKey //!< key for left moving on drag
-    property int dragMoveRightKey: navMoveRightKey //!< key for right moving on drag
-    property int dragMoveUpKey: navMoveUpKey //!< key for up moving in nav on drag
-    property int dragRotateAnticlockwiseKey: Qt.Key_PageUp //!< key for anticlockwize rotation on drag
-    property int dragRotateClockwiseKey: Qt.Key_PageDown //!< key for clockwize rotation on drag
-    property int dragZoomInKey: Qt.Key_Plus //!< key for zoom in on drag
-    property int dragZoomOutKey: Qt.Key_Minus //!< key for zoom out on drag
+/*!
+ * \brief Destructor.
+ * \param doNotify send destroyed signal or not (true by default)
+ */
+Object.prototype.destroy = function(doNotify) {
+    if (doNotify === undefined || doNotify) this.destroyed(); // destroyed signal
+    if (this.__qkit__id !== undefined) delete __qkit__objects[this.__qkit__id]; // delete from objects array if id is defined
+    for (var propertyName in this) { // for all properties
+        if (this.hasOwnProperty(propertyName)) { // if own property
+            if (this[propertyName].hasOwnProperty('__qkit__signal')) { // if signal
+                this[propertyName].disconnect(); // disconnect all connected methods
+            } else if (this[propertyName] instanceof Function && this[propertyName].hasOwnProperty('__qkit__connectedSignals')) { // if method with connected signals
+                for (var signalObject in this[propertyName].__qkit__connectedSignals) { // for all connected signals
+                    if (this[propertyName].__qkit__connectedSignals.hasOwnProperty(signalObject)) signalObject.disconnect(this[propertyName]); // disconnect signal and method
+                }
+            }
+        }
+    }
+}
 
-    property int toolbarLeftButtonPressKey: Qt.Key_Context1 //!< key for left toolbar button
-    property int toolbarRightButtonPressKey: Qt.Key_Context2 //!< key for right toolbar button
-    property int toolbarButtonPressKey: buttonPressKey //!< key for toolbar button press
+
+/*!
+ * \brief Get object id.
+ * \return id number
+ */
+Object.prototype.id = function() { return this.__qkit__id; }
+
+
+/*!
+ * \brief Get existing object by id.
+ * \return object or null if there is no object with specified id
+ * \param id object id
+ */
+function instance(id) { return __qkit__objects[id]; }
+
+
+/*!
+ * \brief Create new object.
+ * \return object id
+ * \param objectClass class of object to create
+ * \param constructorArguments array of arguments for constructor
+ */
+function create(objectClass, constructorArguments) {
+    var object = eval(objectClass).apply(this, constructorArguments); // create new object
+    return object.id(); // return id of created object
+}
+
+
+/*!
+ * \brief Delete existing object.
+ * \param id list id
+ */
+function destroy(id) {
+    var object = instance(id); // object by id
+    if (object === null) return; // return if not existing
+    object.destroy(); // destroy object
 }

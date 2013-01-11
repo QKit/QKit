@@ -2,10 +2,11 @@
 *                                                                              *
 *  TextInput item implementation.                                              *
 *                                                                              *
-*  Copyright (C) 2011-2012 Kirill Chuvilin.                                    *
+*  Copyright (C) 2011-2013 Kirill Chuvilin.                                    *
 *  Contact: Kirill Chuvilin (kirill.chuvilin@gmail.com, kirill.chuvilin.pro)   *
 *                                                                              *
 *  This file is a part of the QKit project.                                    *
+*  https://github.com/QKit/QKit                                                *
 *                                                                              *
 *  $QT_BEGIN_LICENSE:LGPL$                                                     *
 *                                                                              *
@@ -52,12 +53,17 @@ TextInput {
     property bool selected: qkitItem.activeFocus //!< selected or not
     // signals
     signal componentCompleted() //!< handler for Component.onComplited
+    signal componentDestruction() //!< handler for Component.onDestruction
     signal keysPressed(variant event) //!< handler for Keys.onPressed
     signal keysReleased(variant event) //!< handler for Keys.onReleased
     // handlers
     Component.onCompleted: {
         if (qkitItem.logController && qkitItem.logController.completedLogging) console.log(qkitItem.objectName + " - completed");
         qkitItem.componentCompleted();
+    }
+    Component.onDestruction: {
+        if (qkitItem.logController && qkitItem.logController.destructionLogging) console.log(qkitItem.objectName + " - destruction");
+        qkitItem.componentDestruction();
     }
     Keys.onPressed: qkitItem.keysPressed(event)
     Keys.onReleased: qkitItem.keysReleased(event)

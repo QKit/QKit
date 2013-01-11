@@ -6,6 +6,7 @@
 *  Contact: Kirill Chuvilin (kirill.chuvilin@gmail.com, kirill.chuvilin.pro)   *
 *                                                                              *
 *  This file is a part of the QKit project.                                    *
+*  https://github.com/QKit/QKit                                                *
 *                                                                              *
 *  $QT_BEGIN_LICENSE:LGPL$                                                     *
 *                                                                              *
@@ -39,6 +40,7 @@ import Qt 4.7
 QtObject {
     property bool activeFocusLogging: false
     property bool completedLogging: false
+    property bool destructionLogging: false
     property bool enabledLogging: false
     property bool focusLogging: false
     property bool parentLogging: false

@@ -2,10 +2,11 @@
 *                                                                              *
 *  Item stack item implementation.                                             *
 *                                                                              *
-*  Copyright (C) 2012 Kirill Chuvilin.                                         *
+*  Copyright (C) 2012-2013 Kirill Chuvilin.                                    *
 *  Contact: Kirill Chuvilin (kirill.chuvilin@gmail.com, kirill.chuvilin.pro)   *
 *                                                                              *
 *  This file is a part of the QKit project.                                    *
+*  https://github.com/QKit/QKit                                                *
 *                                                                              *
 *  $QT_BEGIN_LICENSE:LGPL$                                                     *
 *                                                                              *
@@ -35,6 +36,7 @@
 *******************************************************************************/
 
 import Qt 4.7
+import "js/QKit.js" as QKit
 
 QKitFocusScope {
     id: itemStack
@@ -48,9 +50,7 @@ QKitFocusScope {
      */
     function push(item) {
         if (item.parent === itemStackContainer) return; // do nothing if item already in stack
-        var items = itemStackContainer.items; // items in stack
-        items.push(item); // add new item
-        itemStackContainer.items = items; // update items
+        QKit.instance(itemStackContainer.itemsVectorId).append(item); // add new item
         itemStackContainer.pushedItem = item;
         itemStackHorizontalAnimation.enabled = true;
         itemStackContainer.x = -itemStack.width;
@@ -62,10 +62,10 @@ QKitFocusScope {
      * \return poped item
      */
     function pop() {
-        var items = itemStackContainer.items; // items in stack
-        if (items.legnth === 0) return null; // do nothing if no items
-        var item = items.pop(); // take last item
-        itemStackContainer.items = items; // update items
+        var items = QKit.instance(itemStackContainer.itemsVectorId); // items in stack
+        if (items.size() === 0) return null; // do nothing if no items
+        var item = items.last(); // last item
+        items.remove(); // remove last item
         itemStackContainer.popedItem = item;
         itemStackHorizontalAnimation.enabled = true;
         itemStackContainer.x = itemStack.width;
@@ -100,26 +100,19 @@ QKitFocusScope {
         id: itemStackContainer
         objectName: itemStack.objectName + ":Container"
 
-        property variant items: []; // items in stack
-        property int itemsCount: itemStackContainer.count();
+        property variant itemsVectorId: QKit.create('Vector') // vector with items in stack
+        property variant itemsCount: 0; // visible added items amount
         property Item activeItem: null; // active item
         property Item pushedItem: null; // item to add
         property Item popedItem: null; // item to remove
         property bool itemStackComplited: false
 
-        /*!
-         * \brief Get items count.
-         * \return number of items in stack
-         */
-        function count() {
-            var itmes = itemStackContainer.items;
-            return itmes.length;
-        }
-
         x: 0
         y: 0
         width: itemStack.width
         height: itemStack.height
+
+        onComponentDestruction: QKit.destroy(itemStackContainer.itemsVectorId);
 
         Behavior on x {
             id: itemStackHorizontalAnimation
@@ -136,9 +129,8 @@ QKitFocusScope {
                             itemStackContainer.pushedItem.height = itemStack.height;
                             itemStackContainer.pushedItem.visible = true;
                         } else if (itemStackContainer.popedItem !== null) { // if item was poped
-                            if (itemStackContainer.itemsCount > 0) { // if there are any items
-                                var items = itemStackContainer.items; // items in stack
-                                itemStackContainer.activeItem = items[items.length - 1]; // new active item
+                            if (QKit.instance(itemStackContainer.itemsVectorId).size() > 0) { // if there are any items
+                                itemStackContainer.activeItem = QKit.instance(itemStackContainer.itemsVectorId).last(); // new active item
                                 itemStackContainer.activeItem.x = -itemStack.width;
                                 itemStackContainer.activeItem.y = 0;
                                 itemStackContainer.activeItem.width = itemStack.width;
@@ -160,6 +152,7 @@ QKitFocusScope {
                             }
                             itemStackContainer.activeItem = itemStackContainer.pushedItem; // set new active item
                             itemStackContainer.pushedItem = null;
+                            itemStackContainer.itemsCount++;
                         } else if (itemStackContainer.popedItem !== null) { // if item was poped
                             if (itemStackContainer.activeItem !== null) {
                                 itemStackContainer.activeItem.focus = true; // focus on new active item
@@ -169,6 +162,7 @@ QKitFocusScope {
                             itemStackContainer.popedItem.visible = false; // hide previous active item
                             itemStackContainer.popedItem.parent = itemsStackNotPushed;
                             itemStackContainer.popedItem = null;
+                            itemStackContainer.itemsCount--;
                         }
                         itemStackContainer.activeItem.x = 0;
                         itemStackContainer.activeItem.y = 0;

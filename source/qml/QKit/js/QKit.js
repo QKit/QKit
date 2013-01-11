@@ -1,8 +1,8 @@
 /*******************************************************************************
 *                                                                              *
-*  Key settings item implementation.                                            *
+*  QKit library implementation.                                                *
 *                                                                              *
-*  Copyright (C) 2011-2012 Kirill Chuvilin.                                    *
+*  Copyright (C) 2013 Kirill Chuvilin.                                         *
 *  Contact: Kirill Chuvilin (kirill.chuvilin@gmail.com, kirill.chuvilin.pro)   *
 *                                                                              *
 *  This file is a part of the QKit project.                                    *
@@ -35,31 +35,14 @@
 *                                                                              *
 *******************************************************************************/
 
-import Qt 4.7
+.pragma library
 
-QtObject {
-    property int backKey: Qt.Key_Backspace //!< key for back action
-
-    property int navMoveLeftKey: Qt.Key_Left //!< key for left moving in nav items
-    property int navMoveRightKey: Qt.Key_Right //!< key for right moving in nav items
-    property int navMoveUpKey: Qt.Key_Up //!< key for up moving in nav items
-    property int navMoveDownKey: Qt.Key_Down //!< key for down moving in nav items
-
-    property int buttonPressKey: Qt.Key_Select //!< key for button press
-
-    property int dialogBackKey: backKey //!< key for dialog back action
-    property int dialogButtonPressKey: buttonPressKey //!< key for dialog button press
-
-    property int dragMoveDownKey: navMoveDownKey //!< key for down moving on drag
-    property int dragMoveLeftKey: navMoveLeftKey //!< key for left moving on drag
-    property int dragMoveRightKey: navMoveRightKey //!< key for right moving on drag
-    property int dragMoveUpKey: navMoveUpKey //!< key for up moving in nav on drag
-    property int dragRotateAnticlockwiseKey: Qt.Key_PageUp //!< key for anticlockwize rotation on drag
-    property int dragRotateClockwiseKey: Qt.Key_PageDown //!< key for clockwize rotation on drag
-    property int dragZoomInKey: Qt.Key_Plus //!< key for zoom in on drag
-    property int dragZoomOutKey: Qt.Key_Minus //!< key for zoom out on drag
-
-    property int toolbarLeftButtonPressKey: Qt.Key_Context1 //!< key for left toolbar button
-    property int toolbarRightButtonPressKey: Qt.Key_Context2 //!< key for right toolbar button
-    property int toolbarButtonPressKey: buttonPressKey //!< key for toolbar button press
-}
+Qt.include("QKitCore.js")
+Qt.include("QKitObject.js")
+// containers
+Qt.include("QKitLinkedList.js")
+Qt.include("QKitList.js")
+Qt.include("QKitMap.js")
+Qt.include("QKitMultiMap.js")
+Qt.include("QKitSet.js")
+Qt.include("QKitVector.js")
