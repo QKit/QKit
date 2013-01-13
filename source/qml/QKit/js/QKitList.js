@@ -53,22 +53,34 @@
  * \param list the list to copy
  */
 function List() {
+    var thisData; // this data array
+    var index = 2147483647; // iterator (default first index)
     if (arguments[0] instanceof List) { // if List(list)
-        if (!(this instanceof List)) return new List(arguments[0]); // create new object if function was called without 'new' operator
+        var list = arguments[0]; // the other list
+        if (!(this instanceof List)) return new List(list); // create new object if function was called without 'new' operator
         List.superClass.apply(this); // super class constructor
-        this.__qkit__firstIndex = arguments[0].__qkit__firstIndex; // copy first item index
-        this.__qkit__data = arguments[0].__qkit__data.slice(0); // copy values array
+        var listData = list.__qkit__data; // list's data array
+        var firstIndex = list.__qkit__firstIndex; // first item index
+        thisData = []; // this data array
+        index = listData.length; // iterator
+        thisData.length = index;
+        while (index-- > firstIndex) thisData[index] = listData[index]; // copy all values
+        this.__qkit__data = thisData; // this data array
+        this.__qkit__firstIndex = firstIndex; // this first item index
     } else if (arguments[0] instanceof Array) { // if List(array)
         if (!(this instanceof List)) return new List(arguments[0]); // create new object if function was called without 'new' operator
         List.superClass.apply(this); // super class constructor
-        this.clear(); // clear list
-        var thisData = this.__qkit__data; // data array of this list
-        var index = this.__qkit__firstIndex; // iterator
+        this.__qkit__firstIndex = index; // index of the first item
+        thisData = []; // this data array
+        thisData.length = index;
         arguments[0].forEach(function(element) { thisData[index++] = element; }, this); // add each item to the list
+        this.__qkit__data = thisData; // this data array
     } else { // if List()
         if (!(this instanceof List)) return new List(); // create new object if function was called without 'new' operator
         List.superClass.apply(this); // super class constructor
-        this.clear(); // clear list
+        this.__qkit__firstIndex = index; // index of the first item
+        this.__qkit__data = []; // values array
+        this.__qkit__data.length = this.__qkit__firstIndex;
     }
 }
 List.inheritFrom(Object); // super class
@@ -76,10 +88,11 @@ List.inheritFrom(Object); // super class
 
 /*!
  * \brief Insert a value at the end of the list.
+ * \return this list
  * \param value the value to insert (if is an instance of List al it values will be added)
  */
 List.prototype.append = function(value) {
-    if (value === undefined) return; // return if value is undefined
+    if (value === undefined) return undefined; // return if value is undefined
     var thisData = this.__qkit__data; // data array of this list
     var index = thisData.length; // internal index of the first item to append
     if (value instanceof List) { // if value is a List instance
@@ -91,6 +104,7 @@ List.prototype.append = function(value) {
     } else { // if value is not a List instance
         thisData[index] = value; // add the value to data array
     }
+    return this;
 }
 
 
@@ -104,11 +118,11 @@ List.prototype.at = function(index) { return index === undefined ? undefined : t
 
 /*!
  * \brief Remove all the items from the list.
+ * \return this list
  */
 List.prototype.clear = function() {
-    this.__qkit__firstIndex = 2147483647; // index of the first item
-    this.__qkit__data = []; // values array
     this.__qkit__data.length = this.__qkit__firstIndex;
+    return this;
 }
 
 
@@ -171,6 +185,30 @@ List.prototype.endsWith = function(value, compareFunction) {
 
 
 /*!
+ * \brief Compare this list with the other one.
+ * \return true if both lists contain the same values in the same order, false otherwise
+ * \param list the list to compare with
+ * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined strict equality (===) will be used
+ */
+List.prototype.equals = function(list, compareFunction) {
+    if (!(list instanceof List)) return undefined; // return if type is not valid
+    var thisData = this.__qkit__data; // this data array
+    var listData = list.__qkit__data; // list's data array
+    var thisFirstIndex = this.__qkit__firstIndex; // this first item index
+    var listsFirstIndex = this.__qkit__firstIndex; // list's first item index
+    var index = thisData.length; // this iterator
+    var listIndex = listData.length; // list's iterator
+    if (index - thisFirstIndex !== listIndex - listsFirstIndex) return false; // return false if the sizes are not equal
+    if (compareFunction === undefined) { // if compare function is not defined
+        for (listIndex--; index-- > thisFirstIndex; listIndex--) if (thisData[index] !== listData[listIndex]) return false; // return false if some values are not equal
+    } else { // if compare function is defined
+        for (listIndex--; index-- > thisFirstIndex; listIndex--) if (!compareFunction(thisData[index], listData[listIndex])) return false; // return false if some values are not equal
+    }
+    return true; // return true if no differences were found
+}
+
+
+/*!
  * \brief Get the first item.
  * \return the first item in the list
  */
@@ -179,11 +217,12 @@ List.prototype.first = function() { return this.__qkit__data[this.__qkit__firstI
 
 /*!
  * \brief Executes a provided function once per each list item.
+ * \return this list
  * \param callback function to execute for each item - function(value, index, list)
  * \param thisArg object to use as this when executing callback
  */
 List.prototype.forEach = function(callback, thisArg) {
-    if ((callback === undefined) || !(callback instanceof Function)) return; // return if callback is not a function
+    if (!(callback instanceof Function)) return undefined; // return if callback is not a function
     var data = []; // data array reversed copy
     var thisFirstIndex = this.__qkit__firstIndex; // first item index of this list
     var thisData = this.__qkit__data; // data array of this list
@@ -192,6 +231,7 @@ List.prototype.forEach = function(callback, thisArg) {
     index = data.length; // to the end of copy
     var lastIndex = index - 1; // last index of the data array
     while (index--) callback.apply(thisArg, [data[index], lastIndex - index, this]); // apply callback function to each item
+    return this;
 }
 
 
@@ -228,6 +268,7 @@ List.prototype.indexOf = function(value, from, compareFunction) {
 
 /*!
  * \brief Insert items to the list.
+ * \return this list
  * \param value the value to insert
  * \param index position of first inserted value after insertion (last by default)
  * \param count the count of values to insert (1 by default)
@@ -238,7 +279,7 @@ List.prototype.insert = function(value, index, count) {
         count = 1; // insert one value by default
     } else { // if count is defined
         count = Math.floor(count); // make count integer
-        if (count <= 0) return; // return if count is not positive
+        if (count <= 0) return undefined; // return if count is not positive
     }
     var thisData = this.__qkit__data; // data array of this list
     var thisFirstIndex = this.__qkit__firstIndex; // first item index of this list
@@ -249,9 +290,9 @@ List.prototype.insert = function(value, index, count) {
         index = Math.floor(index); // make index integer
         if (index < 0) { // if index is negative
             index += thisSize; // count from last item
-            if (index < 0) return; // return if index is negative
+            if (index < 0) return undefined; // return if index is negative
         } else if (index > thisSize) { // if index is greater than the last position
-            return; // return
+            return undefined; // return
         }
     }
     if (index < thisSize) { // if insertion before some item
@@ -274,6 +315,7 @@ List.prototype.insert = function(value, index, count) {
     } else { // if insertion at the end
         while (count--) thisData.push(value); // add count of values
     }
+    return this;
 }
 
 
@@ -392,39 +434,46 @@ List.prototype.mid = function(start, length) {
 
 /*!
  * \brief Move an item from one position to another.
+ * \return this list
  * \param from start items position
  * \param to finish items position
  */
 List.prototype.move = function(from, to) {
-    if (from === undefined) return; // return if the start position is undefined
-    if (to === undefined) return; // return if the finith position is undefined
+    if (from === undefined) return undefined; // return if the start position is undefined
+    if (to === undefined) return undefined; // return if the finith position is undefined
     from = Math.floor(from); // make the start position integer
     to = Math.floor(to); // make the finish position integer
-    if (from === to) return; // return if position doesn't change
     var thisData = this.__qkit__data; // data array of this list
     var value; // value to move
     if (from > to) { // if backward moving
-        if (to < 0 || from >= thisData.length - this.__qkit__firstIndex) return; // return if at least one position is out of the bounds
+        if (to < 0 || from >= thisData.length - this.__qkit__firstIndex) return undefined; // return if at least one position is out of the bounds
+        if (from === to) return this; // return if position doesn't change
         from += this.__qkit__firstIndex; // start position in internal index system
         to += this.__qkit__firstIndex; // finish position in internal index system
         value = thisData[from]; // value to move
         while (from-- > to) thisData[from + 1] = thisData[from]; // shift all the values between start and finish positions
     } else { // if forward moving
-        if (from < 0 || to >= thisData.length - this.__qkit__firstIndex) return; // return if at least one position is out of the bounds
+        if (from < 0 || to >= thisData.length - this.__qkit__firstIndex) return undefined; // return if at least one position is out of the bounds
+        if (from === to) return this; // return if position doesn't change
         from += this.__qkit__firstIndex; // start position in internal index system
         to += this.__qkit__firstIndex; // finish position in internal index system
         value = thisData[from]; // value to move
         while (from++ < to) thisData[from - 1] = thisData[from]; // shift all the values between start and finish positions
     }
     thisData[to] = value; // update finish position value
+    return this;
 }
 
 
 /*!
  * \brief Insert a value at the beginning of the list.
+ * \return this list
  * \param value the value to insert
  */
-List.prototype.prepend = function(value) { this.__qkit__data[--this.__qkit_firstIndex] = value === undefined ? null : value; }
+List.prototype.prepend = function(value) {
+    this.__qkit__data[--this.__qkit_firstIndex] = value === undefined ? null : value;
+    return this;
+}
 
 
 /*!
@@ -458,21 +507,24 @@ List.prototype.removeAll = function(value, compareFunction) {
 
 /*!
  * \brief Remove the item at the given index position.
+ * \return this list
  * \param index valid index position
  */
-List.prototype.removeAt = function(index) { this.takeAt(index); }
+List.prototype.removeAt = function(index) { return this.takeAt(index) === undefined ? undefined : this; }
 
 
 /*!
  * \brief Remove the first item in the list.
+ * \return this list
  */
-List.prototype.removeFirst = function() { this.removeAt(0); }
+List.prototype.removeFirst = function() { return this.removeAt(0); }
 
 
 /*!
  * \brief Remove the last item in the list.
+ * \return this list
  */
-List.prototype.removeLast = function() { this.removeAt(this.__qkit__data.length - this.__qkit__firstIndex - 1); }
+List.prototype.removeLast = function() { return this.removeAt(this.__qkit__data.length - this.__qkit__firstIndex - 1); }
 
 
 /*!
@@ -507,14 +559,16 @@ List.prototype.removeOne = function(value, compareFunction) {
 
 /*!
  * \brief Replace the items value.
+ * \return this list
  * \param index valid index position
  * \param value new value for the item
  */
 List.prototype.replace = function(index, value) {
-    if (index === undefined) return; // return if index is undefined
-    index = Math.floor(index); // make index integer
-    if (index < 0 || index >= this.__qkit__data.length - this.__qkit__firstIndex) return; // return if index is not valid
+    if (index === undefined) return undefined; // return if index is undefined
+    index = Math.floor(index) + this.__qkit__firstIndex; // make index integer and internal
+    if (index < this.__qkit__firstIndex || index >= this.__qkit__data.length) return undefined; // return if index is not valid
     this.__qkit__data[index] = value === undefined ? null : value; // replace value
+    return this;
 }
 
 
@@ -544,11 +598,13 @@ List.prototype.startsWith = function(value, compareFunction) {
 /*!
  * swap(list)
  * \brief Swap other list with this list.
+ * \return this list
  * \param list the list to swap with
  */
 /*!
  * swap(index1, index2)
  * \brief Exchange the items at the given positions.
+ * \return this list
  * \param index1 valid index position
  * \param index2 valid index position
  */
@@ -563,15 +619,16 @@ List.prototype.swap = function() {
         this.__qkit__firstIndex = list.__qkit__firstIndex; // update this index of the first item
         list.__qkit__firstIndex = temp; // update list index of the first item
     } else { // if swap(index1, index2)
-        if (arguments.length < 2) return; // return if not both indexes are defined
+        if (arguments.length < 2) return undefined; // return if not both indexes are defined
         var index1 = Math.floor(arguments[0]) + this.__qkit__firstIndex; // first internal index
-        if (index1 <  this.__qkit__firstIndex || index1 >= this.__qkit__data.length); // return if index is not valid
+        if (index1 <  this.__qkit__firstIndex || index1 >= this.__qkit__data.length) return undefined; // return if index is not valid
         var index2 = Math.floor(arguments[1]) + this.__qkit__firstIndex; // second internal index
-        if (index2 <  this.__qkit__firstIndex || index2 >= this.__qkit__data.length); // return if index is not valid
+        if (index2 <  this.__qkit__firstIndex || index2 >= this.__qkit__data.length) return undefined; // return if index is not valid
         temp = this.__qkit__data[index1]; // backup first item value
         this.__qkit__data[index1] = this.__qkit__data[index2]; // update first item value
         this.__qkit__data[index2] = temp; // update second item value
     }
+    return this;
 }
 
 
@@ -581,19 +638,19 @@ List.prototype.swap = function() {
  * \param index valid index position
  */
 List.prototype.takeAt = function(index) {
-    if (index === undefined) return; // return if position is undefined
+    if (index === undefined) return undefined; // return if position is undefined
     index = Math.floor(index); // make index integer
     var thisData = this.__qkit__data; // data array of this list
     var thisFirstIndex = this.__qkit__firstIndex; // first item index of this list
     index += thisFirstIndex; // internal index
     var value = thisData[index]; // value of item to be removed
     if (index - thisFirstIndex < thisData.length - index) { // if index is closer to the first item
-        if (index < 0) return; // return if index is not correct
+        if (index < 0) return undefined; // return if index is not correct
         while (index-- > thisFirstIndex) thisData[index + 1] = thisData[index]; // shift items
         delete thisData[this.__qkit__firstIndex++]; // delete previous first item and increase index of first item
     } else { // if index is closer to the last item
         var thisLastIndex = thisData.length; // after last item index
-        if (index >= thisLastIndex) return; // return if index is not correct
+        if (index >= thisLastIndex) return undefined; // return if index is not correct
         while (index++ < thisLastIndex) thisData[index - 1] = thisData[index]; // shift items
         thisData.length--; // decrease data array length
     }
@@ -613,6 +670,28 @@ List.prototype.takeFirst = function() { return this.takeAt(0); }
  * \return value of removed item
  */
 List.prototype.takeLast = function() { return this.takeAt(this.__qkit__data.length - this.__qkit__firstIndex - 1); }
+
+
+/*!
+ * \brief Generate an array with the data contained in this list.
+ * \return generated Array instance
+ */
+List.prototype.toArray = function() {
+    var array = []; // result array
+    var thisData = this.__qkit__data; // data array of this list
+    var thisFirstIndex = this.__qkit__firstIndex; // first item index of this list
+    var index = thisData.length; // iterator
+    var arrayIndex = index - thisFirstIndex; // array's iterator
+    while (index-- > thisFirstIndex) array[--arrayIndex] = thisData[index]; // copy all values
+    return array;
+}
+
+
+/*!
+ * \brief This method that is automatically called when the object is to be represented as a text value or when an object is referred to in a manner in which a string is expected.
+ * \return one string containing each item separated by commas
+ */
+List.prototype.toString = function() { return '[' + this.toArray().toString() + ']'; }
 
 
 /*!

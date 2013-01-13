@@ -71,7 +71,7 @@ MultiMap.inheritFrom(Map); // super class
 MultiMap.prototype.contains = function(key, value, compareFunction) {
     if (key === undefined) return false; // return if key is undefined
     var keyValues = this.__qkit__data[key]; // array of values associated with the key
-    if (value === undefined) return this.__qkit__data[key] !== undefined; // return array existence if value is undefined
+    if (value === undefined) return keyValues !== undefined; // return array existence if value is undefined
     if (compareFunction === undefined) compareFunction = function(value1, value2) { return value1 === value2; } // use strict equality if compare function is undefined
     var iValue = keyValues.length; // value iterator
     while (iValue--) if (compareFunction(keyValues[iValue], value)) return true; // return the true if values array contains the value
@@ -102,6 +102,7 @@ MultiMap.prototype.count = function(key, value, compareFunction) {
 /*!
  * \brief Insert an item with the given key and the given value.
  *   If there is already an item with the same key in the map, this function will simply create a new one.
+ * \return this map
  * \param key the key
  * \param value the value to insert
  */
@@ -149,6 +150,7 @@ MultiMap.prototype.remove = function(key, value, compareFunction) {
  * \brief Insert an item with the given key and the given value.
  *   If there is already an item with the key, that item's value is replaced with value.
  *   If there are multiple items with the key, the most recently inserted item's value is replaced with value.
+ * \return this map
  * \param key the key
  * \param value the value to insert
  */

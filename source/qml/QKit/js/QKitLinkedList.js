@@ -53,97 +53,106 @@
  * \param list the list to copy
  */
 function LinkedList() {
-    var item; // iterator
+    var thisData; // this data array
+    var thisSize; // this size
     if (arguments[0] instanceof LinkedList) { // if LinkedList(list)
         var list = arguments[0]; // the other list
         if (!(this instanceof LinkedList)) return new LinkedList(list); // create new object if function was called without 'new' operator
         LinkedList.superClass.apply(this); // super class constructor
-        var listItem = list.__qkit__firstItem; // list items iterator
+        var listData = list.__qkit__data; // list's data array
+        var listItem = listData[list.__qkit__firstIndex]; // list's iterator
         if (listItem === null) { // if list is empty
-            this.clear(); // clear list
+            this.__qkit__data = [null]; // data array
+            this.__qkit__firstIndex = 0; // first item index
+            this.__qkit__lastIndex = 0; // last item index
+            this.__qkit__size = 0; // size of this list
         } else { // if list is not empty
-            item = {prev: null, next: null, value: listItem.value}; // new item
-            this.__qkit__firstItem = item; // this list first item
-            for (listItem = listItem.next; listItem !== null; listItem = listItem.next) { // for all list items
-                item.next = {prev: item, next: null, value: listItem.value}; // new item in this list
-                item = item.next; // go to created item
+            thisData = [null, {prevIndex: 0, nextIndex: 0, value: listItem.value}]; // this data array
+            thisSize = 1; // this size
+            for (listItem = listData[listItem.nextIndex]; listItem !== null; listItem = listData[listItem.nextIndex]) { // for all list's items
+                thisData[thisSize++].nextIndex = thisSize;
+                thisData[thisSize] = {prevIndex: thisSize - 1, nextIndex: 0, value: listItem.value}
             }
-            this.__qkit__lastItem = item; // this list first item
-            this.__qkit__size = list.__qkit__size; // copy list size
+            this.__qkit__data = thisData; // this data array
+            this.__qkit__firstIndex = 1; // first item index
+            this.__qkit__lastIndex = thisSize; // last item index
+            this.__qkit__size = thisSize; // size of this list
         }
     } else if (arguments[0] instanceof Array) { // if LinkedList(array)
-        if (!(this instanceof List)) return new LinkedList(arguments[0]); // create new object if function was called without 'new' operator
+        var array = arguments[0]; // the array
+        if (!(this instanceof LinkedList)) return new LinkedList(array); // create new object if function was called without 'new' operator
         LinkedList.superClass.apply(this); // super class constructor
-        var size = 0; // the size of this list
-        arguments[0].forEach( // for each element of the array
-            function(element) { // callback
-                if (size++) { // if some items are added
-                    item.next = {prev: item, next: null, value: element}; // new item in this list
-                    item = item.next; // go to created item
-                } else { // if it is the first element
-                    item = {prev: null, next: null, value: listItem.value}; // new item
-                    this.__qkit__firstItem = item; // this list first item
-                }
+        thisData = [null]; // this data array
+        thisSize = 0; // this size
+        array.forEach( // for each item of the array
+            function(value) { // callback
+                if (thisSize++) thisData[thisSize - 1].nextIndex = thisSize;
+                thisData[thisSize] = {prevIndex: thisSize - 1, nextIndex: 0, value: value}
             }
         );
-        if (size) { // if some elements are added
-            this.__qkit__lastItem = item; // this list last item
-            this.__qkit__size = size; // list size
-        } else { // if no elements are added
-            this.clear(); // clear list
-        }
+        this.__qkit__data = thisData; // this data array
+        this.__qkit__firstIndex = thisSize > 0 ? 1 : 0; // first item index
+        this.__qkit__lastIndex = thisSize; // last item index
+        this.__qkit__size = thisSize; // size of this list
     } else { // if LinkedList()
         if (!(this instanceof LinkedList)) return new LinkedList(); // create new object if function was called without 'new' operator
         LinkedList.superClass.apply(this); // super class constructor
-        this.clear(); // clear list
+        this.__qkit__data = [null]; // data array
+        this.__qkit__firstIndex = 0; // first item index
+        this.__qkit__lastIndex = 0; // last item index
+        this.__qkit__size = 0; // size of this list
     }
 }
 LinkedList.inheritFrom(Object); // super class
 
 
 /*!
- * \brief Destructor.
- * \param doNotify send destroyed signal or not (true by default)
- */
-LinkedList.prototype.destroy = function(doNotify) {
-    if (doNotify === undefined || doNotify) this.destroyed(); // destroyed signal
-    this.clear(); // clear this list
-    LinkedList.superClass.destroy.apply(this, [false]); // super class destructor
-}
-
-
-/*!
- * \brief Insert a value at the end of the list.
+ * \brief Insert a value at the end of this list.
+ * \return this list
  * \param value the value to insert (if is an instance of LinkedList al it values will be added)
  */
 LinkedList.prototype.append = function(value) {
-    if (value === undefined) return; // return if value is undefined
-    if (this.__qkit__size++) { // if this list is not empty
-        this.__qkit__lastItem.next = {prev: this.__qkit__lastItem, next: null, value: value}; // new item in this list
-        this.__qkit__lastItem = this.__qkit__lastItem.next; // update this list last item
-    } else { // if this list is empty
-        this.__qkit__firstItem = {prev: null, next: null, value: value}; // new item in this list
-        this.__qkit__lastItem = this.__qkit__firstItem; // update this list last item
+    if (value === undefined) return undefined; // return if value is undefined
+    var thisData = this.__qkit__data; // this data array
+    if (value instanceof LinkedList) { // if value is a LinkedList instance
+        if (!value.__qkit__size) return this; // return if value list is empty
+        var valueItem = value.__qkit__firstItem; // value list iterator
+        var item = this.__qkit__lastItem; // this list iterator
+        if (item === null) { // if this list is empty
+            item = {prev: null, next: null, value: valueItem.value}; // new item
+            this.__qkit__firstItem = item; // update this first item
+            valueItem = valueItem.next; // update iterator
+        }
+        for (; valueItem !== null; valueItem = valueItem.next) { // for all value's items
+            item.next = {prev: item, next: null, value: valueItem.value}; // new item
+            item = item.next; // update iterator
+        }
+        this.__qkit__lastItem = item; // update this last item
+        this.__qkit__size += value.__qkit__size; // increase this size
+    } else { // if value is not a LinkedList instance
+        var newIndex = thisData.length; // index of new item
+        thisData[newIndex] = {prevIndex: this.__qkit__lastIndex, nextIndex: 0, value: value}; // new item
+        if (this.__qkit__size++) { // if this list is not empty
+            thisData[this.__qkit__lastIndex].nextIndex = newIndex;
+        } else { // if this list is empty
+            this.__qkit__firstIndex = newIndex; // update this first index
+        }
+        this.__qkit__lastIndex = newIndex; // update this last index
     }
+    return this;
 }
 
 
 /*!
  * \brief Remove all the items from the list.
+ * \return this list
  */
 LinkedList.prototype.clear = function() {
-    if (this.__qkit__firstItem !== undefined) { // if this list is constructed
-        var item = this.__qkit__firstItem; // iterator
-        while (item !== null) { // while there are items
-            var nextItem = item.next; // next item
-            delete item.prev; // delete link to previous item
-            delete item.next; // delete link to next item
-            item = nextItem; // go to next item
-        }
-    }
-    this.__qkit__firstIndex = null; // first item index
-    this.__qkit__lastIndex = null; // last item index
+    this.__qkit__data.length = 1; // resize data array
+    this.__qkit__firstIndex = 0; // first item index
+    this.__qkit__lastIndex = 0; // last item index
     this.__qkit__size = 0; // size of this list
+    return this;
 }
 
 
@@ -156,13 +165,14 @@ LinkedList.prototype.clear = function() {
 LinkedList.prototype.contains = function(value, compareFunction) {
     if (value === undefined) return false; // return if value is undefined
     if (!this.__qkit__size) return false; // return if this list is empty
+    var thisData = this.__qkit__data; // this data array
     var item; // iterator
     if (compareFunction === undefined) { // in compare function is undefined
-        for (item = this.__qkit__firstItem; item !== null; item = item.next) { // foa all items
+        for (item = thisData[this.__qkit__firstIndex]; item !== null; item = thisData[item.nextIndex]) { // foa all items
             if (item.value === value) return true; // return true if item is found
         }
     } else { // in compare function is defined
-        for (item = this.__qkit__firstItem; item !== null; item = item.next) { // foa all items
+        for (item = thisData[this.__qkit__firstIndex]; item !== null; item = thisData[item.nextIndex]) { // foa all items
             if (compareFunction(item.value, value)) return true; // return true if item is found
         }
     }
@@ -179,13 +189,14 @@ LinkedList.prototype.contains = function(value, compareFunction) {
 LinkedList.prototype.count = function(value, compareFunction) {
     if (value === undefined) return this.__qkit__size; // return the size if value is undefined
     var count = 0; // total count
+    var thisData = this.__qkit__data; // this data array
     var item; // iterator
     if (compareFunction === undefined) { // in compare function is undefined
-        for (item = this.__qkit__firstItem; item !== null; item = item.next) { // foa all items
+        for (item = thisData[this.__qkit__firstIndex]; item !== null; item = thisData[item.nextIndex]) { // foa all items
             if (item.value === value) count++; // increase the count if item is found
         }
     } else { // in compare function is defined
-        for (item = this.__qkit__firstItem; item !== null; item = item.next) { // foa all items
+        for (item = thisData[this.__qkit__firstIndex]; item !== null; item = thisData[item.nextIndex]) { // foa all items
             if (compareFunction(item.value, value)) count++; // increase the count if item is found
         }
     }
@@ -200,12 +211,35 @@ LinkedList.prototype.count = function(value, compareFunction) {
  * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined strict equality (===) will be used
  */
 LinkedList.prototype.endsWith = function(value, compareFunction) {
-    if (this.__qkit__lastItem === null) return false; // return if this list is empty
+    if (this.__qkit__size === 0) return false; // return if this list is empty
     if (compareFunction === undefined) { // if compare function is undefined
-        return this.__qkit__lastItem.value === value;
+        return this.__qkit__data[this.__qkit__lastIndex].value === value;
     } else { // if compare function id defined
-        return compareFunction(this.__qkit__lastItem.value, value);
+        return compareFunction(this.__qkit__data[this.__qkit__lastIndex].value, value);
     }
+}
+
+
+/*!
+ * \brief Compare this list with the other one.
+ * \return true if both lists contain the same values in the same order, false otherwise
+ * \param list the list to compare with
+ * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined strict equality (===) will be used
+ */
+LinkedList.prototype.equals = function(list, compareFunction) {
+    if (!(list instanceof LinkedList)) return undefined; // return if type is not valid
+    if (this.__qkit__size !== list.__qkit__size) return false; // return false if the sizes are not equal
+    var thisData = this.__qkit__data; // this data array
+    var item = thisData[this.__qkit__firstIndex]; // this iterator
+    if (item === null) return true; // return true if the lists are empty
+    var listData = this.__qkit__data; // this data array
+    var listItem = listData[list.__qkit__firstIndex]; // list's iterator
+    if (compareFunction === undefined) { // if compare function is not defined
+        for (; item !== null; item = thisData[item.nextIndex], listItem = listData[listItem.nextIndex]) if (item.value !== listItem.value) return false; // return false if some values are not equal
+    } else { // if compare function is defined
+        for (; item !== null; item = thisData[item.nextIndex], listItem = listData[listItem.nextIndex]) if (!compareFunction(item.value, listItem.value)) return false; // return false if some values are not equal
+    }
+    return true; // return true if no differences were found
 }
 
 
@@ -213,24 +247,22 @@ LinkedList.prototype.endsWith = function(value, compareFunction) {
  * \brief Get the first item.
  * \return the first item in the list
  */
-LinkedList.prototype.first = function() { return this.__qkit__firstItem === null ? undefined : this.__qkit__firstItem.value; }
+LinkedList.prototype.first = function() { return this.__qkit__size === 0 ? undefined : this.__qkit__data[this.__qkit__firstIndex].value; }
 
 
 /*!
  * \brief Executes a provided function once per each list item.
+ * \return this list
  * \param callback function to execute for each item - function(value, index, list)
  * \param thisArg object to use as this when executing callback
  */
 LinkedList.prototype.forEach = function(callback, thisArg) {
-    if ((callback === undefined) || !(callback instanceof Function)) return; // return if callback is not a function
-    if (!this.__qkit__size) return false; // return if this list is empty
-    var data = []; // data array reversed copy
-    for (var item = this.__qkit__lastItem; item !== null; item = item.prev) { // foa all items
-        data.push(item.value); // add items value to the copy
-    }
-    var index = data.length; // to the end of copy
-    var lastIndex = index - 1; // last index of the data array
-    while (index--) callback.apply(thisArg, [data[index], lastIndex - index, this]); // apply callback function to each item
+    if (!(callback instanceof Function)) return undefined; // return if callback is not a function
+    var data = this.toArray(); // this data as Array
+    var length = data.length; // data length
+    var index = -1; // iterator
+    while (++index < length) callback.apply(thisArg, [data[index], index, this]); // apply callback function to each item
+    return this;
 }
 
 
@@ -238,29 +270,33 @@ LinkedList.prototype.forEach = function(callback, thisArg) {
  * \brief Test the list for emptiness.
  * \return true if the list has size 0, false otherwise
  */
-LinkedList.prototype.isEmpty = function() { return !this.__qkit__size; }
+LinkedList.prototype.isEmpty = function() { return this.__qkit__size === 0; }
 
 
 /*!
  * \brief Get the last item.
  * \return the last item in the list
  */
-LinkedList.prototype.last = function() { return this.__qkit__lastItem === null ? undefined : this.__qkit__lastItem.value; }
+LinkedList.prototype.last = function() { return this.__qkit__size === 0 ? undefined : this.__qkit__data[this.__qkit__lastIndex].value; }
 
 
 /*!
- * \brief Insert a value at the beginning of the list.
+ * \brief Insert a value at the beginning of this list.
+ * \return this list
  * \param value the value to insert
  */
 LinkedList.prototype.prepend = function(value) {
-    if (value === undefined) return; // return if value is undefined
+    if (value === undefined) return undefined; // return if value is undefined
+    var thisData = this.__qkit__data; // this data array
+    var newIndex = thisData.length; // index of new item
+    thisData[newIndex] = {prevIndex: 0, nextIndex: this.__qkit__firstIndex, value: value}; // new item
     if (this.__qkit__size++) { // if this list is not empty
-        this.__qkit__firstItem.prev = {prev: null, next: this.__qkit__firstItem, value: value}; // new item in this list
-        this.__qkit__firstItem = this.__qkit__firstItem.prev; // update this list first item
+        thisData[this.__qkit__firstIndex].prevIndex = newIndex;
     } else { // if this list is empty
-        this.__qkit__firstItem = {prev: null, next: null, value: value}; // new item in this list
-        this.__qkit__lastItem = this.__qkit__firstItem; // update this list last item
+        this.__qkit__lastIndex = newIndex; // update this first index
     }
+    this.__qkit__firstIndex = newIndex; // update this last index
+    return this;
 }
 
 
@@ -274,48 +310,47 @@ LinkedList.prototype.removeAll = function(value, compareFunction) {
     if (value === undefined) return 0; // return of value is undefined
     if (compareFunction === undefined) compareFunction = function(value1, value2) { return value1 === value2; } // use strict equality if compare function is undefined
     var count = 0; // count of removed items
-    var firstItem = this.__qkit__firstItem; // iterator of the first item
-    while (firstItem !== null && compareFunction(firstItem.value, value)) { // for first items with value
-        var itemNext = firstItem.next; // next item
-        delete firstItem.prev; // delete link to previous item
-        delete firstItem.next; // delete link to next item
-        firstItem = itemNext; // go to the next item
+    var thisData = this.__qkit__data; // this data array
+    var firstIndex = this.__qkit__firstIndex; // iterator of the first item
+    while (firstIndex !== 0 && compareFunction(thisData[firstIndex].value, value)) { // for first items with value
+        var nextIndex = thisData[firstIndex].nextIndex; // next indexdex
+        delete thisData[firstIndex]; // delete item from this data array
+        firstIndex = nextIndex; // update iterator
         count++; // increase the count of removed
     }
-    this.__qkit__firstItem = firstItem; // update the first item
-    if (firstItem === null) { // if all items were removed
-        this.__qkit__lastItem = null; // update the last item
+    this.__qkit__firstIndex = firstIndex // update this first item index
+    if (firstIndex === 0) { // if all items were removed
+        this.__qkit__lastIndex = 0; // update the last item index
         this.__qkit__size = 0; // no more items
         return count;
     }
-    firstItem.prev = null; // the first item doesn't have previous
-    var lastItem = this.__qkit__lastItem; // iterator of the last item
-    while (lastItem !== null && compareFunction(lastItem.value, value)) { // for last items with value
-        var itemPrev = lastItem.prev; // previous item
-        delete lastItem.prev; // delete link to previous item
-        delete lastItem.next; // delete link to next item
-        lastItem = itemPrev; // go to the previous item
+    thisData[firstIndex].prevIndex = 0; // the first item doesn't have previous
+    var lastIndex = this.__qkit__lastIndex; // iterator of the last item
+    while (lastIndex !== 0 && compareFunction(thisData[lastIndex].value, value)) { // for last items with value
+        var prevIndex = thisData[lastIndex].prevIndex; // previous index
+        delete thisData[lastIndex]; // delete item from this data array
+        lastIndex = prevIndex; // update iterator
         count++; // increase the count of removed
     }
-    this.__qkit__lastItem = lastItem; // update the last item
-    lastItem.next = null; // the last item doesn't have next
-    if (lastItem === firstItem) { // if only one item rest
+    this.__qkit__lastIndex = lastIndex; // update this last item index
+    thisData[lastIndex].nextIndex = 0; // the last item doesn't have next
+    if (lastIndex === firstIndex) { // if only one item rest
         this.__qkit__size = 1; // update the size
         return count;
     }
-    var item = firstItem.next;
-    while (item !== lastItem) { // for all items between first and last
+    var index = thisData[firstIndex].nextIndex;
+    while (index !== lastIndex) { // for all items between first and last
+        var item = thisData[index]; // item
         if (compareFunction(item.value, value)) { // if item to remove
-            itemPrev = item.prev; // previous item
-            delete item.prev; // delete link to previous item
-            itemNext = item.next; // next item
-            delete item.next; // delete link to next item
-            itemPrev.next = itemNext;
-            itemNext.prev = itemPrev;
-            item = itemNext; // go to the next item
+            prevIndex = item.prevIndex; // previous item index
+            nextIndex = item.nextIndex; // next item index
+            thisData[prevIndex].nextIndex = nextIndex;
+            thisData[nextIndex].prevIndex = prevIndex;
+            delete thisData[index]; // delete item from this data array
+            index = nextIndex; // update iterator
             count++; // increase the count of removed
         } else { // if item to left
-            item = item.next; // next item
+            index = item.nextIndex; // update iterator
         }
     }
     this.__qkit__size -= count; // decrease the size
@@ -325,37 +360,41 @@ LinkedList.prototype.removeAll = function(value, compareFunction) {
 
 /*!
  * \brief Remove the first item in the list.
+ * \return this list
  */
 LinkedList.prototype.removeFirst = function() {
-    var firstItem = this.__qkit__firstItem; // this first item
-    if (firstItem === null) return; // return if this list is empty
+    var firstIndex = this.__qkit__firstIndex; // this first item index
+    if (firstIndex === 0) return; // return if this list is empty
+    var thisData = this.__qkit__data; // this data array
     if (--this.__qkit__size) { // if not all elements will be removed
-        this.__qkit__firstItem = firstItem.next; // update this first item
-        this.__qkit__firstItem.prev = null; // the first item doesn't have previous
+        this.__qkit__firstIndex = thisData[firstIndex].nextIndex; // update this first item index
+        thisData[this.__qkit__firstIndex].prevIndex = 0; // the first item doesn't have previous
     } else { // if all elements will be removed
-        this.__qkit__firstItem = null; // update this first item
-        this.__qkit__lastItem = null; // update this last item
+        this.__qkit__firstIndex = 0; // update this first item index
+        this.__qkit__lastIndex = 0; // update this last item index
     }
-    delete firstItem.prev; // delete link to previous item
-    delete firstItem.next; // delete link to next item
+    delete thisData[firstIndex]; // delete item from this data array
+    return this;
 }
 
 
 /*!
  * \brief Remove the last item in the list.
+ * \return this list
  */
 LinkedList.prototype.removeLast = function() {
-    var lastItem = this.__qkit__lastItem; // this last item
-    if (lastItem === null) return; // return if this list is empty
+    var lastIndex = this.__qkit__lastIndex; // this last item index
+    if (lastIndex === 0) return; // return if this list is empty
+    var thisData = this.__qkit__data; // this data array
     if (--this.__qkit__size) { // if not all elements will be removed
-        this.__qkit__lastItem = lastItem.prev; // update this last item
-        this.__qkit__lastItem.next = null; // the last item doesn't have next
+        this.__qkit__lastIndex = thisData[lastIndex].prevIndex; // update this last item index
+        thisData[this.__qkit__lastIndex].nextIndex = 0; // the last item doesn't have next
     } else { // if all elements will be removed
-        this.__qkit__firstItem = null; // update this first item
-        this.__qkit__lastItem = null; // update this last item
+        this.__qkit__firstIndex = 0; // update this first item index
+        this.__qkit__lastIndex = 0; // update this last item index
     }
-    delete lastItem.prev; // delete link to previous item
-    delete lastItem.next; // delete link to next item
+    delete thisData[lastIndex]; // delete item from this data array
+    return this;
 }
 
 
@@ -366,26 +405,29 @@ LinkedList.prototype.removeLast = function() {
  * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined strict equality (===) will be used
  */
 LinkedList.prototype.removeOne = function(value, compareFunction) {
-    if (value === undefined) return false; // return if value is undefined
-    if (!this.__qkit__size) return false; // return if list is empty
+    if (value === undefined) return undefined; // return if value is undefined
+    if (this.__qkit__size === 0) return false; // return if list is empty
     if (compareFunction === undefined) compareFunction = function(value1, value2) { return value1 === value2; } // use strict equality if compare function is undefined
-    for (var item = this.__qkit__firstItem; item !== null; item = item.next) { // for all items
+    var thisData = this.__qkit__data; // this data array
+    var index = this.__qkit__firstIndex; // iterator
+    while (index) { // while item exists
+        var item = thisData[index]; // this item
         if (compareFunction(item.value, value)) { // if item to remove
-            if (item === this.__qkit__firstItem) { // if first item
+            if (index === this.__qkit__firstIndex) { // if first item
                 this.removeFirst(); // remove this first item
-            } else if (item === this.__qkit__lastItem) { // if last item
+            } else if (index === this.__qkit__lastIndex) { // if last item
                 this.removeLast(); // remove this last item
             } else { // if middle item
-                var itemPrev = item.prev; // previous item
-                delete item.prev; // delete link to previous item
-                var itemNext = item.next; // next item
-                delete item.next; // delete link to next item
-                itemPrev.next = itemNext;
-                itemNext.prev = itemPrev;
+                var prevIndex = item.prevIndex; // previous item index
+                var nextIndex = item.nextIndex; // next item index
+                thisData[prevIndex].nextIndex = nextIndex;
+                thisData[nextIndex].prevIndex = prevIndex;
+                delete thisData[index]; // delete item from this data array
+                this.__qkit__size--; // decrease the size
             }
-            this.__qkit__size--; // decrease the size
             return true; // an item was removed
         }
+        index = item.nextIndex; // update iterator
     }
     return false; // no item was removed
 }
@@ -405,30 +447,35 @@ LinkedList.prototype.size = function() { return this.__qkit__size; }
  * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined strict equality (===) will be used
  */
 LinkedList.prototype.startsWith = function(value, compareFunction) {
-    if (this.__qkit__firstItem === null) return false; // return if this list is empty
+    if (this.__qkit__size === 0) return false; // return if this list is empty
     if (compareFunction === undefined) { // if compare function is undefined
-        return this.__qkit__firstItem.value === value;
+        return this.__qkit__data[this.__qkit__firstIndex].value === value;
     } else { // if compare function id defined
-        return compareFunction(this.__qkit__firstItem.value, value);
+        return compareFunction(this.__qkit__data[this.__qkit__firstIndex].value, value);
     }
 }
 
 
 /*!
  * \brief Swap other list with this list.
+ * \return this list
  * \param list the list to swap with
  */
-LinkedList.prototype.swap(list) = function() {
-    if (list instanceof LinkedList) return; // return if type is not valid
-    var temp = this.__qkit__firstItem; // backup this first item
-    this.__qkit__firstItem = list.__qkit__firstItem; // update this first item
-    list.__qkit__firstItem = temp; // update list first item
-    temp = this.__qkit__lastItem; // backup this last item
-    this.__qkit__lastItem = list.__qkit__lastItem; // update this last item
-    list.__qkit__lastItem = temp; // update list last item
+LinkedList.prototype.swap = function(list) {
+    if (!(list instanceof LinkedList)) return; // return if type is not valid
+    var temp = this.__qkit__data; // backup this data array
+    this.__qkit__data = list.__qkit__data; // update this data array
+    list.__qkit__data = temp; // update list data array
+    temp = this.__qkit__firstIndex; // backup this first item index
+    this.__qkit__firstIndex = list.__qkit__firstIndex; // update this first item index
+    list.__qkit__firstIndex = temp; // update list first item index
+    temp = this.__qkit__lastIndex; // backup this last item index
+    this.__qkit__lastIndex = list.__qkit__lastIndex; // update this last item index
+    list.__qkit__lastIndex = temp; // update list last item index
     temp = this.__qkit__size; // backup this size
     this.__qkit__size = list.__qkit__lastItem; // update this size
     list.__qkit__size = temp; // update list size
+    return this;
 }
 
 
@@ -437,18 +484,19 @@ LinkedList.prototype.swap(list) = function() {
  * \return value of removed item
  */
 LinkedList.prototype.takeFirst = function() {
-    var firstItem = this.__qkit__firstItem; // this first item
-    if (firstItem === null) return undefined; // return if this list is empty
+    var firstIndex = this.__qkit__firstIndex; // this first item index
+    if (firstIndex === 0) return undefined; // return if this list is empty
+    var thisData = this.__qkit__data; // this data array
     if (--this.__qkit__size) { // if not all elements will be removed
-        this.__qkit__firstItem = firstItem.next; // update this first item
-        this.__qkit__firstItem.prev = null; // the first item doesn't have previous
+        this.__qkit__firstIndex = thisData[firstIndex].nextIndex; // update this first item index
+        thisData[this.__qkit__firstIndex].prevIndex = 0; // the first item doesn't have previous
     } else { // if all elements will be removed
-        this.__qkit__firstItem = null; // update this first item
-        this.__qkit__lastItem = null; // update this last item
+        this.__qkit__firstIndex = 0; // update this first item index
+        this.__qkit__lastIndex = 0; // update this last item index
     }
-    delete firstItem.prev; // delete link to previous item
-    delete firstItem.next; // delete link to next item
-    return firstItem.value; // return items value
+    var value = thisData[firstIndex].value; // item's value
+    delete thisData[firstIndex]; // delete item from this data array
+    return value;
 }
 
 
@@ -457,16 +505,36 @@ LinkedList.prototype.takeFirst = function() {
  * \return value of removed item
  */
 LinkedList.prototype.takeLast = function() {
-    var lastItem = this.__qkit__lastItem; // this last item
-    if (lastItem === null) return; // return if this list is empty
+    var lastIndex = this.__qkit__lastIndex; // this last item index
+    if (lastIndex === 0) return; // return if this list is empty
+    var thisData = this.__qkit__data; // this data array
     if (--this.__qkit__size) { // if not all elements will be removed
-        this.__qkit__lastItem = lastItem.prev; // update this last item
-        this.__qkit__lastItem.next = null; // the last item doesn't have next
+        this.__qkit__lastIndex = thisData[lastIndex].prevIndex; // update this last item index
+        thisData[this.__qkit__lastIndex].nextIndex = 0; // the last item doesn't have next
     } else { // if all elements will be removed
-        this.__qkit__firstItem = null; // update this first item
-        this.__qkit__lastItem = null; // update this last item
+        this.__qkit__firstIndex = 0; // update this first item index
+        this.__qkit__lastIndex = 0; // update this last item index
     }
-    delete lastItem.prev; // delete link to previous item
-    delete lastItem.next; // delete link to next item
-    return lastItem.value; // return items value
+    var value = thisData[lastIndex].value; // item's value
+    delete thisData[lastIndex]; // delete item from this data array
+    return value;
 }
+
+
+/*!
+ * \brief Generate an array with the data contained in this list.
+ * \return generated Array instance
+ */
+LinkedList.prototype.toArray = function() {
+    var array = []; // result array
+    var thisData = this.__qkit__data; // this data array
+    for(var item = thisData[this.__qkit__firstIndex]; item !== null; item = thisData[item.nextIndex]) array.push(item.value); // add all values to the array
+    return array;
+}
+
+
+/*!
+ * \brief This method that is automatically called when the object is to be represented as a text value or when an object is referred to in a manner in which a string is expected.
+ * \return one string containing each item separated by commas
+ */
+LinkedList.prototype.toString = function() { return '[' + this.toArray().toString() + ']'; }

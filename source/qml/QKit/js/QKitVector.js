@@ -93,12 +93,14 @@ Vector.inheritFrom(Object); // super class
 
 
 /*!
- * \brief Insert a value at the end of the vector.
+ * \brief Insert a value at the end of this vector.
+ * \return this vector
  * \param value the value to insert
  */
 Vector.prototype.append = function(value) {
-    if (value === undefined) return; // return if value is undefined
+    if (value === undefined) return undefined; // return if value is undefined
     this.__qkit__data.push(value);
+    return this;
 }
 
 
@@ -112,8 +114,12 @@ Vector.prototype.at = function(index) { return this.__qkit__data[index]; }
 
 /*!
  * \brief Remove all the items from the vector.
+ * \return this vector
  */
-Vector.prototype.clear = function() { this.__qkit__data.length = 0; }
+Vector.prototype.clear = function() {
+    this.__qkit__data.length = 0; // clear this data array
+    return this;
+}
 
 
 /*!
@@ -180,7 +186,29 @@ Vector.prototype.endsWith = function(value, compareFunction) {
 
 
 /*!
+ * \brief Compare this vector with the other one.
+ * \return true if both vectors contain the same values in the same order, false otherwise
+ * \param vector the vector to compare with
+ * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined strict equality (===) will be used
+ */
+Vector.prototype.equals = function(vector, compareFunction) {
+    if (!(vector instanceof Vector)) return undefined; // return if type is not valid
+    var thisData = this.__qkit__data; // this data array
+    var vectorData = vector.__qkit__data; // vector's data array
+    var index = thisData.length; // iterator
+    if (index !== vectorData.length) return false; // return false if the sizes are not equal
+    if (compareFunction === undefined) { // if compare function is not defined
+        while (index--) if (thisData[index] !== vectorData[index]) return false; // return false if some values are not equal
+    } else { // if compare function is defined
+        while (index--) if (!compareFunction(thisData[index], vectorData[index])) return false; // return false if some values are not equal
+    }
+    return true; // return true if no differences were found
+}
+
+
+/*!
  * \brief Assign a value to all items in the vector.
+ * \return this vector
  * \param value value to assign
  * \param size if not undefined the vector is resized to size size beforehand
  */
@@ -195,6 +223,7 @@ Vector.prototype.fill = function(value, size) {
     }
     thisData.length = size; // resize the array
     while (size--) thisData[size] = value; // set value for each item
+    return this;
 }
 
 
@@ -207,11 +236,12 @@ Vector.prototype.first = function() { return this.__qkit__data[0]; }
 
 /*!
  * \brief Executes a provided function once per each vector item.
+ * \return this vector
  * \param callback function to execute for each item - function(value, index, vector)
  * \param thisArg object to use as this when executing callback
  */
 Vector.prototype.forEach = function(callback, thisArg) {
-    if ((callback === undefined) || !(callback instanceof Function)) return; // return if callback is not a function
+    if (!(callback instanceof Function)) return undefined; // return if callback is not a function
     var thisData = this.__qkit__data; // data array of this vector
     var lastIndex = thisData.length - 1; // last index of the data array
     var data = []; // data array reversed copy
@@ -219,6 +249,7 @@ Vector.prototype.forEach = function(callback, thisArg) {
     while (index--) data.push(thisData[index]); // add all items to the copy
     index = lastIndex + 1; // to the end of copy
     while (index--) callback.apply(thisArg, [data[index], lastIndex - index, this]); // apply callback function to each item
+    return this;
 }
 
 
@@ -254,6 +285,7 @@ Vector.prototype.indexOf = function(value, from, compareFunction) {
 
 /*!
  * \brief Insert items to the vector.
+ * \return this vector
  * \param value the value to insert
  * \param index position of first inserted value after insertion (last by default)
  * \param count the count of values to insert (1 by default)
@@ -267,16 +299,16 @@ Vector.prototype.insert = function(value, index, count) {
         index = Math.floor(index); // make index integer
         if (index < 0) { // if index is negative
             index += thisData.length; // count from last item
-            if (index < 0) return; // return if index is negative
+            if (index < 0) return undefined; // return if index is negative
         } else if (index > thisData.length) { // if index is greater than the last position
-            return; // return
+            return undefined; // return
         }
     }
     if (count === undefined) { // if count is not defined
         count = 1; // insert one value by default
     } else { // if count is defined
         count = Math.floor(count); // make count integer
-        if (count <= 0) return; // return if count is not positive
+        if (count <= 0) return this; // return if count is not positive
     }
     if (index < thisData.length) { // if insertion before some item
         var shiftedIndex = index + count; // new index of item at index position
@@ -287,6 +319,7 @@ Vector.prototype.insert = function(value, index, count) {
     } else { // if insertion at the end
         while (count--) thisData.push(value); // add count of values
     }
+    return this;
 }
 
 
@@ -386,13 +419,18 @@ Vector.prototype.mid = function(start, length) {
 
 /*!
  * \brief Insert a value at the beginning of the vector.
+ * \return this vector
  * \param value the value to insert
  */
-Vector.prototype.prepend = function(value) { this.__qkit__data.unshift(value === undefined ? null : value); }
+Vector.prototype.prepend = function(value) {
+    this.__qkit__data.unshift(value === undefined ? null : value);
+    return this;
+}
 
 
 /*!
  * \brief Remove items from the vector.
+ * \return this vector
  * \param index position of first item to remove (by default last items will be removed)
  * \param count the count of values to remove (1 by default)
  */
@@ -401,7 +439,7 @@ Vector.prototype.remove = function(index, count) {
         count = 1; // 1 by default
     } else { // if count is defined
         count = Math.floor(count); // make count integer
-        if (count <= 0) return; // return if count is not positive
+        if (count <= 0) return this; // return if count is not positive
     }
     var thisData = this.__qkit__data; // data array of this vector
     if (index === undefined) { // if index is undefined
@@ -411,9 +449,9 @@ Vector.prototype.remove = function(index, count) {
     }
     if (index < 0) { // if index is negative
         index += thisData.length; // count from last item
-        if (index < 0) return; // return if index is negative
+        if (index < 0) return undefined; // return if index is negative
     } else if (index >= thisData.length) { // if index is greater than the last position
-        return; // return
+        return undefined; // return
     }
     if (index + count >= thisData.length) { // if remove last items
         thisData.length = index; // decrease length
@@ -422,27 +460,32 @@ Vector.prototype.remove = function(index, count) {
         while (i-- > index) thisData[i] = thisData[i + count]; // shift items
         thisData.length -= count; // resize
     }
+    return this;
 }
 
 
 /*!
  * \brief Replace the items value.
+ * \return this vector
  * \param index valid index position
  * \param value new value for the item
  */
 Vector.prototype.replace = function(index, value) {
-    if (index === undefined) return; // return if index is undefined
+    if (index === undefined) return undefined; // return if index is undefined
     index = Math.floor(index); // make index integer
-    if (index < 0 || index >= this.__qkit__data.length) return; // return if index is not valid
+    if (index < 0 || index >= this.__qkit__data.length) return undefined; // return if index is not valid
     this.__qkit__data[index] = value === undefined ? null : value; // replace value
+    return this;
 }
 
 
 /*!
  * \brief Sets the size of the vector.
+ * \return this vector
  * \param size new size
 */
 Vector.prototype.resize = function(size) {
+    if (size === undefined) return undefined; // return if size is undefined
     size = Math.floor(size); // make size integer
     var thisData = this.__qkit__data; // data array of this vector
     if (size > thisData.length) { // if new size is greater than the old
@@ -451,6 +494,7 @@ Vector.prototype.resize = function(size) {
     } else { // if new size is lower than the old
         thisData.length = size; // decrease the size
     }
+    return this;
 }
 
 
@@ -479,14 +523,30 @@ Vector.prototype.startsWith = function(value, compareFunction) {
 
 /*!
  * \brief Swap other vector with this vector.
+ * \return this vector
  * \param vector the vector to swap with
  */
 Vector.prototype.swap = function(vector) {
-    if (!(vector instanceof Vector)) return; // return if type is not valid
+    if (!(vector instanceof Vector)) return undefined; // return if type is not valid
     var tempData = this.__qkit__data; // backup this data
     this.__qkit__data = vector.__qkit__data; // update this data
     vector.__qkit__data = tempData; // update vector data
+    return this;
 }
+
+
+/*!
+ * \brief Generate an array with the data contained in this vector.
+ * \return generated Array instance
+ */
+Vector.prototype.toArray = function() { return this.__qkit__data.slice(0); }
+
+
+/*!
+ * \brief This method that is automatically called when the object is to be represented as a text value or when an object is referred to in a manner in which a string is expected.
+ * \return one string containing each item separated by commas
+ */
+Vector.prototype.toString = function() { return '[' + this.__qkit__data.toString() + ']'; }
 
 
 /*!

@@ -43,9 +43,7 @@ var __qkit__objects = []; //!< array of objects
  */
 function Object() {
     if (!(this instanceof Object)) return new Object(); // create new object if function was called without 'new' operator
-
-    this.__qkit__id = __qkit__objects.length; // object id
-    __qkit__objects.push(this); // add new object to array
+    this.__qkit__id = null; // object id
     this.destroyed = Signal(); // emitted immediately before the object is destroyed
 }
 
@@ -56,7 +54,7 @@ function Object() {
  */
 Object.prototype.destroy = function(doNotify) {
     if (doNotify === undefined || doNotify) this.destroyed(); // destroyed signal
-    if (this.__qkit__id !== undefined) delete __qkit__objects[this.__qkit__id]; // delete from objects array if id is defined
+    if (this.__qkit__id !== null) delete __qkit__objects[this.__qkit__id]; // delete from objects array if id is defined
     for (var propertyName in this) { // for all properties
         if (this.hasOwnProperty(propertyName)) { // if own property
             if (this[propertyName].hasOwnProperty('__qkit__signal')) { // if signal
@@ -94,6 +92,8 @@ function instance(id) { return __qkit__objects[id]; }
  */
 function create(objectClass, constructorArguments) {
     var object = eval(objectClass).apply(this, constructorArguments); // create new object
+    object.__qkit__id = __qkit__objects.length; // object id
+    __qkit__objects.push(object); // add new object to array
     return object.id(); // return id of created object
 }
 
