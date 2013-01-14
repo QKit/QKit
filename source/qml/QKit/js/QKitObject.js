@@ -35,16 +35,13 @@
 *                                                                              *
 *******************************************************************************/
 
-var __qkit__objects = []; //!< array of objects
-
-
 /*!
  * \brief Base object class.
  */
-function Object() {
-    if (!(this instanceof Object)) return new Object(); // create new object if function was called without 'new' operator
+QKit.Object = function() {
+    if (!(this instanceof QKit.Object)) return new QKit.Object(); // create new object if function was called without 'new' operator
     this.__qkit__id = null; // object id
-    this.destroyed = Signal(); // emitted immediately before the object is destroyed
+    this.destroyed = QKit.Signal(); // emitted immediately before the object is destroyed
 }
 
 
@@ -52,9 +49,9 @@ function Object() {
  * \brief Destructor.
  * \param doNotify send destroyed signal or not (true by default)
  */
-Object.prototype.destroy = function(doNotify) {
+QKit.Object.prototype.destroy = function(doNotify) {
     if (doNotify === undefined || doNotify) this.destroyed(); // destroyed signal
-    if (this.__qkit__id !== null) delete __qkit__objects[this.__qkit__id]; // delete from objects array if id is defined
+    if (this.__qkit__id !== null) delete QKit.__objects[this.__qkit__id]; // delete from objects array if id is defined
     for (var propertyName in this) { // for all properties
         if (this.hasOwnProperty(propertyName)) { // if own property
             if (this[propertyName].hasOwnProperty('__qkit__signal')) { // if signal
@@ -73,37 +70,4 @@ Object.prototype.destroy = function(doNotify) {
  * \brief Get object id.
  * \return id number
  */
-Object.prototype.id = function() { return this.__qkit__id; }
-
-
-/*!
- * \brief Get existing object by id.
- * \return object or null if there is no object with specified id
- * \param id object id
- */
-function instance(id) { return __qkit__objects[id]; }
-
-
-/*!
- * \brief Create new object.
- * \return object id
- * \param objectClass class of object to create
- * \param constructorArguments array of arguments for constructor
- */
-function create(objectClass, constructorArguments) {
-    var object = eval(objectClass).apply(this, constructorArguments); // create new object
-    object.__qkit__id = __qkit__objects.length; // object id
-    __qkit__objects.push(object); // add new object to array
-    return object.id(); // return id of created object
-}
-
-
-/*!
- * \brief Delete existing object.
- * \param id list id
- */
-function destroy(id) {
-    var object = instance(id); // object by id
-    if (object === null) return; // return if not existing
-    object.destroy(); // destroy object
-}
+QKit.Object.prototype.id = function() { return this.__qkit__id; }

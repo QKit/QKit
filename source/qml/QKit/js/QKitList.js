@@ -52,13 +52,13 @@
  * \brief Construct a copy of list.
  * \param list the list to copy
  */
-function List() {
+QKit.List = function() {
     var thisData; // this data array
     var index = 2147483647; // iterator (default first index)
-    if (arguments[0] instanceof List) { // if List(list)
+    if (arguments[0] instanceof QKit.List) { // if List(list)
         var list = arguments[0]; // the other list
-        if (!(this instanceof List)) return new List(list); // create new object if function was called without 'new' operator
-        List.superClass.apply(this); // super class constructor
+        if (!(this instanceof QKit.List)) return new QKit.List(list); // create new object if function was called without 'new' operator
+        QKit.List.superClass.apply(this); // super class constructor
         var listData = list.__qkit__data; // list's data array
         var firstIndex = list.__qkit__firstIndex; // first item index
         thisData = []; // this data array
@@ -68,22 +68,22 @@ function List() {
         this.__qkit__data = thisData; // this data array
         this.__qkit__firstIndex = firstIndex; // this first item index
     } else if (arguments[0] instanceof Array) { // if List(array)
-        if (!(this instanceof List)) return new List(arguments[0]); // create new object if function was called without 'new' operator
-        List.superClass.apply(this); // super class constructor
+        if (!(this instanceof QKit.List)) return new QKit.List(arguments[0]); // create new object if function was called without 'new' operator
+        QKit.List.superClass.apply(this); // super class constructor
         this.__qkit__firstIndex = index; // index of the first item
         thisData = []; // this data array
         thisData.length = index;
         arguments[0].forEach(function(element) { thisData[index++] = element; }, this); // add each item to the list
         this.__qkit__data = thisData; // this data array
     } else { // if List()
-        if (!(this instanceof List)) return new List(); // create new object if function was called without 'new' operator
-        List.superClass.apply(this); // super class constructor
+        if (!(this instanceof QKit.List)) return new QKit.List(); // create new object if function was called without 'new' operator
+        QKit.List.superClass.apply(this); // super class constructor
         this.__qkit__firstIndex = index; // index of the first item
         this.__qkit__data = []; // values array
         this.__qkit__data.length = this.__qkit__firstIndex;
     }
 }
-List.inheritFrom(Object); // super class
+QKit.List.inheritFrom(QKit.Object); // super class
 
 
 /*!
@@ -91,11 +91,11 @@ List.inheritFrom(Object); // super class
  * \return this list
  * \param value the value to insert (if is an instance of List al it values will be added)
  */
-List.prototype.append = function(value) {
+QKit.List.prototype.append = function(value) {
     if (value === undefined) return undefined; // return if value is undefined
     var thisData = this.__qkit__data; // data array of this list
     var index = thisData.length; // internal index of the first item to append
-    if (value instanceof List) { // if value is a List instance
+    if (value instanceof QKit.List) { // if value is a List instance
         var valueData = value.__qkit_data; // data array of value list
         var valueFirstIndex = value.__qkit__firstIndex; // first item index of value list
         var valueIndex = valueData.length; // max index for value list
@@ -113,14 +113,14 @@ List.prototype.append = function(value) {
  * \return the item at the index position
  * \param index the position index
  */
-List.prototype.at = function(index) { return index === undefined ? undefined : this.__qkit__data[Math.floor(index) + this.__qkit__firstIndex]; }
+QKit.List.prototype.at = function(index) { return index === undefined ? undefined : this.__qkit__data[Math.floor(index) + this.__qkit__firstIndex]; }
 
 
 /*!
  * \brief Remove all the items from the list.
  * \return this list
  */
-List.prototype.clear = function() {
+QKit.List.prototype.clear = function() {
     this.__qkit__data.length = this.__qkit__firstIndex;
     return this;
 }
@@ -132,7 +132,7 @@ List.prototype.clear = function() {
  * \param value the value to check
  * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined strict equality (===) will be used
  */
-List.prototype.contains = function(value, compareFunction) {
+QKit.List.prototype.contains = function(value, compareFunction) {
     if (value === undefined) return false; // return if value is undefined
     var thisData = this.__qkit__data; // data array of this list
     var valueFirstIndex = value.__qkit__firstIndex; // first item index of value list
@@ -152,7 +152,7 @@ List.prototype.contains = function(value, compareFunction) {
  * \param value value to check, if undefined count of all items will be returned
  * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined strict equality (===) will be used
  */
-List.prototype.count = function(value, compareFunction) {
+QKit.List.prototype.count = function(value, compareFunction) {
     if (value === undefined) return this.size(); // return the size if value is undefined
     var count = 0; // total count
     var thisData = this.__qkit__data; // data array of this list
@@ -173,7 +173,7 @@ List.prototype.count = function(value, compareFunction) {
  * \param value value to check
  * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined strict equality (===) will be used
  */
-List.prototype.endsWith = function(value, compareFunction) {
+QKit.List.prototype.endsWith = function(value, compareFunction) {
     var thisData = this.__qkit__data; // data array of this list
     if (thisData.length <= this.__qkit__firstIndex) return false; // return if is empty
     if (compareFunction === undefined) { // if compare function is undefined
@@ -190,8 +190,8 @@ List.prototype.endsWith = function(value, compareFunction) {
  * \param list the list to compare with
  * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined strict equality (===) will be used
  */
-List.prototype.equals = function(list, compareFunction) {
-    if (!(list instanceof List)) return undefined; // return if type is not valid
+QKit.List.prototype.equals = function(list, compareFunction) {
+    if (!(list instanceof QKit.List)) return undefined; // return if type is not valid
     var thisData = this.__qkit__data; // this data array
     var listData = list.__qkit__data; // list's data array
     var thisFirstIndex = this.__qkit__firstIndex; // this first item index
@@ -212,7 +212,7 @@ List.prototype.equals = function(list, compareFunction) {
  * \brief Get the first item.
  * \return the first item in the list
  */
-List.prototype.first = function() { return this.__qkit__data[this.__qkit__firstIndex]; }
+QKit.List.prototype.first = function() { return this.__qkit__data[this.__qkit__firstIndex]; }
 
 
 /*!
@@ -221,7 +221,7 @@ List.prototype.first = function() { return this.__qkit__data[this.__qkit__firstI
  * \param callback function to execute for each item - function(value, index, list)
  * \param thisArg object to use as this when executing callback
  */
-List.prototype.forEach = function(callback, thisArg) {
+QKit.List.prototype.forEach = function(callback, thisArg) {
     if (!(callback instanceof Function)) return undefined; // return if callback is not a function
     var data = []; // data array reversed copy
     var thisFirstIndex = this.__qkit__firstIndex; // first item index of this list
@@ -242,7 +242,7 @@ List.prototype.forEach = function(callback, thisArg) {
  * \param from index position for forward search (first item by default)
  * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined strict equality (===) will be used
  */
-List.prototype.indexOf = function(value, from, compareFunction) {
+QKit.List.prototype.indexOf = function(value, from, compareFunction) {
     if (value === undefined) return false; // return of value is undefined
     var thisData = this.__qkit__data; // data array of this list
     var thisFirstIndex = this.__qkit__firstIndex; // first item index of this list
@@ -273,7 +273,7 @@ List.prototype.indexOf = function(value, from, compareFunction) {
  * \param index position of first inserted value after insertion (last by default)
  * \param count the count of values to insert (1 by default)
  */
-List.prototype.insert = function(value, index, count) {
+QKit.List.prototype.insert = function(value, index, count) {
     if (value === undefined) value = null; // use null by default
     if (count === undefined) { // if count is not defined
         count = 1; // insert one value by default
@@ -323,14 +323,14 @@ List.prototype.insert = function(value, index, count) {
  * \brief Test the list for emptiness.
  * \return true if the list has size 0, false otherwise
  */
-List.prototype.isEmpty = function() { return this.__qkit__data.length <= this.__qkit__firstIndex; }
+QKit.List.prototype.isEmpty = function() { return this.__qkit__data.length <= this.__qkit__firstIndex; }
 
 
 /*!
  * \brief Get the last item.
  * \return the last item in the list
  */
-List.prototype.last = function() { return this.__qkit__data[this.__qkit__data.length - 1]; }
+QKit.List.prototype.last = function() { return this.__qkit__data[this.__qkit__data.length - 1]; }
 
 
 /*!
@@ -340,7 +340,7 @@ List.prototype.last = function() { return this.__qkit__data[this.__qkit__data.le
  * \param from index position for backward search (last item by default)
  * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined strict equality (===) will be used
  */
-List.prototype.lastIndexOf = function(value, from, compareFunction) {
+QKit.List.prototype.lastIndexOf = function(value, from, compareFunction) {
     if (value === undefined) return false;
     var thisData = this.__qkit__data; // data array of this list
     var thisFirstIndex = this.__qkit__firstIndex; // first item index of this list
@@ -370,7 +370,7 @@ List.prototype.lastIndexOf = function(value, from, compareFunction) {
  * \brief This function is identical to count().
  * \return the number of items in the list
 */
-List.prototype.length = function() { return this.__qkit__data.length - this.__qkit__firstIndex; }
+QKit.List.prototype.length = function() { return this.__qkit__data.length - this.__qkit__firstIndex; }
 
 
 /*!
@@ -379,7 +379,7 @@ List.prototype.length = function() { return this.__qkit__data.length - this.__qk
  * \param start starting position (0 by default)
  * \param length maximum number of items to copy (by default all items after starting position are copied, if negative items will be copyed in the reverse orger)
  */
-List.prototype.mid = function(start, length) {
+QKit.List.prototype.mid = function(start, length) {
     var thisData = this.__qkit__data; // data array of this list
     var thisSize = thisData.length - this.__qkit__firstIndex; // size of the list
     if (start === undefined) { // if start position is undefined
@@ -393,7 +393,7 @@ List.prototype.mid = function(start, length) {
             if (start >= thisSize) return undefined; // return if start position is greater than the size
         }
     }
-    var midList = new List(); // empty list
+    var midList = new QKit.List(); // empty list
     var index; // iterator
     if (length === undefined) { // if length is undefined
         index = thisSize; // to the end of list
@@ -438,7 +438,7 @@ List.prototype.mid = function(start, length) {
  * \param from start items position
  * \param to finish items position
  */
-List.prototype.move = function(from, to) {
+QKit.List.prototype.move = function(from, to) {
     if (from === undefined) return undefined; // return if the start position is undefined
     if (to === undefined) return undefined; // return if the finith position is undefined
     from = Math.floor(from); // make the start position integer
@@ -470,7 +470,7 @@ List.prototype.move = function(from, to) {
  * \return this list
  * \param value the value to insert
  */
-List.prototype.prepend = function(value) {
+QKit.List.prototype.prepend = function(value) {
     this.__qkit__data[--this.__qkit_firstIndex] = value === undefined ? null : value;
     return this;
 }
@@ -482,7 +482,7 @@ List.prototype.prepend = function(value) {
  * \param value the value to remove
  * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined strict equality (===) will be used
  */
-List.prototype.removeAll = function(value, compareFunction) {
+QKit.List.prototype.removeAll = function(value, compareFunction) {
     if (value === undefined) return 0; // return of value is undefined
     if (compareFunction === undefined) compareFunction = function(value1, value2) { return value1 === value2; } // use strict equality if compare function is undefined
     var count = 0; // count of removed items
@@ -510,21 +510,21 @@ List.prototype.removeAll = function(value, compareFunction) {
  * \return this list
  * \param index valid index position
  */
-List.prototype.removeAt = function(index) { return this.takeAt(index) === undefined ? undefined : this; }
+QKit.List.prototype.removeAt = function(index) { return this.takeAt(index) === undefined ? undefined : this; }
 
 
 /*!
  * \brief Remove the first item in the list.
  * \return this list
  */
-List.prototype.removeFirst = function() { return this.removeAt(0); }
+QKit.List.prototype.removeFirst = function() { return this.removeAt(0); }
 
 
 /*!
  * \brief Remove the last item in the list.
  * \return this list
  */
-List.prototype.removeLast = function() { return this.removeAt(this.__qkit__data.length - this.__qkit__firstIndex - 1); }
+QKit.List.prototype.removeLast = function() { return this.removeAt(this.__qkit__data.length - this.__qkit__firstIndex - 1); }
 
 
 /*!
@@ -533,7 +533,7 @@ List.prototype.removeLast = function() { return this.removeAt(this.__qkit__data.
  * \param value the value to delete
  * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined strict equality (===) will be used
  */
-List.prototype.removeOne = function(value, compareFunction) {
+QKit.List.prototype.removeOne = function(value, compareFunction) {
     if (value === undefined) return false; // return if value is undefined
     var thisData = this.__qkit__data; // data array of this list
     var lastIndex = thisData.length; // index of the last element
@@ -563,7 +563,7 @@ List.prototype.removeOne = function(value, compareFunction) {
  * \param index valid index position
  * \param value new value for the item
  */
-List.prototype.replace = function(index, value) {
+QKit.List.prototype.replace = function(index, value) {
     if (index === undefined) return undefined; // return if index is undefined
     index = Math.floor(index) + this.__qkit__firstIndex; // make index integer and internal
     if (index < this.__qkit__firstIndex || index >= this.__qkit__data.length) return undefined; // return if index is not valid
@@ -576,7 +576,7 @@ List.prototype.replace = function(index, value) {
  * \brief Get lists size.
  * \return the number of items in the list
 */
-List.prototype.size = function() { return this.__qkit__data.length - this.__qkit__firstIndex; }
+QKit.List.prototype.size = function() { return this.__qkit__data.length - this.__qkit__firstIndex; }
 
 
 /*!
@@ -585,7 +585,7 @@ List.prototype.size = function() { return this.__qkit__data.length - this.__qkit
  * \param value value to check
  * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined strict equality (===) will be used
  */
-List.prototype.startsWith = function(value, compareFunction) {
+QKit.List.prototype.startsWith = function(value, compareFunction) {
     if (this.__qkit__data.length <= this.__qkit__firstIndex) return false; // return if is empty
     if (compareFunction === undefined) { // if compare function is undefined
         return this.__qkit__data[this.__qkit__firstIndex] === value;
@@ -608,9 +608,9 @@ List.prototype.startsWith = function(value, compareFunction) {
  * \param index1 valid index position
  * \param index2 valid index position
  */
-List.prototype.swap = function() {
+QKit.List.prototype.swap = function() {
     var temp; // temp buffer
-    if (arguments[0] instanceof List) { // if swapt(list)
+    if (arguments[0] instanceof QKit.List) { // if swapt(list)
         var list = arguments[0]; // list to swap with
         temp = this.__qkit__data; // backup this data
         this.__qkit__data = list.__qkit__data; // update this data
@@ -637,7 +637,7 @@ List.prototype.swap = function() {
  * \return value of removed item
  * \param index valid index position
  */
-List.prototype.takeAt = function(index) {
+QKit.List.prototype.takeAt = function(index) {
     if (index === undefined) return undefined; // return if position is undefined
     index = Math.floor(index); // make index integer
     var thisData = this.__qkit__data; // data array of this list
@@ -662,21 +662,21 @@ List.prototype.takeAt = function(index) {
  * \brief Remove the first item in the list.
  * \return value of removed item
  */
-List.prototype.takeFirst = function() { return this.takeAt(0); }
+QKit.List.prototype.takeFirst = function() { return this.takeAt(0); }
 
 
 /*!
  * \brief Remove the last item in the list.
  * \return value of removed item
  */
-List.prototype.takeLast = function() { return this.takeAt(this.__qkit__data.length - this.__qkit__firstIndex - 1); }
+QKit.List.prototype.takeLast = function() { return this.takeAt(this.__qkit__data.length - this.__qkit__firstIndex - 1); }
 
 
 /*!
  * \brief Generate an array with the data contained in this list.
  * \return generated Array instance
  */
-List.prototype.toArray = function() {
+QKit.List.prototype.toArray = function() {
     var array = []; // result array
     var thisData = this.__qkit__data; // data array of this list
     var thisFirstIndex = this.__qkit__firstIndex; // first item index of this list
@@ -691,7 +691,7 @@ List.prototype.toArray = function() {
  * \brief This method that is automatically called when the object is to be represented as a text value or when an object is referred to in a manner in which a string is expected.
  * \return one string containing each item separated by commas
  */
-List.prototype.toString = function() { return '[' + this.toArray().toString() + ']'; }
+QKit.List.prototype.toString = function() { return '[' + this.toArray().toString() + ']'; }
 
 
 /*!
@@ -700,7 +700,7 @@ List.prototype.toString = function() { return '[' + this.toArray().toString() + 
  * \param index position of the value
  * \param defaultValue value to return if index is out of the bounds
  */
-List.prototype.value = function(index, defaultValue) {
+QKit.List.prototype.value = function(index, defaultValue) {
     if (index === undefined) return undefined; // return if position is undefined
     index = Math.floor(index) + this.__qkit__firstIndex; // make index integer and internal
     if (index < this.__qkit__firstIndex || index >= this.__qkit__data.length) return defaultValue; // return default value if index is not valid

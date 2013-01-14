@@ -52,13 +52,13 @@
  * \brief Construct a copy of list.
  * \param list the list to copy
  */
-function LinkedList() {
+QKit.LinkedList = function() {
     var thisData; // this data array
     var thisSize; // this size
-    if (arguments[0] instanceof LinkedList) { // if LinkedList(list)
+    if (arguments[0] instanceof QKit.LinkedList) { // if LinkedList(list)
         var list = arguments[0]; // the other list
-        if (!(this instanceof LinkedList)) return new LinkedList(list); // create new object if function was called without 'new' operator
-        LinkedList.superClass.apply(this); // super class constructor
+        if (!(this instanceof QKit.LinkedList)) return new QKit.LinkedList(list); // create new object if function was called without 'new' operator
+        QKit.LinkedList.superClass.apply(this); // super class constructor
         var listData = list.__qkit__data; // list's data array
         var listItem = listData[list.__qkit__firstIndex]; // list's iterator
         if (listItem === null) { // if list is empty
@@ -80,8 +80,8 @@ function LinkedList() {
         }
     } else if (arguments[0] instanceof Array) { // if LinkedList(array)
         var array = arguments[0]; // the array
-        if (!(this instanceof LinkedList)) return new LinkedList(array); // create new object if function was called without 'new' operator
-        LinkedList.superClass.apply(this); // super class constructor
+        if (!(this instanceof QKit.LinkedList)) return new QKit.LinkedList(array); // create new object if function was called without 'new' operator
+        QKit.LinkedList.superClass.apply(this); // super class constructor
         thisData = [null]; // this data array
         thisSize = 0; // this size
         array.forEach( // for each item of the array
@@ -95,15 +95,15 @@ function LinkedList() {
         this.__qkit__lastIndex = thisSize; // last item index
         this.__qkit__size = thisSize; // size of this list
     } else { // if LinkedList()
-        if (!(this instanceof LinkedList)) return new LinkedList(); // create new object if function was called without 'new' operator
-        LinkedList.superClass.apply(this); // super class constructor
+        if (!(this instanceof QKit.LinkedList)) return new QKit.LinkedList(); // create new object if function was called without 'new' operator
+        QKit.LinkedList.superClass.apply(this); // super class constructor
         this.__qkit__data = [null]; // data array
         this.__qkit__firstIndex = 0; // first item index
         this.__qkit__lastIndex = 0; // last item index
         this.__qkit__size = 0; // size of this list
     }
 }
-LinkedList.inheritFrom(Object); // super class
+QKit.LinkedList.inheritFrom(QKit.Object); // super class
 
 
 /*!
@@ -111,10 +111,10 @@ LinkedList.inheritFrom(Object); // super class
  * \return this list
  * \param value the value to insert (if is an instance of LinkedList al it values will be added)
  */
-LinkedList.prototype.append = function(value) {
+QKit.LinkedList.prototype.append = function(value) {
     if (value === undefined) return undefined; // return if value is undefined
     var thisData = this.__qkit__data; // this data array
-    if (value instanceof LinkedList) { // if value is a LinkedList instance
+    if (value instanceof QKit.LinkedList) { // if value is a LinkedList instance
         if (!value.__qkit__size) return this; // return if value list is empty
         var valueItem = value.__qkit__firstItem; // value list iterator
         var item = this.__qkit__lastItem; // this list iterator
@@ -147,7 +147,7 @@ LinkedList.prototype.append = function(value) {
  * \brief Remove all the items from the list.
  * \return this list
  */
-LinkedList.prototype.clear = function() {
+QKit.LinkedList.prototype.clear = function() {
     this.__qkit__data.length = 1; // resize data array
     this.__qkit__firstIndex = 0; // first item index
     this.__qkit__lastIndex = 0; // last item index
@@ -162,7 +162,7 @@ LinkedList.prototype.clear = function() {
  * \param value the value to check
  * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined strict equality (===) will be used
  */
-LinkedList.prototype.contains = function(value, compareFunction) {
+QKit.LinkedList.prototype.contains = function(value, compareFunction) {
     if (value === undefined) return false; // return if value is undefined
     if (!this.__qkit__size) return false; // return if this list is empty
     var thisData = this.__qkit__data; // this data array
@@ -186,7 +186,7 @@ LinkedList.prototype.contains = function(value, compareFunction) {
  * \param value value to check, if undefined count of all items will be returned
  * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined strict equality (===) will be used
  */
-LinkedList.prototype.count = function(value, compareFunction) {
+QKit.LinkedList.prototype.count = function(value, compareFunction) {
     if (value === undefined) return this.__qkit__size; // return the size if value is undefined
     var count = 0; // total count
     var thisData = this.__qkit__data; // this data array
@@ -210,7 +210,7 @@ LinkedList.prototype.count = function(value, compareFunction) {
  * \param value value to check
  * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined strict equality (===) will be used
  */
-LinkedList.prototype.endsWith = function(value, compareFunction) {
+QKit.LinkedList.prototype.endsWith = function(value, compareFunction) {
     if (this.__qkit__size === 0) return false; // return if this list is empty
     if (compareFunction === undefined) { // if compare function is undefined
         return this.__qkit__data[this.__qkit__lastIndex].value === value;
@@ -226,8 +226,8 @@ LinkedList.prototype.endsWith = function(value, compareFunction) {
  * \param list the list to compare with
  * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined strict equality (===) will be used
  */
-LinkedList.prototype.equals = function(list, compareFunction) {
-    if (!(list instanceof LinkedList)) return undefined; // return if type is not valid
+QKit.LinkedList.prototype.equals = function(list, compareFunction) {
+    if (!(list instanceof QKit.LinkedList)) return undefined; // return if type is not valid
     if (this.__qkit__size !== list.__qkit__size) return false; // return false if the sizes are not equal
     var thisData = this.__qkit__data; // this data array
     var item = thisData[this.__qkit__firstIndex]; // this iterator
@@ -247,7 +247,7 @@ LinkedList.prototype.equals = function(list, compareFunction) {
  * \brief Get the first item.
  * \return the first item in the list
  */
-LinkedList.prototype.first = function() { return this.__qkit__size === 0 ? undefined : this.__qkit__data[this.__qkit__firstIndex].value; }
+QKit.LinkedList.prototype.first = function() { return this.__qkit__size === 0 ? undefined : this.__qkit__data[this.__qkit__firstIndex].value; }
 
 
 /*!
@@ -256,7 +256,7 @@ LinkedList.prototype.first = function() { return this.__qkit__size === 0 ? undef
  * \param callback function to execute for each item - function(value, index, list)
  * \param thisArg object to use as this when executing callback
  */
-LinkedList.prototype.forEach = function(callback, thisArg) {
+QKit.LinkedList.prototype.forEach = function(callback, thisArg) {
     if (!(callback instanceof Function)) return undefined; // return if callback is not a function
     var data = this.toArray(); // this data as Array
     var length = data.length; // data length
@@ -270,14 +270,14 @@ LinkedList.prototype.forEach = function(callback, thisArg) {
  * \brief Test the list for emptiness.
  * \return true if the list has size 0, false otherwise
  */
-LinkedList.prototype.isEmpty = function() { return this.__qkit__size === 0; }
+QKit.LinkedList.prototype.isEmpty = function() { return this.__qkit__size === 0; }
 
 
 /*!
  * \brief Get the last item.
  * \return the last item in the list
  */
-LinkedList.prototype.last = function() { return this.__qkit__size === 0 ? undefined : this.__qkit__data[this.__qkit__lastIndex].value; }
+QKit.LinkedList.prototype.last = function() { return this.__qkit__size === 0 ? undefined : this.__qkit__data[this.__qkit__lastIndex].value; }
 
 
 /*!
@@ -285,7 +285,7 @@ LinkedList.prototype.last = function() { return this.__qkit__size === 0 ? undefi
  * \return this list
  * \param value the value to insert
  */
-LinkedList.prototype.prepend = function(value) {
+QKit.LinkedList.prototype.prepend = function(value) {
     if (value === undefined) return undefined; // return if value is undefined
     var thisData = this.__qkit__data; // this data array
     var newIndex = thisData.length; // index of new item
@@ -306,7 +306,7 @@ LinkedList.prototype.prepend = function(value) {
  * \param value the value to remove
  * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined strict equality (===) will be used
  */
-LinkedList.prototype.removeAll = function(value, compareFunction) {
+QKit.LinkedList.prototype.removeAll = function(value, compareFunction) {
     if (value === undefined) return 0; // return of value is undefined
     if (compareFunction === undefined) compareFunction = function(value1, value2) { return value1 === value2; } // use strict equality if compare function is undefined
     var count = 0; // count of removed items
@@ -362,7 +362,7 @@ LinkedList.prototype.removeAll = function(value, compareFunction) {
  * \brief Remove the first item in the list.
  * \return this list
  */
-LinkedList.prototype.removeFirst = function() {
+QKit.LinkedList.prototype.removeFirst = function() {
     var firstIndex = this.__qkit__firstIndex; // this first item index
     if (firstIndex === 0) return; // return if this list is empty
     var thisData = this.__qkit__data; // this data array
@@ -382,7 +382,7 @@ LinkedList.prototype.removeFirst = function() {
  * \brief Remove the last item in the list.
  * \return this list
  */
-LinkedList.prototype.removeLast = function() {
+QKit.LinkedList.prototype.removeLast = function() {
     var lastIndex = this.__qkit__lastIndex; // this last item index
     if (lastIndex === 0) return; // return if this list is empty
     var thisData = this.__qkit__data; // this data array
@@ -404,7 +404,7 @@ LinkedList.prototype.removeLast = function() {
  * \param value the value to delete
  * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined strict equality (===) will be used
  */
-LinkedList.prototype.removeOne = function(value, compareFunction) {
+QKit.LinkedList.prototype.removeOne = function(value, compareFunction) {
     if (value === undefined) return undefined; // return if value is undefined
     if (this.__qkit__size === 0) return false; // return if list is empty
     if (compareFunction === undefined) compareFunction = function(value1, value2) { return value1 === value2; } // use strict equality if compare function is undefined
@@ -437,7 +437,7 @@ LinkedList.prototype.removeOne = function(value, compareFunction) {
  * \brief Get lists size.
  * \return the number of items in the list
 */
-LinkedList.prototype.size = function() { return this.__qkit__size; }
+QKit.LinkedList.prototype.size = function() { return this.__qkit__size; }
 
 
 /*!
@@ -446,7 +446,7 @@ LinkedList.prototype.size = function() { return this.__qkit__size; }
  * \param value value to check
  * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined strict equality (===) will be used
  */
-LinkedList.prototype.startsWith = function(value, compareFunction) {
+QKit.LinkedList.prototype.startsWith = function(value, compareFunction) {
     if (this.__qkit__size === 0) return false; // return if this list is empty
     if (compareFunction === undefined) { // if compare function is undefined
         return this.__qkit__data[this.__qkit__firstIndex].value === value;
@@ -461,8 +461,8 @@ LinkedList.prototype.startsWith = function(value, compareFunction) {
  * \return this list
  * \param list the list to swap with
  */
-LinkedList.prototype.swap = function(list) {
-    if (!(list instanceof LinkedList)) return; // return if type is not valid
+QKit.LinkedList.prototype.swap = function(list) {
+    if (!(list instanceof QKit.LinkedList)) return; // return if type is not valid
     var temp = this.__qkit__data; // backup this data array
     this.__qkit__data = list.__qkit__data; // update this data array
     list.__qkit__data = temp; // update list data array
@@ -483,7 +483,7 @@ LinkedList.prototype.swap = function(list) {
  * \brief Remove the first item in the list.
  * \return value of removed item
  */
-LinkedList.prototype.takeFirst = function() {
+QKit.LinkedList.prototype.takeFirst = function() {
     var firstIndex = this.__qkit__firstIndex; // this first item index
     if (firstIndex === 0) return undefined; // return if this list is empty
     var thisData = this.__qkit__data; // this data array
@@ -504,7 +504,7 @@ LinkedList.prototype.takeFirst = function() {
  * \brief Remove the last item in the list.
  * \return value of removed item
  */
-LinkedList.prototype.takeLast = function() {
+QKit.LinkedList.prototype.takeLast = function() {
     var lastIndex = this.__qkit__lastIndex; // this last item index
     if (lastIndex === 0) return; // return if this list is empty
     var thisData = this.__qkit__data; // this data array
@@ -525,7 +525,7 @@ LinkedList.prototype.takeLast = function() {
  * \brief Generate an array with the data contained in this list.
  * \return generated Array instance
  */
-LinkedList.prototype.toArray = function() {
+QKit.LinkedList.prototype.toArray = function() {
     var array = []; // result array
     var thisData = this.__qkit__data; // this data array
     for(var item = thisData[this.__qkit__firstIndex]; item !== null; item = thisData[item.nextIndex]) array.push(item.value); // add all values to the array
@@ -537,4 +537,4 @@ LinkedList.prototype.toArray = function() {
  * \brief This method that is automatically called when the object is to be represented as a text value or when an object is referred to in a manner in which a string is expected.
  * \return one string containing each item separated by commas
  */
-LinkedList.prototype.toString = function() { return '[' + this.toArray().toString() + ']'; }
+QKit.LinkedList.prototype.toString = function() { return '[' + this.toArray().toString() + ']'; }

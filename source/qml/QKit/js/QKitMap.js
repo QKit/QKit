@@ -47,11 +47,11 @@
  * \brief Construct a copy of map.
  * \param map the map to copy
  */
-function Map() {
-    if (arguments[0] instanceof Map) { // if Map(map)
+QKit.Map = function() {
+    if (arguments[0] instanceof QKit.Map) { // if Map(map)
         var map = arguments[0]; // the other map
-        if (!(this instanceof Map)) return new Map(map); // create new object if function was called without 'new' operator
-        Map.superClass.apply(this); // super class constructor
+        if (!(this instanceof QKit.Map)) return new QKit.Map(map); // create new object if function was called without 'new' operator
+        QKit.Map.superClass.apply(this); // super class constructor
         var mapData = map.__qkit__data; // map's data object
         var thisData = {}; // this data object
         for (var key in mapData) { // for all keys in map
@@ -60,20 +60,20 @@ function Map() {
         this.__qkit__data = thisData; // this data object
         this.__qkit__size = map.__qkit__size; // amount of objects
     } else { // if Map()
-        if (!(this instanceof Map)) return new Map(); // create new object if function was called without 'new' operator
-        Map.superClass.apply(this); // super class constructor
+        if (!(this instanceof QKit.Map)) return new QKit.Map(); // create new object if function was called without 'new' operator
+        QKit.Map.superClass.apply(this); // super class constructor
         this.__qkit__data = {}; // internal hash object
         this.__qkit__size = 0; // number of (key, value) pairs
     }
 }
-Map.inheritFrom(Object); // super class
+QKit.Map.inheritFrom(QKit.Object); // super class
 
 
 /*!
  * \brief Remove all items from the map.
  * \return this map
  */
-Map.prototype.clear = function() {
+QKit.Map.prototype.clear = function() {
     this.__qkit__data = {}; // clear data
     this.__qkit__size = 0; // reset size
     return this;
@@ -85,7 +85,7 @@ Map.prototype.clear = function() {
  * \return true if the map contains an item with the given key, false otherwise
  * \param key the key to check
  */
-Map.prototype.contains = function(key) {
+QKit.Map.prototype.contains = function(key) {
     if (key === undefined) return false; // return if key is undefined
     return this.__qkit__data[key] !== undefined;
 }
@@ -96,7 +96,7 @@ Map.prototype.contains = function(key) {
  * \return the number of items associated with key
  * \param key the key items associated with (in undefined all items will be count)
  */
-Map.prototype.count = function(key) {
+QKit.Map.prototype.count = function(key) {
     if (key === undefined) return this.__qkit__size; // return all items number if key is undefined
     var keyValues = this.__qkit__data[key]; // array of values associated with the key
     if (keyValues === undefined) return 0; // return if there are no items associated with the key
@@ -110,8 +110,8 @@ Map.prototype.count = function(key) {
  * \param map the map to compare with
  * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined strict equality (===) will be used
  */
-Map.prototype.equals = function(map, compareFunction) {
-    if (!(map instanceof Map)) return undefined; // return if type is not valid
+QKit.Map.prototype.equals = function(map, compareFunction) {
+    if (!(map instanceof QKit.Map)) return undefined; // return if type is not valid
     if (compareFunction === undefined) compareFunction = function(value1, value2) { return value1 === value2; } // use strict equality if compare function is undefined
     var thisData = this.__qkit__data; // this data object
     var mapData = map.__qkit__data; // map's data object
@@ -135,7 +135,7 @@ Map.prototype.equals = function(map, compareFunction) {
  * \param callback function to execute for each element - function(key, value, map)
  * \param thisArg object to use as this when executing callback
  */
-Map.prototype.forEach = function(callback, thisArg) {
+QKit.Map.prototype.forEach = function(callback, thisArg) {
     if (!(callback instanceof Function)) return undefined; // return if callback is not a function
     var keys = []; // array of keys
     var values = []; // array of values arrays
@@ -166,7 +166,7 @@ Map.prototype.forEach = function(callback, thisArg) {
  * \param key the key
  * \param value the value to insert
  */
-Map.prototype.insert = function(key, value) {
+QKit.Map.prototype.insert = function(key, value) {
     if (key === undefined) return undefined; // return if key is undefined
     if (value === undefined) value = null; // default value
     var thisData = this.__qkit__data; // this data object
@@ -187,7 +187,7 @@ Map.prototype.insert = function(key, value) {
  * \param key the key
  * \param value the value to insert
  */
-Map.prototype.insertMulti = function(key, value) {
+QKit.Map.prototype.insertMulti = function(key, value) {
     if (key === undefined) return undefined; // return if key is undefined
     if (value === undefined) value = null; // default value
     var thisData = this.__qkit__data; // this data object
@@ -205,7 +205,7 @@ Map.prototype.insertMulti = function(key, value) {
  * \brief Test the map for emptiness.
  * \return true if the map contains no elements, false otherwise
  */
-Map.prototype.isEmpty = function() { return this.__qkit__size === 0; }
+QKit.Map.prototype.isEmpty = function() { return this.__qkit__size === 0; }
 
 
 /*!
@@ -214,7 +214,7 @@ Map.prototype.isEmpty = function() { return this.__qkit__size === 0; }
  * \param value the value to search
  * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined strict equality (===) will be used
  */
-Map.prototype.key = function(value, compareFunction) {
+QKit.Map.prototype.key = function(value, compareFunction) {
     if (value === undefined) return undefined; // return if value is undefined
     if (compareFunction === undefined) compareFunction = function(value1, value2) { return value1 === value2; } // use strict equality if compare function is undefined
     var thisData = this.__qkit__data; // this data object
@@ -234,7 +234,7 @@ Map.prototype.key = function(value, compareFunction) {
  * \param value the value to search (in undefined all keys will be added)
  * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined strict equality (===) will be used
  */
-Map.prototype.keys = function(value, compareFunction) {
+QKit.Map.prototype.keys = function(value, compareFunction) {
     var keys = []; // array with keys
     if (compareFunction === undefined) compareFunction = function(value1, value2) { return value1 === value2; } // use strict equality if compare function is undefined
     var thisData = this.__qkit__data; // this data object
@@ -256,7 +256,7 @@ Map.prototype.keys = function(value, compareFunction) {
  * \return the number of items removed
  * \param key the key of items to remove
  */
-Map.prototype.remove = function(key) {
+QKit.Map.prototype.remove = function(key) {
     if (key === undefined) return 0; // return if key is undefined
     var keyValues = this.__qkit__data[key]; // array of values associated with the key
     if (keyValues === undefined) return 0; // return if this map doesn't contain the key
@@ -271,7 +271,7 @@ Map.prototype.remove = function(key) {
  * \brief Get the map size.
  * \return the number of (key, value) pairs in the map
  */
-Map.prototype.size = function() { return this.__qkit__size; }
+QKit.Map.prototype.size = function() { return this.__qkit__size; }
 
 
 /*!
@@ -279,8 +279,8 @@ Map.prototype.size = function() { return this.__qkit__size; }
  * \return this map
  * \param map the map to swap with
  */
-Map.prototype.swap = function(map) {
-    if (!(map instanceof Map)) return undefined; // return if type is not valid
+QKit.Map.prototype.swap = function(map) {
+    if (!(map instanceof QKit.Map)) return undefined; // return if type is not valid
     var temp = this.__qkit__data; // backup this data
     this.__qkit__data = map.__qkit__data; // update this data
     map.__qkit__data = temp; // update map data
@@ -298,7 +298,7 @@ Map.prototype.swap = function(map) {
  * \return  the value associated with removed item
  * \param key the key of item to remove
  */
-Map.prototype.take = function(key) {
+QKit.Map.prototype.take = function(key) {
     if (key === undefined) return undefined; // return if key is undefined
     var keyValues = this.__qkit__data[key]; // array of values associated with the key
     if (keyValues === undefined) return undefined; // return if key is undefined
@@ -318,7 +318,7 @@ Map.prototype.take = function(key) {
  *    For each key from the most recently inserted to the least recently inserted one.
  * \return generated Array instance
  */
-Map.prototype.toArray = function() {
+QKit.Map.prototype.toArray = function() {
     var thisData = this.__qkit__data; // this data object
     var array = []; // result array
     for (var key in thisData) { // for all keys
@@ -334,7 +334,7 @@ Map.prototype.toArray = function() {
  * \brief This method that is automatically called when the object is to be represented as a text value or when an object is referred to in a manner in which a string is expected.
  * \return one string containing each item separated by commas
  */
-Map.prototype.toString = function() {
+QKit.Map.prototype.toString = function() {
     var stringParts = ['{']; // parts of string as array
     var thisData = this.__qkit__data; // this data object
     var firstKey = true; // no keys where added
@@ -361,7 +361,7 @@ Map.prototype.toString = function() {
  * \param value the value to search (in undefined all keys will be added)
  * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined strict equality (===) will be used
  */
-Map.prototype.uniqueKeys = function(value, compareFunction) {
+QKit.Map.prototype.uniqueKeys = function(value, compareFunction) {
     var keys = []; // array with keys
     if (compareFunction === undefined) compareFunction = function(value1, value2) { return value1 === value2; } // use strict equality if compare function is undefined
     var thisData = this.__qkit__data; // this data object
@@ -389,8 +389,8 @@ Map.prototype.uniqueKeys = function(value, compareFunction) {
  * \return this map
  * \param map the map to unite with
  */
-Map.prototype.unite = function(map) {
-    if (!(map instanceof Map)) return; // return if map is not valid
+QKit.Map.prototype.unite = function(map) {
+    if (!(map instanceof QKit.Map)) return; // return if map is not valid
     var thisData = this.__qkit__data; // this data object
     var mapData = map.__qkit__data; // map's data object
     for (var key in mapData) { // for all keys in map
@@ -415,7 +415,7 @@ Map.prototype.unite = function(map) {
  * \param key the key associated with the value
  * \param defaultValue value to return if the map contains no item with the given key
  */
-Map.prototype.value = function(key, defaultValue) {
+QKit.Map.prototype.value = function(key, defaultValue) {
     if (key === undefined) return undefined; // return if key is undefined
     if (this.__qkit__data[key] === undefined) return defaultValue; // return default value if the map contains no item with the given key
     return this.__qkit__data[key][this.__qkit__data[key].length - 1]; // return the most recently inserted value
@@ -427,7 +427,7 @@ Map.prototype.value = function(key, defaultValue) {
  * \return generated Array instance
  * \param key the key associated with the values (if undefined values for all the keys will be added)
  */
-Map.prototype.values = function(key) {
+QKit.Map.prototype.values = function(key) {
     if (key === undefined) return this.toArray(); // return arrat with all values if key is undefined
     var keyValues = this.__qkit__data[key]; // array of values associated with the key
     if (keyValues === undefined) return []; // return empty array if the map doesn't contain values associated with the key

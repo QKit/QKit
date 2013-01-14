@@ -57,17 +57,17 @@
  * \param hashFunction function to calculate string hash - function(value) (if undefined value.id() for Objects and value.toString() for other will be used)
  * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined strict equality (===) will be used
  */
-function Set() {
+QKit.Set = function() {
     var thisData; // this data object
     var size; // this size
     var hashFunction = function(value) { return value instanceof Object ? value.id() : value.toString(); }; // default hash function
     var compareFunction = function(value1, value2) { return value1 === value2; }; // default compare function
-    if (arguments[0] instanceof Set) { // if Set(set, hashFunction, compareFunction)
+    if (arguments[0] instanceof QKit.Set) { // if Set(set, hashFunction, compareFunction)
         var set = arguments[0]; // the other set
         if (arguments[1] instanceof Function) hashFunction = arguments[1]; // this hash function
         if (arguments[2] instanceof Function) compareFunction = arguments[2]; // this compare function
-        if (!(this instanceof Set)) return new Set(set, hashFunction, compareFunction); // create new object if function was called without 'new' operator
-        Set.superClass.apply(this); // super class constructor
+        if (!(this instanceof QKit.Set)) return new QKit.Set(set, hashFunction, compareFunction); // create new object if function was called without 'new' operator
+        QKit.Set.superClass.apply(this); // super class constructor
         thisData = {}; // this data object
         var setData = set.__qkit__data; // set's data object
         size = 0; // this size
@@ -97,8 +97,8 @@ function Set() {
         var array = arguments[0]; // the array
         if (arguments[1] instanceof Function) hashFunction = arguments[1]; // this hash function
         if (arguments[2] instanceof Function) compareFunction = arguments[2]; // this compare function
-        if (!(this instanceof Set)) return new Set(array, hashFunction, compareFunction); // create new object if function was called without 'new' operator
-        Set.superClass.apply(this); // super class constructor
+        if (!(this instanceof QKit.Set)) return new QKit.Set(array, hashFunction, compareFunction); // create new object if function was called without 'new' operator
+        QKit.Set.superClass.apply(this); // super class constructor
         thisData = {}; // this data object
         size = 0; // this size
         array.forEach( // for each item in the array
@@ -120,22 +120,22 @@ function Set() {
     } else { // if Set(hashFunction, compareFunction)
         if (arguments[0] instanceof Function) hashFunction = arguments[0]; // this hash function
         if (arguments[1] instanceof Function) compareFunction = arguments[1]; // this compare function
-        if (!(this instanceof Set)) return new Set(hashFunction, compareFunction); // create new object if function was called without 'new' operator
-        Set.superClass.apply(this); // super class constructor
+        if (!(this instanceof QKit.Set)) return new QKit.Set(hashFunction, compareFunction); // create new object if function was called without 'new' operator
+        QKit.Set.superClass.apply(this); // super class constructor
         this.__qkit__data = {}; // internal hash object
         this.__qkit__size = 0; // amount of objects
     }
     this.__qkit__hashFunction = hashFunction; // this hash function
     this.__qkit__compareFunction = compareFunction; // this compare function
 }
-Set.inheritFrom(Object); // super class
+QKit.Set.inheritFrom(QKit.Object); // super class
 
 
 /*!
  * \brief Remove all items from the set.
  * \return this set
  */
-Set.prototype.clear = function() {
+QKit.Set.prototype.clear = function() {
     this.__qkit__data = {}; // clear data
     this.__qkit__size = 0; // reset size
     return this;
@@ -148,14 +148,14 @@ Set.prototype.clear = function() {
  * \param value the value to test (if is a set all its values will be checked)
  * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined this compareFunction will be used
  */
-Set.prototype.contains = function(value, compareFunction) {
+QKit.Set.prototype.contains = function(value, compareFunction) {
     if (value === undefined) return false; // return if value is undefined
     if (compareFunction === undefined) compareFunction = this.__qkit__compareFunction; // use this compare function if undefined
     var thisData = this.__qkit__data; // this data object
     var hashFunction = this.__qkit__hashFunction; // this hash function
     var hashArray; // values array for a hash
     var index; // iterator
-    if (value instanceof Set) { // if value is a set
+    if (value instanceof QKit.Set) { // if value is a set
         var valueData = value.__qkit__data; // value's data object
         for (var hash in valueData) { // for all hashes of value
             var valueHashArray = valueData[hash]; // value's values array for the hash
@@ -188,7 +188,7 @@ Set.prototype.contains = function(value, compareFunction) {
  * \brief Same as size().
  * \return same as size()
  */
-Set.prototype.count = function() { return this.__qkit__size; }
+QKit.Set.prototype.count = function() { return this.__qkit__size; }
 
 
 /*!
@@ -197,8 +197,8 @@ Set.prototype.count = function() { return this.__qkit__size; }
  * \param set the set to compare with
  * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined this compareFunction will be used
  */
-Set.prototype.equals = function(set, compareFunction) {
-    if (!(set instanceof Set)) return undefined; // return if type is not valid
+QKit.Set.prototype.equals = function(set, compareFunction) {
+    if (!(set instanceof QKit.Set)) return undefined; // return if type is not valid
     if (compareFunction === undefined) compareFunction = this.__qkit__compareFunction; // use this compare function if undefined
     return this.contains(set, compareFunction) && set.contains(this, compareFunction);
 }
@@ -210,7 +210,7 @@ Set.prototype.equals = function(set, compareFunction) {
  * \param callback function to execute for each element - function(value, set)
  * \param thisArg object to use as this when executing callback
  */
-Set.prototype.forEach = function(callback, thisArg) {
+QKit.Set.prototype.forEach = function(callback, thisArg) {
     if (!(callback instanceof Function)) return undefined; // return if callback is not a function
     var values = this.toArray(); // array of values
     var index = values.length; // iterator
@@ -225,7 +225,7 @@ Set.prototype.forEach = function(callback, thisArg) {
  * \param value the value to insert
  * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined this compareFunction will be used
  */
-Set.prototype.insert = function(value, compareFunction) {
+QKit.Set.prototype.insert = function(value, compareFunction) {
     if (value === undefined) return false; // return if value is undefined
     if (compareFunction === undefined) compareFunction = this.__qkit__compareFunction; // use this compare function if undefined
     var hash = this.__qkit__hashFunction(value); // value's hash
@@ -248,8 +248,8 @@ Set.prototype.insert = function(value, compareFunction) {
  * \param set the set to intersect with
  * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined this compareFunction will be used
  */
-Set.prototype.intersect = function(set, compareFunction) {
-    if (!(set instanceof Set)) return undefined; // return if set is not valid
+QKit.Set.prototype.intersect = function(set, compareFunction) {
+    if (!(set instanceof QKit.Set)) return undefined; // return if set is not valid
     if (compareFunction === undefined) compareFunction = this.__qkit__compareFunction; // use this compare function if undefined
     var thisData = this.__qkit__data; // this data object
     var setData = set.__qkit__data; // set's data object
@@ -286,7 +286,7 @@ Set.prototype.intersect = function(set, compareFunction) {
  * \brief Test the set for emptiness.
  * \return true if the set contains no items, false otherwise
  */
-Set.prototype.isEmpty = function() { return this.__qkit__size === 0; }
+QKit.Set.prototype.isEmpty = function() { return this.__qkit__size === 0; }
 
 
 /*!
@@ -295,7 +295,7 @@ Set.prototype.isEmpty = function() { return this.__qkit__size === 0; }
  * \param value the value to remove
  * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined this compareFunction will be used
  */
-Set.prototype.remove = function(value, compareFunction) {
+QKit.Set.prototype.remove = function(value, compareFunction) {
     if (value === undefined) return false; // return if value is undefined
     if (compareFunction === undefined) compareFunction = this.__qkit__compareFunction; // use this compare function if undefined
     var thisData = this.__qkit__data; // this data object
@@ -326,7 +326,7 @@ Set.prototype.remove = function(value, compareFunction) {
  * \brief Get the set size.
  * \return the number of items in the set
  */
-Set.prototype.size = function() { return this.__qkit__size; }
+QKit.Set.prototype.size = function() { return this.__qkit__size; }
 
 
 /*!
@@ -335,8 +335,8 @@ Set.prototype.size = function() { return this.__qkit__size; }
  * \param set the set to subtract
  * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined this compareFunction will be used
  */
-Set.prototype.subtract = function(set, compareFunction) {
-    if (!(set instanceof Set)) return undefined; // return if set is not valid
+QKit.Set.prototype.subtract = function(set, compareFunction) {
+    if (!(set instanceof QKit.Set)) return undefined; // return if set is not valid
     if (compareFunction === undefined) compareFunction = this.__qkit__compareFunction; // use this compare function if undefined
     var thisData = this.__qkit__data; // this data object
     var setData = set.__qkit__data; // set's data object
@@ -371,8 +371,8 @@ Set.prototype.subtract = function(set, compareFunction) {
  * \return this set
  * \param set the set to swap with
  */
-Set.prototype.swap = function(set) {
-    if (!(set instanceof Set)) return undefined; // return if type is not valid
+QKit.Set.prototype.swap = function(set) {
+    if (!(set instanceof QKit.Set)) return undefined; // return if type is not valid
     var temp = this.__qkit__data; // backup this data
     this.__qkit__data = set.__qkit__data; // update this data
     set.__qkit__data = temp; // update set's data
@@ -393,7 +393,7 @@ Set.prototype.swap = function(set) {
  * \brief Generate an array with the items contained in this set.
  * \return generated Array instance
  */
-Set.prototype.toArray = function() {
+QKit.Set.prototype.toArray = function() {
     var array = []; // result array
     var thisData = this.__qkit__data; // this data object
     for (var hash in thisData) { // for all hashes
@@ -409,7 +409,7 @@ Set.prototype.toArray = function() {
  * \brief This method that is automatically called when the object is to be represented as a text value or when an object is referred to in a manner in which a string is expected.
  * \return one string containing each item separated by commas
  */
-Set.prototype.toString = function() { return '[' + this.toArray().toString() + ']'; }
+QKit.Set.prototype.toString = function() { return '[' + this.toArray().toString() + ']'; }
 
 
 /*!
@@ -418,8 +418,8 @@ Set.prototype.toString = function() { return '[' + this.toArray().toString() + '
  * \param set the set to unite with
  * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined this compareFunction will be used
  */
-Set.prototype.unite = function(set, compareFunction) {
-    if (!(set instanceof Set)) return undefined; // return if set is not valid
+QKit.Set.prototype.unite = function(set, compareFunction) {
+    if (!(set instanceof QKit.Set)) return undefined; // return if set is not valid
     if (compareFunction === undefined) compareFunction = this.__qkit__compareFunction; // use this compare function if undefined
     var thisData = this.__qkit__data; // this data object
     var setData = set.__qkit__data; // set's data object
@@ -454,4 +454,4 @@ Set.prototype.unite = function(set, compareFunction) {
  * \brief The same as toArray().
  * \return the same as toArray()
  */
-Set.prototype.values = function() { return this.toArray(); }
+QKit.Set.prototype.values = function() { return this.toArray(); }

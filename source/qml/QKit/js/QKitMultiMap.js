@@ -47,18 +47,18 @@
  * \brief Construct a copy of map.
  * \param map the map to copy
  */
-function MultiMap() {
-    if (!(this instanceof MultiMap)) { // if function was called without 'new' operator
+QKit.MultiMap = function() {
+    if (!(this instanceof QKit.MultiMap)) { // if function was called without 'new' operator
         if (arguments[0] instanceof Map) { // if MultiMap(map)
-            return new MultiMap(arguments[0]); // create new object
+            return new QKit.MultiMap(arguments[0]); // create new object
         } else { // if MultiMap()
-            return new MultiMap(); // create new object
+            return new QKit.MultiMap(); // create new object
         }
     } else { // if function was called with 'new' operator
-        MultiMap.superClass.apply(this, arguments); // super class constructor
+        QKit.MultiMap.superClass.apply(this, arguments); // super class constructor
     }
 }
-MultiMap.inheritFrom(Map); // super class
+QKit.MultiMap.inheritFrom(QKit.Map); // super class
 
 
 /*!
@@ -68,7 +68,7 @@ MultiMap.inheritFrom(Map); // super class
  * \param value the value to check (if undefined only key will be checked)
  * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined strict equality (===) will be used
  */
-MultiMap.prototype.contains = function(key, value, compareFunction) {
+QKit.MultiMap.prototype.contains = function(key, value, compareFunction) {
     if (key === undefined) return false; // return if key is undefined
     var keyValues = this.__qkit__data[key]; // array of values associated with the key
     if (value === undefined) return keyValues !== undefined; // return array existence if value is undefined
@@ -86,7 +86,7 @@ MultiMap.prototype.contains = function(key, value, compareFunction) {
  * \param value the value items associated with (in undefined all items associated with the key will be count)
  * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined strict equality (===) will be used
  */
-MultiMap.prototype.count = function(key, value, compareFunction) {
+QKit.MultiMap.prototype.count = function(key, value, compareFunction) {
     if (key === undefined) return this.__qkit__size; // return all items number if key is undefined
     var keyValues = this.__qkit__data[key]; // array of values associated with the key
     if (keyValues === undefined) return 0; // return if there are no items associated with the key
@@ -106,7 +106,7 @@ MultiMap.prototype.count = function(key, value, compareFunction) {
  * \param key the key
  * \param value the value to insert
  */
-MultiMap.prototype.insert = Map.prototype.insertMulti;
+QKit.MultiMap.prototype.insert = Map.prototype.insertMulti;
 
 
 /*!
@@ -116,7 +116,7 @@ MultiMap.prototype.insert = Map.prototype.insertMulti;
  * \param value the value of items to remove (if undefined all items with the given key will be removed)
  * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined strict equality (===) will be used
  */
-MultiMap.prototype.remove = function(key, value, compareFunction) {
+QKit.MultiMap.prototype.remove = function(key, value, compareFunction) {
     if (key === undefined) return 0; // return if key is undefined
     var keyValues = this.__qkit__data[key]; // array of values associated with the key
     if (keyValues === undefined) return 0; // return if this map doesn't contain the key
@@ -154,4 +154,4 @@ MultiMap.prototype.remove = function(key, value, compareFunction) {
  * \param key the key
  * \param value the value to insert
  */
-MultiMap.prototype.replace = Map.prototype.insert;
+QKit.MultiMap.prototype.replace = Map.prototype.insert;

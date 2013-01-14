@@ -37,12 +37,26 @@
 
 .pragma library
 
-Qt.include("QKitCore.js")
-Qt.include("QKitObject.js")
+// core
+Qt.include("QKitCore.js");
+Qt.include("QKitObject.js");
 // containers
-Qt.include("QKitLinkedList.js")
-Qt.include("QKitList.js")
-Qt.include("QKitMap.js")
-Qt.include("QKitMultiMap.js")
-Qt.include("QKitSet.js")
-Qt.include("QKitVector.js")
+Qt.include("QKitLinkedList.js");
+Qt.include("QKitList.js");
+Qt.include("QKitMap.js");
+Qt.include("QKitMultiMap.js");
+Qt.include("QKitSet.js");
+Qt.include("QKitVector.js");
+
+// global names
+var instance   = QKit.instance;
+var create     = QKit.create;
+var destroy    = QKit.destroy;
+var Signal     = QKit.Signal;
+var Object     = QKit.Object;
+var LinkedList = QKit.LinkedList;
+var List       = QKit.List;
+var Map        = QKit.Map;
+var MultiMap   = QKit.MultiMap;
+var Set        = QKit.Set;
+var Vector     = QKit.Vector;

@@ -58,15 +58,15 @@
  * \brief Construct a copy of vector.
  * \param vector the vector to copy
  */
-function Vector() {
+QKit.Vector = function() {
     var thisData; // data array of this vector
-    if (arguments[0] instanceof Vector) { // if Vector(vector)
-        if (!(this instanceof Vector)) return new Vector(arguments[0]); // create new object if function was called without 'new' operator
-        Vector.superClass.apply(this); // super class constructor
+    if (arguments[0] instanceof QKit.Vector) { // if Vector(vector)
+        if (!(this instanceof QKit.Vector)) return new QKit.Vector(arguments[0]); // create new object if function was called without 'new' operator
+        QKit.Vector.superClass.apply(this); // super class constructor
         this.__qkit__data = arguments[0].__qkit__data.slice(0); // internal array is copy of vectors array
     } else if (arguments[0] instanceof Array) { // if Vector(array)
-        if (!(this instanceof Vector)) return new Vector(arguments[0]); // create new object if function was called without 'new' operator
-        Vector.superClass.apply(this); // super class constructor
+        if (!(this instanceof QKit.Vector)) return new QKit.Vector(arguments[0]); // create new object if function was called without 'new' operator
+        QKit.Vector.superClass.apply(this); // super class constructor
         var length = arguments[0].length; // length of array
         thisData = []; // data array of this vector
         for (var index = 0; index < length; index++) { // for all items
@@ -75,12 +75,12 @@ function Vector() {
         }
         this.__qkit__data = thisData; // internal array
     } else if (arguments.length <= 0) { // if Vector()
-        if (!(this instanceof Vector)) return new Vector(); // create new object if function was called without 'new' operator
-        Vector.superClass.apply(this); // super class constructor
+        if (!(this instanceof QKit.Vector)) return new QKit.Vector(); // create new object if function was called without 'new' operator
+        QKit.Vector.superClass.apply(this); // super class constructor
         this.__qkit__data = []; // internal array
     } else { // if Vector(size, value)
-        if (!(this instanceof Vector)) return new Vector(arguments[0], arguments[1]); // create new object if function was called without 'new' operator
-        Vector.superClass.apply(this); // super class constructor
+        if (!(this instanceof QKit.Vector)) return new QKit.Vector(arguments[0], arguments[1]); // create new object if function was called without 'new' operator
+        QKit.Vector.superClass.apply(this); // super class constructor
         thisData = []; // data array of this vector
         var size = Math.floor(arguments[0]); // integer size
         var value = arguments[1] === undefined ? null : arguments[1]; // value
@@ -89,7 +89,7 @@ function Vector() {
         this.__qkit__data = thisData; // internal array
     }
 }
-Vector.inheritFrom(Object); // super class
+QKit.Vector.inheritFrom(QKit.Object); // super class
 
 
 /*!
@@ -97,7 +97,7 @@ Vector.inheritFrom(Object); // super class
  * \return this vector
  * \param value the value to insert
  */
-Vector.prototype.append = function(value) {
+QKit.Vector.prototype.append = function(value) {
     if (value === undefined) return undefined; // return if value is undefined
     this.__qkit__data.push(value);
     return this;
@@ -109,14 +109,14 @@ Vector.prototype.append = function(value) {
  * \return the item at the index position
  * \param index the position index
  */
-Vector.prototype.at = function(index) { return this.__qkit__data[index]; }
+QKit.Vector.prototype.at = function(index) { return this.__qkit__data[index]; }
 
 
 /*!
  * \brief Remove all the items from the vector.
  * \return this vector
  */
-Vector.prototype.clear = function() {
+QKit.Vector.prototype.clear = function() {
     this.__qkit__data.length = 0; // clear this data array
     return this;
 }
@@ -128,7 +128,7 @@ Vector.prototype.clear = function() {
  * \param value the value to check
  * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined strict equality (===) will be used
  */
-Vector.prototype.contains = function(value, compareFunction) {
+QKit.Vector.prototype.contains = function(value, compareFunction) {
     if (value === undefined) return false;
     var thisData = this.__qkit__data; // data array of this vector
     var index = thisData.length; // iterator
@@ -147,7 +147,7 @@ Vector.prototype.contains = function(value, compareFunction) {
  * \param value value to check, if undefined count of all items will be returned
  * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined strict equality (===) will be used
  */
-Vector.prototype.count = function(value, compareFunction) {
+QKit.Vector.prototype.count = function(value, compareFunction) {
     if (value === undefined) return this.__qkit__data.length;
     var count = 0; // total count
     var thisData = this.__qkit__data; // data array of this vector
@@ -165,7 +165,7 @@ Vector.prototype.count = function(value, compareFunction) {
  * \brief Get internal array. It can be used to access and modify the items in the vector.
  * \return the data array stored in the vector
  */
-Vector.prototype.data = function() { return this.__qkit__data; }
+QKit.Vector.prototype.data = function() { return this.__qkit__data; }
 
 
 /*!
@@ -174,7 +174,7 @@ Vector.prototype.data = function() { return this.__qkit__data; }
  * \param value value to check
  * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined strict equality (===) will be used
  */
-Vector.prototype.endsWith = function(value, compareFunction) {
+QKit.Vector.prototype.endsWith = function(value, compareFunction) {
     var thisData = this.__qkit__data; // data array of this vector
     if (thisData.length <= 0) return false; // return if is empty
     if (compareFunction === undefined) { // if compare function is undefined
@@ -191,8 +191,8 @@ Vector.prototype.endsWith = function(value, compareFunction) {
  * \param vector the vector to compare with
  * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined strict equality (===) will be used
  */
-Vector.prototype.equals = function(vector, compareFunction) {
-    if (!(vector instanceof Vector)) return undefined; // return if type is not valid
+QKit.Vector.prototype.equals = function(vector, compareFunction) {
+    if (!(vector instanceof QKit.Vector)) return undefined; // return if type is not valid
     var thisData = this.__qkit__data; // this data array
     var vectorData = vector.__qkit__data; // vector's data array
     var index = thisData.length; // iterator
@@ -212,7 +212,7 @@ Vector.prototype.equals = function(vector, compareFunction) {
  * \param value value to assign
  * \param size if not undefined the vector is resized to size size beforehand
  */
-Vector.prototype.fill = function(value, size) {
+QKit.Vector.prototype.fill = function(value, size) {
     if (value === undefined) value = null; // use null by default
     var thisData = this.__qkit__data; // data array of this vector
     if (size === undefined) { // if size is not defined
@@ -231,7 +231,7 @@ Vector.prototype.fill = function(value, size) {
  * \brief Get the first item.
  * \return the first item in the vector
  */
-Vector.prototype.first = function() { return this.__qkit__data[0]; }
+QKit.Vector.prototype.first = function() { return this.__qkit__data[0]; }
 
 
 /*!
@@ -240,7 +240,7 @@ Vector.prototype.first = function() { return this.__qkit__data[0]; }
  * \param callback function to execute for each item - function(value, index, vector)
  * \param thisArg object to use as this when executing callback
  */
-Vector.prototype.forEach = function(callback, thisArg) {
+QKit.Vector.prototype.forEach = function(callback, thisArg) {
     if (!(callback instanceof Function)) return undefined; // return if callback is not a function
     var thisData = this.__qkit__data; // data array of this vector
     var lastIndex = thisData.length - 1; // last index of the data array
@@ -260,7 +260,7 @@ Vector.prototype.forEach = function(callback, thisArg) {
  * \param from index position for forward search (first item by default)
  * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined strict equality (===) will be used
  */
-Vector.prototype.indexOf = function(value, from, compareFunction) {
+QKit.Vector.prototype.indexOf = function(value, from, compareFunction) {
     if (value === undefined) return false; // return of value is undefined
     var thisData = this.__qkit__data; // data array of this vector
     if (from === undefined) { // if from is undefined
@@ -290,7 +290,7 @@ Vector.prototype.indexOf = function(value, from, compareFunction) {
  * \param index position of first inserted value after insertion (last by default)
  * \param count the count of values to insert (1 by default)
  */
-Vector.prototype.insert = function(value, index, count) {
+QKit.Vector.prototype.insert = function(value, index, count) {
     if (value === undefined) value = null; // use null by default
     var thisData = this.__qkit__data; // data array of this vector
     if (index === undefined) { // if index is not defined
@@ -327,14 +327,14 @@ Vector.prototype.insert = function(value, index, count) {
  * \brief Test the vector for emptiness.
  * \return true if the vector has size 0, false otherwise
  */
-Vector.prototype.isEmpty = function() { return this.__qkit__data.length === 0; }
+QKit.Vector.prototype.isEmpty = function() { return this.__qkit__data.length === 0; }
 
 
 /*!
  * \brief Get the last item.
  * \return the last item in the vector
  */
-Vector.prototype.last = function() { return this.__qkit__data[this.__qkit__data.length - 1]; }
+QKit.Vector.prototype.last = function() { return this.__qkit__data[this.__qkit__data.length - 1]; }
 
 
 /*!
@@ -344,7 +344,7 @@ Vector.prototype.last = function() { return this.__qkit__data[this.__qkit__data.
  * \param from index position for backward search (last item by default)
  * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined strict equality (===) will be used
  */
-Vector.prototype.lastIndexOf = function(value, from, compareFunction) {
+QKit.Vector.prototype.lastIndexOf = function(value, from, compareFunction) {
     if (value === undefined) return false;
     var thisData = this.__qkit__data; // data array of this vector
     if (from === undefined) { // if from is undefined
@@ -374,7 +374,7 @@ Vector.prototype.lastIndexOf = function(value, from, compareFunction) {
  * \param start starting position (0 by default)
  * \param length maximum number of items to copy (by default all items after starting position are copied, if negative items will be copyed in the reverse orger)
  */
-Vector.prototype.mid = function(start, length) {
+QKit.Vector.prototype.mid = function(start, length) {
     var thisData = this.__qkit__data; // data array of this vector
     if (start === undefined) { // if start position is undefined
         start = 0; // start from the first item
@@ -387,7 +387,7 @@ Vector.prototype.mid = function(start, length) {
             if (start >= thisData.length) return undefined; // return if start position is greater than the size
         }
     }
-    var midVector = new Vector(); // empty vector
+    var midVector = new QKit.Vector(); // empty vector
     var index; // iterator
     if (length === undefined) { // if length is undefined
         index = thisData.length; // to the end of vector
@@ -422,7 +422,7 @@ Vector.prototype.mid = function(start, length) {
  * \return this vector
  * \param value the value to insert
  */
-Vector.prototype.prepend = function(value) {
+QKit.Vector.prototype.prepend = function(value) {
     this.__qkit__data.unshift(value === undefined ? null : value);
     return this;
 }
@@ -434,7 +434,7 @@ Vector.prototype.prepend = function(value) {
  * \param index position of first item to remove (by default last items will be removed)
  * \param count the count of values to remove (1 by default)
  */
-Vector.prototype.remove = function(index, count) {
+QKit.Vector.prototype.remove = function(index, count) {
     if (count === undefined) { // if count is undefined
         count = 1; // 1 by default
     } else { // if count is defined
@@ -470,7 +470,7 @@ Vector.prototype.remove = function(index, count) {
  * \param index valid index position
  * \param value new value for the item
  */
-Vector.prototype.replace = function(index, value) {
+QKit.Vector.prototype.replace = function(index, value) {
     if (index === undefined) return undefined; // return if index is undefined
     index = Math.floor(index); // make index integer
     if (index < 0 || index >= this.__qkit__data.length) return undefined; // return if index is not valid
@@ -484,7 +484,7 @@ Vector.prototype.replace = function(index, value) {
  * \return this vector
  * \param size new size
 */
-Vector.prototype.resize = function(size) {
+QKit.Vector.prototype.resize = function(size) {
     if (size === undefined) return undefined; // return if size is undefined
     size = Math.floor(size); // make size integer
     var thisData = this.__qkit__data; // data array of this vector
@@ -502,7 +502,7 @@ Vector.prototype.resize = function(size) {
  * \brief Get vectors size.
  * \return the number of items in the vector
 */
-Vector.prototype.size = function() { return this.__qkit__data.length; }
+QKit.Vector.prototype.size = function() { return this.__qkit__data.length; }
 
 
 /*!
@@ -511,7 +511,7 @@ Vector.prototype.size = function() { return this.__qkit__data.length; }
  * \param value value to check
  * \param compareFunction function, used to compare two values (true if equal, false otherwise), if undefined strict equality (===) will be used
  */
-Vector.prototype.startsWith = function(value, compareFunction) {
+QKit.Vector.prototype.startsWith = function(value, compareFunction) {
     if (this.__qkit__data.length <= 0) return false; // return if is empty
     if (compareFunction === undefined) { // if compare function is undefined
         return this.__qkit__data[0] === value;
@@ -526,8 +526,8 @@ Vector.prototype.startsWith = function(value, compareFunction) {
  * \return this vector
  * \param vector the vector to swap with
  */
-Vector.prototype.swap = function(vector) {
-    if (!(vector instanceof Vector)) return undefined; // return if type is not valid
+QKit.Vector.prototype.swap = function(vector) {
+    if (!(vector instanceof QKit.Vector)) return undefined; // return if type is not valid
     var tempData = this.__qkit__data; // backup this data
     this.__qkit__data = vector.__qkit__data; // update this data
     vector.__qkit__data = tempData; // update vector data
@@ -539,14 +539,14 @@ Vector.prototype.swap = function(vector) {
  * \brief Generate an array with the data contained in this vector.
  * \return generated Array instance
  */
-Vector.prototype.toArray = function() { return this.__qkit__data.slice(0); }
+QKit.Vector.prototype.toArray = function() { return this.__qkit__data.slice(0); }
 
 
 /*!
  * \brief This method that is automatically called when the object is to be represented as a text value or when an object is referred to in a manner in which a string is expected.
  * \return one string containing each item separated by commas
  */
-Vector.prototype.toString = function() { return '[' + this.__qkit__data.toString() + ']'; }
+QKit.Vector.prototype.toString = function() { return '[' + this.__qkit__data.toString() + ']'; }
 
 
 /*!
@@ -555,7 +555,7 @@ Vector.prototype.toString = function() { return '[' + this.__qkit__data.toString
  * \param index position of the value
  * \param defaultValue value to return if index is out of the bounds
  */
-Vector.prototype.value = function(index, defaultValue) {
+QKit.Vector.prototype.value = function(index, defaultValue) {
     index = Math.floor(index); // make index integer
     if (index < 0 || index >= this.__qkit__data.length) return defaultValue; // return default value if index is not valid
     return this.__qkit__data[index]; // return value from the data array

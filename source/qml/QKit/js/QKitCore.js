@@ -35,6 +35,11 @@
 *                                                                              *
 *******************************************************************************/
 
+var QKit = { // general QKit object
+    __objects: [] //!< array of objects
+}
+
+
 /*!
  * \brief Universal inherit function.
  * \param superClass super class
@@ -49,14 +54,47 @@ Function.prototype.inheritFrom = function(superClass) {
 
 
 /*!
+ * \brief Get existing object by id.
+ * \return object or null if there is no object with specified id
+ * \param id object id
+ */
+QKit.instance = function(id) { return QKit.__objects[id]; }
+
+
+/*!
+ * \brief Create new object.
+ * \return object id
+ * \param objectClass class of object to create
+ * \param constructorArguments array of arguments for constructor
+ */
+QKit.create = function(objectClass, constructorArguments) {
+    var object = eval('QKit.' + objectClass).apply(this, constructorArguments); // create new object
+    object.__qkit__id = QKit.__objects.length; // object id
+    QKit.__objects.push(object); // add new object to array
+    return object.id(); // return id of created object
+}
+
+
+/*!
+ * \brief Delete existing object.
+ * \param id list id
+ */
+QKit.destroy = function(id) {
+    var object = instance(id); // object by id
+    if (object === null) return; // return if not existing
+    object.destroy(); // destroy object
+}
+
+
+/*!
  * \brief Generate a signal method.
  * \return generated signal method
  */
-function Signal() {
-    if ((this instanceof Signal)) { // if function was called with 'new' operator
+QKit.Signal = function () {
+    if ((this instanceof QKit.Signal)) { // if function was called with 'new' operator
         this.__qkit__connections = []; //!< array of connections
     } else { // if function was called without 'new' operator
-        var signal = new Signal(); // create new signal
+        var signal = new QKit.Signal(); // create new signal
         var func = function() { return signal.emit.apply(signal, arguments); } // create emit function
         func.__qkit__signal = signal; // signal assotiated with function
         func.connect = function() { return signal.connect.apply(signal, arguments); } // connect method
@@ -69,7 +107,7 @@ function Signal() {
 /*!
  * \brief Emit the signal to all connected methods.
  */
-Signal.prototype.emit = function() {
+QKit.Signal.prototype.emit = function() {
     var emitArguments = arguments;
     return this.__qkit__connections.forEach( // for each connection
         function(element, index, array) { // callback function
@@ -87,7 +125,7 @@ Signal.prototype.emit = function() {
  * \param receiver signal receiver object (null to connect to root object)
  * \param uniqueConnection unique connection or not
  */
-Signal.prototype.connect = function(method, receiver, uniqueConnection) {
+QKit.Signal.prototype.connect = function(method, receiver, uniqueConnection) {
     if (!(method instanceof Function)) return false; // return if method is not an instance of Function
     if (receiver === undefined) receiver = null; // null receiver by default
     if (uniqueConnection === undefined) uniqueConnection = false; // unique connection false by default
@@ -106,7 +144,7 @@ Signal.prototype.connect = function(method, receiver, uniqueConnection) {
  * \param method method to disconnect from (undefined to disconnect all)
  * \param receiver signal receiver object (null for root object, undefined to skip test)
  */
-Signal.prototype.disconnect = function(method, receiver) {
+QKit.Signal.prototype.disconnect = function(method, receiver) {
     var isThereAnyDisconnect = false; // is there any disconnect or not
     this.__qkit__connections = this.__qkit__connections.filter( // filter connections
         function(element, index, array) { // test function
@@ -137,7 +175,7 @@ Signal.prototype.disconnect = function(method, receiver) {
  * \param method method to connect to
  * \param receiver signal receiver object (null for root object, undefined to skip test)
  */
-Signal.prototype.isConnected = function(method, receiver) {
+QKit.Signal.prototype.isConnected = function(method, receiver) {
     if (!(method instanceof Function)) return false; // return if method is not an instance of Function
     return this.__qkit__connections.some( // try to find any connection
         function(element) { // test function
