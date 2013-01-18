@@ -36,7 +36,9 @@
 *******************************************************************************/
 
 var QKit = { // general QKit object
-    __objects: [] //!< array of objects
+    __objects: [], //!< array of objects
+    __equalsFunction: function(value1, value2) { return value1 === value2 }, // default values compare function
+    __hashFunction: function(value) { return value instanceof QKit.Object ? value.id() : value.toString() } // default hash function
 }
 
 
@@ -49,7 +51,7 @@ Function.prototype.inheritFrom = function(superClass) {
     Inheritance.prototype = superClass.prototype;
     this.prototype = new Inheritance();
     this.prototype.constructor = this;
-    this.superClass = superClass;
+    this.superClass = superClass.prototype;
 }
 
 
@@ -58,7 +60,7 @@ Function.prototype.inheritFrom = function(superClass) {
  * \return object or null if there is no object with specified id
  * \param id object id
  */
-QKit.instance = function(id) { return QKit.__objects[id]; }
+QKit.instance = function(id) { return QKit.__objects[id] }
 
 
 /*!
@@ -83,106 +85,4 @@ QKit.destroy = function(id) {
     var object = instance(id); // object by id
     if (object === null) return; // return if not existing
     object.destroy(); // destroy object
-}
-
-
-/*!
- * \brief Generate a signal method.
- * \return generated signal method
- */
-QKit.Signal = function () {
-    if ((this instanceof QKit.Signal)) { // if function was called with 'new' operator
-        this.__qkit__connections = []; //!< array of connections
-    } else { // if function was called without 'new' operator
-        var signal = new QKit.Signal(); // create new signal
-        var func = function() { return signal.emit.apply(signal, arguments); } // create emit function
-        func.__qkit__signal = signal; // signal assotiated with function
-        func.connect = function() { return signal.connect.apply(signal, arguments); } // connect method
-        func.disconnect = function() { return signal.disconnect.apply(signal, arguments); } // disconnect method
-        return func;
-    }
-}
-
-
-/*!
- * \brief Emit the signal to all connected methods.
- */
-QKit.Signal.prototype.emit = function() {
-    var emitArguments = arguments;
-    return this.__qkit__connections.forEach( // for each connection
-        function(element, index, array) { // callback function
-            element.method.apply(element.receiver, emitArguments); // apply connected method
-        },
-        this
-    );
-}
-
-
-/*!
- * \brief Create a connection from the signal to the function.
- * \return true if the connection succeeds, otherwise false
- * \param method method to connect to
- * \param receiver signal receiver object (null to connect to root object)
- * \param uniqueConnection unique connection or not
- */
-QKit.Signal.prototype.connect = function(method, receiver, uniqueConnection) {
-    if (!(method instanceof Function)) return false; // return if method is not an instance of Function
-    if (receiver === undefined) receiver = null; // null receiver by default
-    if (uniqueConnection === undefined) uniqueConnection = false; // unique connection false by default
-    if (uniqueConnection && this.isConnected(method, receiver)) return false; // return if connection exists
-    this.__qkit__connections.push({'method':method, 'receiver':receiver}); // puch method and receiver to connections array
-    if (method.__qkit__connectedSignals === undefined) method.__qkit__connectedSignals = {}; // create hash of connected signals if it doesn't exist
-    if (method.__qkit__connectedSignals[this] === undefined) method.__qkit__connectedSignals[this] = 0; // create counter of connections
-    method.__qkit__connectedSignals[this]++; // increment counter
-    return true;
-}
-
-
-/*!
- * \brief Disconnects signal from method in object receiver.
- * \return true if some connections where disconnected, false othervise
- * \param method method to disconnect from (undefined to disconnect all)
- * \param receiver signal receiver object (null for root object, undefined to skip test)
- */
-QKit.Signal.prototype.disconnect = function(method, receiver) {
-    var isThereAnyDisconnect = false; // is there any disconnect or not
-    this.__qkit__connections = this.__qkit__connections.filter( // filter connections
-        function(element, index, array) { // test function
-            var leaveConnection = true; // leave connection by default
-            if (method === undefined) { // if remove all
-                leaveConnection = false;
-            } else if (method !== element.method) { // if method is another
-                leaveConnection = true;
-            } else if (receiver === undefined) { // if remove all with this method
-                leaveConnection = false;
-            } else {
-                leaveConnection = receiver !== element.receiver; // leave with another receiver
-            }
-            if (leaveConnection) return true; // do nothing if connection will be leaved
-            element.method.__qkit__connectedSignals[this]--; // decrement counter of connections
-            if (element.method.__qkit__connectedSignals[this] < 1) delete element.method.__qkit__connectedSignals[this]; // delete counter if no more connections for it
-            isThereAnyDisconnect = true; // there is a disconnect
-            return false;
-        },
-        this
-    );
-    return isThereAnyDisconnect;
-}
-
-
-/*!
- * \brief Test connection signal from method in object receiver.
- * \param method method to connect to
- * \param receiver signal receiver object (null for root object, undefined to skip test)
- */
-QKit.Signal.prototype.isConnected = function(method, receiver) {
-    if (!(method instanceof Function)) return false; // return if method is not an instance of Function
-    return this.__qkit__connections.some( // try to find any connection
-        function(element) { // test function
-            if (method !== element.method) return false; // return if method is the other one
-            if (receiver === undefined) return true; // return if there is no need to rest receiver
-            return receiver === element.receiver; // true if receiver is the same one
-        },
-        this
-    );
 }
